@@ -1199,7 +1199,7 @@
 				D433F0142CB5B10D0097F561 /* GoogleService-Info.plist */,
 				D4D7B45A29F1505A0032AEEF /* README.md */,
 				D47A451129D74C68008626E6 /* Assets */,
-				D47221582924548A0063BDB7 /* App */,
+				D47221582924548A0063BDB7 /* Sources */,
 				D4D778E12B8CE6DD00D82C94 /* Widget */,
 				D4D778DC2B8CE6DC00D82C94 /* Frameworks */,
 				D4722146292454560063BDB7 /* Products */,
@@ -1215,7 +1215,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		D47221582924548A0063BDB7 /* App */ = {
+		D47221582924548A0063BDB7 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
 				D4A433B729951F2B00BFEB7A /* AppDelegate.swift */,
@@ -1231,7 +1231,7 @@
 				D41ED54229843366009DCF8B /* Domain */,
 				D472215B292454F60063BDB7 /* Resources */,
 			);
-			path = App;
+			path = Sources;
 			sourceTree = "<group>";
 		};
 		D47221592924549B0063BDB7 /* Views */ = {
