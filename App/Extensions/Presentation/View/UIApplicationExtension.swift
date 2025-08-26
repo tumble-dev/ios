@@ -27,7 +27,7 @@ extension UIApplication {
     /// Opens the default mail application on users
     /// phones and allows them to send an email to support
     func shareFeedback() {
-        if let url = URL(string: "mailto:tumbleapps.studios@gmail.com") {
+        if let url = URL(string: "mailto:support@tumbleforkronox.com") {
             UIApplication.shared.open(url)
         }
     }
