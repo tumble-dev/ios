@@ -91,14 +91,14 @@ final class SettingsViewModel: ObservableObject {
         cancellableTask = Task.detached(priority: .userInitiated) { [weak self] in
             do {
                 let contributors = try await self?.githubApiManager.getRepoContributors()
-                DispatchQueue.main.async { [weak self] in
+                await MainActor.run { [weak self] in
                     AppLogger.shared.debug("Retrieved all contributors")
                     self?.contributors = contributors ?? []
                     self?.contributorPageStatus = .loaded
                 }
             } catch {
                 AppLogger.shared.debug("Error retrieving contributors: \(error)")
-                DispatchQueue.main.async { [weak self] in
+                await MainActor.run { [weak self] in
                     self?.contributorPageStatus = .error
                 }
             }
@@ -150,7 +150,9 @@ final class SettingsViewModel: ObservableObject {
                 event: event
             ) else {
                 AppLogger.shared.error("Could not set notification for event \(event._id)")
-                PopupToast(popup: popupFactory.setNotificationsAllEventsFailed()).showAndStack()
+                _ = await MainActor.run { [popupFactory] in
+                    PopupToast(popup: popupFactory.setNotificationsAllEventsFailed()).showAndStack()
+                }
                 return
             }
             
@@ -164,9 +166,8 @@ final class SettingsViewModel: ObservableObject {
                 AppLogger.shared.debug("One notification set")
                 
                 if scheduledNotifications == totalNotifications {
-                    DispatchQueue.main.async { [weak self] in
-                        guard let self else { return }
-                        PopupToast(popup: self.popupFactory.setNotificationsAllEventsSuccess()).showAndStack()
+                    _ = await MainActor.run { [popupFactory] in
+                        PopupToast(popup: popupFactory.setNotificationsAllEventsSuccess()).showAndStack()
                     }
                 }
             } catch let failure {

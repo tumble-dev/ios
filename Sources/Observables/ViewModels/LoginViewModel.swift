@@ -43,31 +43,32 @@ final class LoginViewModel: ObservableObject {
         username: String,
         password: String
     ) async {
-        defer {
-            DispatchQueue.main.async { [weak self] in
-                withAnimation {
-                    self?.attemptingLogin = false
-                }
-            }
-        }
         do {
-            DispatchQueue.main.async { [weak self] in
+            await MainActor.run { [weak self] in
                 withAnimation {
                     self?.attemptingLogin = true
                 }
             }
             try await userController.logIn(authSchoolId: authSchoolId, username: username, password: password)
             if userController.authStatus == .authorized {
-                DispatchQueue.main.async { [weak self] in
-                    guard let self else { return }
-                    PopupToast(popup: self.popupFactory.logInSuccess(as: username)).showAndStack()
+                _ = await MainActor.run { [popupFactory] in
+                    PopupToast(popup: popupFactory.logInSuccess(as: username)).showAndStack()
+                }
+            }
+            await MainActor.run {
+                withAnimation {
+                    self.attemptingLogin = false
                 }
             }
         } catch {
             AppLogger.shared.error("Failed to log in user: \(error)")
-            DispatchQueue.main.async { [weak self] in
-                guard let self else { return }
-                PopupToast(popup: self.popupFactory.logInFailed()).showAndStack()
+            await MainActor.run {
+                withAnimation {
+                    self.attemptingLogin = false
+                }
+            }
+            _ = await MainActor.run { [popupFactory] in
+                PopupToast(popup: popupFactory.logInFailed()).showAndStack()
             }
         }
     }

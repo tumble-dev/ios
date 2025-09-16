@@ -67,18 +67,18 @@ final class HomeViewModel: ObservableObject {
     /// Attempts to retrieve news items published by
     /// our team, i.e. server updates, general updates, etc.
     private func fetchNews() async {
-        DispatchQueue.main.async { [weak self] in
+        await MainActor.run { [weak self] in
             self?.newsSectionStatus = .loading
         }
         do {
             let news: Response.NewsItems = try await kronoxManager.get(.news)
-            DispatchQueue.main.async { [weak self] in
+            await MainActor.run { [weak self] in
                 self?.news = news
                 self?.newsSectionStatus = .loaded
             }
         } catch {
             AppLogger.shared.error("Failed to retrieve news items: \(error)")
-            DispatchQueue.main.async { [weak self] in
+            await MainActor.run { [weak self] in
                 self?.newsSectionStatus = .error
             }
         }

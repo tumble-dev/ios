@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0B5DC81C2E79C7A0001B668F /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 0B5DC81B2E79C7A0001B668F /* FirebaseAnalytics */; };
+		0B5DC81E2E79C7A0001B668F /* FirebaseAnalyticsCore in Frameworks */ = {isa = PBXBuildFile; productRef = 0B5DC81D2E79C7A0001B668F /* FirebaseAnalyticsCore */; };
+		0B5DC8202E79C7A0001B668F /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 0B5DC81F2E79C7A0001B668F /* FirebaseCore */; };
+		0B5DC8222E79C7A0001B668F /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 0B5DC8212E79C7A0001B668F /* FirebaseCrashlytics */; };
+		0B5DC8242E79C7A0001B668F /* FirebaseInAppMessaging-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = 0B5DC8232E79C7A0001B668F /* FirebaseInAppMessaging-Beta */; };
+		0B5DC8262E79C7CF001B668F /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 0B5DC8252E79C7CF001B668F /* FirebaseMessaging */; };
 		1C3FFAD92CDA380800650FB0 /* CurrentUserPreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3FFAD82CDA380700650FB0 /* CurrentUserPreference.swift */; };
 		1C5F66F12CCADE790098CAAF /* OpenEventFromWidgetPreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5F66F02CCADE790098CAAF /* OpenEventFromWidgetPreference.swift */; };
 		1C5F66F32CCB2CF00098CAAF /* RectangularEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5F66F22CCB2CF00098CAAF /* RectangularEvent.swift */; };
@@ -171,8 +177,6 @@
 		D4722149292454560063BDB7 /* tumble_iosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4722148292454560063BDB7 /* tumble_iosApp.swift */; };
 		D472214D292454570063BDB7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D472214C292454570063BDB7 /* Assets.xcassets */; };
 		D4722161292455710063BDB7 /* KronoxManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D472215E292455710063BDB7 /* KronoxManager.swift */; };
-		D47386FF29C88E4F0035CD4C /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = D47386FE29C88E4F0035CD4C /* FirebaseAnalytics */; };
-		D473870129C88E4F0035CD4C /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = D473870029C88E4F0035CD4C /* FirebaseMessaging */; };
 		D475626F29CE09A600B72008 /* ResourceDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = D475626E29CE09A600B72008 /* ResourceDetailSheet.swift */; };
 		D475627129CE20A700B72008 /* ExamDetailsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = D475627029CE20A700B72008 /* ExamDetailsSheet.swift */; };
 		D4761C4429CF222900B3BB0B /* WideAnimatedButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4761C4329CF222900B3BB0B /* WideAnimatedButtonStyle.swift */; };
@@ -632,14 +636,18 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D473870129C88E4F0035CD4C /* FirebaseMessaging in Frameworks */,
+				0B5DC8262E79C7CF001B668F /* FirebaseMessaging in Frameworks */,
+				0B5DC81C2E79C7A0001B668F /* FirebaseAnalytics in Frameworks */,
 				D4FFCC1F29EDA9A700708CC0 /* RealmSwift in Frameworks */,
-				D47386FF29C88E4F0035CD4C /* FirebaseAnalytics in Frameworks */,
 				D4D04DFD29FB29BC008858F0 /* SwipeActions in Frameworks */,
 				D4ACD86E2AD9436C00780998 /* MijickPopupView in Frameworks */,
 				1CB196312CA600FE00B747BF /* SwiftSVG in Frameworks */,
 				D430F74329C615DC00E30E48 /* FSCalendar in Frameworks */,
+				0B5DC8242E79C7A0001B668F /* FirebaseInAppMessaging-Beta in Frameworks */,
 				D42BAC1C298D3D590025EAA9 /* Logging in Frameworks */,
+				0B5DC8222E79C7A0001B668F /* FirebaseCrashlytics in Frameworks */,
+				0B5DC8202E79C7A0001B668F /* FirebaseCore in Frameworks */,
+				0B5DC81E2E79C7A0001B668F /* FirebaseAnalyticsCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1716,12 +1724,16 @@
 			packageProductDependencies = (
 				D42BAC1B298D3D590025EAA9 /* Logging */,
 				D430F74229C615DC00E30E48 /* FSCalendar */,
-				D47386FE29C88E4F0035CD4C /* FirebaseAnalytics */,
-				D473870029C88E4F0035CD4C /* FirebaseMessaging */,
 				D4FFCC1E29EDA9A700708CC0 /* RealmSwift */,
 				D4D04DFC29FB29BC008858F0 /* SwipeActions */,
 				D4ACD86D2AD9436C00780998 /* MijickPopupView */,
 				1CB196302CA600FE00B747BF /* SwiftSVG */,
+				0B5DC81B2E79C7A0001B668F /* FirebaseAnalytics */,
+				0B5DC81D2E79C7A0001B668F /* FirebaseAnalyticsCore */,
+				0B5DC81F2E79C7A0001B668F /* FirebaseCore */,
+				0B5DC8212E79C7A0001B668F /* FirebaseCrashlytics */,
+				0B5DC8232E79C7A0001B668F /* FirebaseInAppMessaging-Beta */,
+				0B5DC8252E79C7CF001B668F /* FirebaseMessaging */,
 			);
 			productName = "tumble-ios";
 			productReference = D4722145292454560063BDB7 /* Tumble.app */;
@@ -1785,11 +1797,11 @@
 			packageReferences = (
 				D42BAC1A298D3D590025EAA9 /* XCRemoteSwiftPackageReference "swift-log" */,
 				D430F74129C615DC00E30E48 /* XCRemoteSwiftPackageReference "FSCalendar" */,
-				D47386FD29C88E4F0035CD4C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				D4FFCC1B29EDA9A700708CC0 /* XCRemoteSwiftPackageReference "realm-swift" */,
 				D4D04DFB29FB29BC008858F0 /* XCRemoteSwiftPackageReference "SwipeActions" */,
 				D4ACD86C2AD9436C00780998 /* XCRemoteSwiftPackageReference "PopupView" */,
 				1CB1962F2CA600FE00B747BF /* XCRemoteSwiftPackageReference "SwiftSVG" */,
+				0B5DC81A2E79C7A0001B668F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			productRefGroup = D4722146292454560063BDB7 /* Products */;
 			projectDirPath = "";
@@ -2208,7 +2220,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Sources/App.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -2217,7 +2229,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_TESTING_SEARCH_PATHS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = App/Info.plist;
+				INFOPLIST_FILE = Sources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Tumble;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Camera is used for scanning QR codes for room booking functionality in Universities";
@@ -2370,7 +2382,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Sources/App.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -2379,7 +2391,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_TESTING_SEARCH_PATHS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = App/Info.plist;
+				INFOPLIST_FILE = Sources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Tumble;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Camera is used for scanning QR codes for room booking functionality in Universities";
@@ -2414,7 +2426,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Sources/App.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -2424,7 +2436,7 @@
 				ENABLE_TESTABILITY = YES;
 				ENABLE_TESTING_SEARCH_PATHS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = App/Info.plist;
+				INFOPLIST_FILE = Sources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Tumble;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Camera is used for scanning QR codes for room booking functionality in Universities";
@@ -2476,7 +2488,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 4.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.example.tumble.tumble-widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -2513,7 +2525,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 4.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.example.tumble.tumble-widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -2551,7 +2563,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 4.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.example.tumble.tumble-widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2602,6 +2614,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		0B5DC81A2E79C7A0001B668F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.3.0;
+			};
+		};
 		1CB1962F2CA600FE00B747BF /* XCRemoteSwiftPackageReference "SwiftSVG" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/mchoe/SwiftSVG";
@@ -2624,14 +2644,6 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 2.0.0;
-			};
-		};
-		D47386FD29C88E4F0035CD4C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 11.0.0;
 			};
 		};
 		D4ACD86C2AD9436C00780998 /* XCRemoteSwiftPackageReference "PopupView" */ = {
@@ -2661,6 +2673,36 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		0B5DC81B2E79C7A0001B668F /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0B5DC81A2E79C7A0001B668F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		0B5DC81D2E79C7A0001B668F /* FirebaseAnalyticsCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0B5DC81A2E79C7A0001B668F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalyticsCore;
+		};
+		0B5DC81F2E79C7A0001B668F /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0B5DC81A2E79C7A0001B668F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		0B5DC8212E79C7A0001B668F /* FirebaseCrashlytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0B5DC81A2E79C7A0001B668F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCrashlytics;
+		};
+		0B5DC8232E79C7A0001B668F /* FirebaseInAppMessaging-Beta */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0B5DC81A2E79C7A0001B668F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = "FirebaseInAppMessaging-Beta";
+		};
+		0B5DC8252E79C7CF001B668F /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0B5DC81A2E79C7A0001B668F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
+		};
 		1CB196302CA600FE00B747BF /* SwiftSVG */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 1CB1962F2CA600FE00B747BF /* XCRemoteSwiftPackageReference "SwiftSVG" */;
@@ -2675,16 +2717,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D430F74129C615DC00E30E48 /* XCRemoteSwiftPackageReference "FSCalendar" */;
 			productName = FSCalendar;
-		};
-		D47386FE29C88E4F0035CD4C /* FirebaseAnalytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D47386FD29C88E4F0035CD4C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAnalytics;
-		};
-		D473870029C88E4F0035CD4C /* FirebaseMessaging */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D47386FD29C88E4F0035CD4C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseMessaging;
 		};
 		D4ACD86D2AD9436C00780998 /* MijickPopupView */ = {
 			isa = XCSwiftPackageProductDependency;

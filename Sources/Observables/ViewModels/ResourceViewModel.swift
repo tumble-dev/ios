@@ -51,7 +51,7 @@ final class ResourceViewModel: ObservableObject {
     /// Retrieves the available user events that are viewed in the
     /// `EventBookings` view
     func getUserEventsForPage() async {
-        DispatchQueue.main.async { [weak self] in
+        await MainActor.run { [weak self] in
             guard let self else { return }
             self.eventBookingPageState = .loading
         }
@@ -63,13 +63,13 @@ final class ResourceViewModel: ObservableObject {
             let events: Response.KronoxCompleteUserEvent?
                 = try await kronoxManager.get(request, refreshToken: refreshToken.value)
             AppLogger.shared.debug("Successfully loaded events")
-            DispatchQueue.main.async {
+            await MainActor.run{
                 self.completeUserEvent = events
                 self.eventBookingPageState = .loaded
             }
         } catch {
             AppLogger.shared.error("\(error)")
-            DispatchQueue.main.async {
+            await MainActor.run {
                 self.eventBookingPageState = .error
             }
         }
@@ -78,7 +78,7 @@ final class ResourceViewModel: ObservableObject {
     /// Attempts to register the user for the specified event
     /// through its `.eventId` parameter.
     func registerForEvent(eventId: String) async {
-        DispatchQueue.main.async { [weak self] in
+        await MainActor.run { [weak self] in
             guard let self else { return }
             self.eventBookingPageState = .loading
         }
@@ -101,7 +101,7 @@ final class ResourceViewModel: ObservableObject {
     /// Attempts to unregister the user for the specified event
     /// through its `.eventId` parameter.
     func unregisterForEvent(eventId: String) async {
-        DispatchQueue.main.async { [weak self] in
+        await MainActor.run { [weak self] in
             guard let self else { return }
             self.eventBookingPageState = .loading
         }
@@ -118,7 +118,7 @@ final class ResourceViewModel: ObservableObject {
             
         } catch {
             AppLogger.shared.error("\(error)")
-            DispatchQueue.main.async {
+            await MainActor.run {
                 self.eventBookingPageState = .error
             }
         }
@@ -127,7 +127,7 @@ final class ResourceViewModel: ObservableObject {
     /// Retrieves any available booking data for a specific date
     /// triggered by the change of `selectedPickerDate`
     func getAllResourceData(date: Date) async {
-        DispatchQueue.main.async { [weak self] in
+        await MainActor.run { [weak self] in
             guard let self else { return }
             self.resourceBookingPageState = .loading
         }
@@ -139,13 +139,13 @@ final class ResourceViewModel: ObservableObject {
             }
             let resources: Response.KronoxResources? = try await kronoxManager.get(
                 request, refreshToken: refreshToken.value)
-            DispatchQueue.main.async {
+            await MainActor.run {
                 self.allResources = resources
                 self.resourceBookingPageState = .loaded
             }
         } catch { /// Catches CancellationError as well, if task is cancelled due to date change
             AppLogger.shared.error("Error: \(error)")
-            DispatchQueue.main.async {
+            await MainActor.run {
                 self.resourceBookingPageState = .error
             }
         }

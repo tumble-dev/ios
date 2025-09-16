@@ -90,7 +90,7 @@ final class UserController: ObservableObject {
             user.schoolId = authSchoolId
             users = try await self.authManager.addUser(user)
             
-            DispatchQueue.main.async {
+            await MainActor.run {
                 AppLogger.shared.debug("Successfully logged in user \(user.username)")
                 self.user = user
                 self.refreshToken = refreshToken
@@ -125,14 +125,14 @@ final class UserController: ObservableObject {
             user.sessionDetails = sessionDetails!.value
             user.schoolId = autoLoginUser!.schoolId
 
-            DispatchQueue.main.async {
+            await MainActor.run {
                 self.user = user
                 self.refreshToken = refreshToken
                 self.sessionDetails = sessionDetails
                 self.authStatus = .authorized
             }
         } catch AuthManager.AuthError.autoLoginError(let user) {
-            DispatchQueue.main.async {
+            await MainActor.run {
                 self.user = user
                 self.authStatus = .authorized
             }

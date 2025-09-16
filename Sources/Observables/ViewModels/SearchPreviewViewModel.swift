@@ -42,7 +42,7 @@ final class SearchPreviewViewModel: ObservableObject {
                 let fetchedSchedule: Response.Schedule = try await kronoxManager.get(endpoint)
                 self.updateUIWithFetchedSchedule(fetchedSchedule, existingSchedules: schedules)
             } catch {
-                DispatchQueue.main.async { [weak self] in
+                await MainActor.run { [weak self] in
                     self?.status = .error
                     if let error = error as? KronoxManagerError {
                         self?.errorMessage = error.localizedDescription

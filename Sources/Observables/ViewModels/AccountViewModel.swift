@@ -148,14 +148,15 @@ final class AccountViewModel: ObservableObject {
             await notificationManager.cancelNotifications(with: "Booking")
         } catch {
             AppLogger.shared.error("Failed to log out user: \(error)")
-            DispatchQueue.main.async { [weak self] in
-                guard let self else { return }
-                PopupToast(popup: self.popupFactory.logOutFailed()).showAndStack()
+            let popupFactory = self.popupFactory
+            _ = await MainActor.run { [popupFactory] in
+                PopupToast(popup: popupFactory.logOutFailed()).showAndStack()
             }
         }
     }
     
     /// Retrieves user events for resource section in `UserOverview`
+    @MainActor
     func getUserEventsForSection() async {
         DispatchQueue.main.async { [weak self] in
             self?.registeredEventSectionState = .loading
@@ -179,7 +180,7 @@ final class AccountViewModel: ObservableObject {
     
     /// Retrieves user bookings for resource section in `UserOverview`
     func getUserBookingsForSection() async {
-        DispatchQueue.main.async {
+        await MainActor.run {
             self.bookingSectionState = .loading
         }
         
@@ -187,14 +188,14 @@ final class AccountViewModel: ObservableObject {
             let request = Endpoint.userBookings(schoolId: String(authSchoolId))
             let bookings: Response.KronoxUserBookings = try await kronoxManager.get(
                 request, refreshToken: userController.refreshToken?.value, sessionDetails: userController.sessionDetails?.value)
-            DispatchQueue.main.async {
+            await MainActor.run {
                 self.bookingSectionState = .loaded
                 self.userBookings = bookings
             }
             await self.checkNotificationsForUserBookings(bookings: bookings)
         } catch {
             AppLogger.shared.debug("\(error)")
-            DispatchQueue.main.async {
+            await MainActor.run{
                 self.bookingSectionState = .error
             }
         }
@@ -205,7 +206,7 @@ final class AccountViewModel: ObservableObject {
             async let bookings: () = getUserBookingsForSection()
             async let events: () = getUserEventsForSection()
 
-            await (bookings, events)
+            _ = await (bookings, events)
         }
     }
     
@@ -219,13 +220,12 @@ final class AccountViewModel: ObservableObject {
                 refreshToken: userController.refreshToken?.value,
                 sessionDetails: userController.sessionDetails?.value, body: NetworkRequest.Empty())
             self.removeUserEvent(for: eventId)
-            DispatchQueue.main.async {
+            await MainActor.run {
                 self.registeredEventSectionState = .loaded
             }
         } catch {
             AppLogger.shared.error("Failed to unregister from event: \(error)")
-            // TODO: Add toast
-            DispatchQueue.main.async {
+            await MainActor.run {
                 self.registeredEventSectionState = .error
             }
         }
@@ -251,7 +251,7 @@ final class AccountViewModel: ObservableObject {
             }
         } catch {
             AppLogger.shared.debug("\(error)")
-            DispatchQueue.main.async { [weak self] in
+            await MainActor.run { [weak self] in
                 self?.bookingSectionState = .error
             }
         }

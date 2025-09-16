@@ -38,7 +38,7 @@ final class EventDetailsSheetViewModel: ObservableObject {
         Task.detached(priority: .userInitiated) { [weak self] in
             guard let self else { return }
             let allowed = await self.userAllowedNotifications()
-            DispatchQueue.main.async {
+            await MainActor.run {
                 self.notificationsAllowed = allowed
             }
             await self.checkNotificationIsSetForEvent()
@@ -84,7 +84,7 @@ final class EventDetailsSheetViewModel: ObservableObject {
             do {
                 try await self.notificationManager
                     .scheduleNotification(for: notification, type: .event, userOffset: userOffset.rawValue)
-                DispatchQueue.main.async {
+                await MainActor.run {
                     self.isNotificationSetForEvent = .set
                 }
             } catch {
@@ -119,7 +119,7 @@ final class EventDetailsSheetViewModel: ObservableObject {
             do {
                 let result = try await self.applyNotificationForScheduleEventsInCourse(events: events)
                 if result {
-                    DispatchQueue.main.async { [weak self] in
+                    await MainActor.run { [weak self] in
                         self?.isNotificationSetForCourse = .set
                         self?.isNotificationSetForEvent = .set
                     }

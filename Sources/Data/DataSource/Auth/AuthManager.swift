@@ -86,7 +86,7 @@ class AuthManager {
             let (data, response) = try await urlSession.data(for: urlRequest)
             
             if let statusCode = (response as? HTTPURLResponse)?.statusCode, statusCode > 299 {
-                try await logOutUser(user: user.username)
+                _ = try await logOutUser(user: user.username)
                 throw AuthError.httpResponseError
             }
 
@@ -96,7 +96,7 @@ class AuthManager {
             return TumbleUser(username: user.username, name: kronoxUser.name)
         } catch {
             if networkController.connected {
-                try await logOutUser(user: user.username)
+                _ = try await logOutUser(user: user.username)
                 throw AuthError.requestError
             }
             throw AuthError.autoLoginError(user: user) /// Show latest stored user info
