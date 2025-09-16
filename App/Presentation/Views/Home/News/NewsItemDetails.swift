@@ -17,7 +17,7 @@ struct NewsItemDetails: View {
     
     var body: some View {
         ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: Spacing.small) {
+            VStack(alignment: .leading, spacing: Spacing.large) {
                 if (!newsItem.topic.isEmpty) {
                     Text(newsItem.topic.uppercased())
                         .font(.system(size: 14, weight: .semibold))
@@ -27,17 +27,19 @@ struct NewsItemDetails: View {
                         .background(Color.primary)
                         .clipShape(RoundedRectangle(cornerRadius: 100))
                 }
-                if let date = isoDateFormatter.date(from: newsItem.timestamp) {
-                    Text(localizedLongDateFormatter.string(from: date))
-                        .font(.system(size: 12, weight: .medium))
-                        .foregroundColor(.onBackground.opacity(0.8))
-                        .padding(.top, Spacing.small)
+                VStack(alignment: .leading, spacing: Spacing.extraSmall) {
+                    if let date = isoDateFormatter.date(from: newsItem.timestamp) {
+                        Text(localizedLongDateFormatter.string(from: date))
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundColor(.onBackground.opacity(0.8))
+                    }
+                    Text(newsItem.title)
+                        .font(.system(size: 26, weight: .semibold))
+                        .foregroundColor(.onBackground)
                 }
-                Text(newsItem.title)
-                    .font(.system(size: 26, weight: .semibold))
-                    .foregroundColor(.onBackground)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.bottom, Spacing.small)
             Text(newsItem.body)
                 .font(.system(size: 16, weight: .regular))
                 .foregroundColor(.onBackground)

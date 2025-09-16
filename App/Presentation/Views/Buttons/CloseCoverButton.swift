@@ -15,7 +15,7 @@ struct CloseCoverButton: View {
         if #available(iOS 26.0, *) {
             Button(action: onClick, label: {
                 Image(systemName: "xmark")
-                    .foregroundColor(.black)
+                    .foregroundColor(.onSurface)
                     .font(.system(size: 18))
             })
             .padding(Spacing.small)
