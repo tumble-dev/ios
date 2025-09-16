@@ -23,6 +23,10 @@ struct BookmarksSettings: View {
                         onDelete: onDelete
                     )
                 }
+                Text("Last synced \(parentViewModel.preferenceManager.lastUpdated.formatted(.relative(presentation: .named)))")
+                    .foregroundStyle(.secondary)
+                    .font(.system(size: 12, weight: .semibold))
+                    .padding(.top, Spacing.medium)
             }
 
         } else {

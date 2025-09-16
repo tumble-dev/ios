@@ -125,3 +125,10 @@ func convertToLocalDate(date: Date) -> Date {
         to: date) ?? date
     return localDate
 }
+
+var localizedLongDateFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateStyle = .full
+    formatter.timeStyle = .none
+    return formatter
+}()

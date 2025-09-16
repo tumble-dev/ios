@@ -44,6 +44,13 @@ struct Search: View {
                     disabled: $viewModel.schoolNotSelected
                 )
                 .blur(radius: viewModel.schoolNotSelected ? 2.5 : 0)
+                .apply {
+                    if #available(iOS 26.0, *) {
+                        $0.padding(.horizontal, Spacing.small)
+                    } else {
+                        $0.padding(0)
+                    }
+                }
             }
             .padding([.horizontal, .bottom], Spacing.medium)
             .background(Color.background)

@@ -33,8 +33,15 @@ extension View {
     
     func searchBox() -> some View {
         padding(10)
-            .background(Color.gray.opacity(0.2))
-            .cornerRadius(10)
+            .apply {
+                if #available(iOS 26.0, *) {
+                    $0.glassEffect(.regular.interactive())
+                } else {
+                    $0
+                        .background(Color.gray.opacity(0.15))
+                        .cornerRadius(10)
+                }
+            }
     }
     
     func getRect() -> CGRect {
@@ -45,5 +52,9 @@ extension View {
         font(.system(size: 16))
             .foregroundColor(.onBackground)
             .padding(.top, 5)
+    }
+    
+    func apply<V: View>(@ViewBuilder _ block: (Self) -> V) -> V {
+        block(self)
     }
 }

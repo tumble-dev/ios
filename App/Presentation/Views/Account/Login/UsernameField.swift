@@ -25,8 +25,15 @@ struct UsernameField: View {
             Spacer()
         }
         .padding(Spacing.medium)
-        .background(Color.surface)
-        .cornerRadius(15)
+        .apply {
+            if #available(iOS 26.0, *) {
+                $0.glassEffect(.regular.interactive())
+            } else {
+                $0
+                    .background(Color.surface)
+                    .cornerRadius(15)
+            }
+        }
         .padding(.bottom, Spacing.small)
     }
 }

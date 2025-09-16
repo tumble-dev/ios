@@ -22,7 +22,7 @@ struct AppParent: View {
     
     init(viewModel: ParentViewModel) {
         navigationBarAppearance.titleTextAttributes = [.font: navigationBarFont()]
-        navigationBarAppearance.titleTextAttributes = [.foregroundColor: UIColor(named: "OnSurface")!]
+        navigationBarAppearance.titleTextAttributes = [.foregroundColor: UIColor(named: "OnBackground")!]
         
         self.viewModel = viewModel
         self.homeView = Home(
@@ -35,20 +35,42 @@ struct AppParent: View {
         self.searchView = Search(viewModel: viewModel.searchViewModel).eraseToAnyView()
     }
     
+    @ViewBuilder
+    private func getView(for tab: TabbarTabType) -> some View {
+        switch tab {
+        case .home: homeView
+        case .bookmarks: bookmarkView
+        case .account: accountView
+        case .search: searchView
+        }
+    }
     
     var body: some View {
         VStack (spacing: 0) {
-            ZStack {
-                homeView
-                    .opacity(appController.selectedAppTab == .home ? 1 : 0)
-                bookmarkView
-                    .opacity(appController.selectedAppTab == .bookmarks ? 1 : 0)
-                searchView
-                    .opacity(appController.selectedAppTab == .search ? 1 : 0)
-                accountView
-                    .opacity(appController.selectedAppTab == .account ? 1 : 0)
+            if #available(iOS 26.0, *) {
+                TabView {
+                    ForEach(TabbarTabType.allValues) { tab in
+                        Tab("", systemImage: tab.rawValue) {
+                            getView(for: tab)
+                        }
+                    }
+                }
+                .onChange(of: appController.selectedAppTab) { oldValue, newValue in
+                    HapticsController.triggerHapticLight()
+                }
+            } else {
+                ZStack {
+                    homeView
+                        .opacity(appController.selectedAppTab == .home ? 1 : 0)
+                    bookmarkView
+                        .opacity(appController.selectedAppTab == .bookmarks ? 1 : 0)
+                    searchView
+                        .opacity(appController.selectedAppTab == .search ? 1 : 0)
+                    accountView
+                        .opacity(appController.selectedAppTab == .account ? 1 : 0)
+                }
+                CustomTabBar(selectedTab: $appController.selectedAppTab)
             }
-            CustomTabBar(selectedTab: $appController.selectedAppTab)
         }
         .ignoresSafeArea(.keyboard)
         .fullScreenCover(isPresented: $viewModel.userNotOnBoarded, content: {
@@ -56,7 +78,6 @@ struct AppParent: View {
         })
         .navigationViewStyle(StackNavigationViewStyle())
         .onOpenURL(perform: { url in
-            /// To be changed to user preference
             if PreferenceManager().openEventFromWidget {
                 guard let event = RealmManager().getEventByEventId(eventId: url.absoluteString) else { return }
                 AppController.shared.eventSheet = EventDetailsSheetModel(event: event)

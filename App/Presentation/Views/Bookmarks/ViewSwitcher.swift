@@ -43,7 +43,13 @@ struct ViewSwitcher: View {
         }
         .padding(5)
         .frame(width: 280)
-        .background(Color.surface)
+        .apply {
+            if #available(iOS 26.0, *) {
+                $0.glassEffect(.regular)
+            } else {
+                $0.background(Color.surface)
+            }
+        }
         .cornerRadius(30)
         .shadow(radius: 10)
     }
@@ -52,3 +58,4 @@ struct ViewSwitcher: View {
         return parentViewModel.defaultViewType == viewType
     }
 }
+

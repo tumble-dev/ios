@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 /// Bottom tab bar
-enum TabbarTabType: String {
+enum TabbarTabType: String, Identifiable {
     case home = "house"
     case bookmarks = "bookmark"
     case account = "graduationcap"
@@ -29,6 +29,8 @@ enum TabbarTabType: String {
             return NSLocalizedString("Search", comment: "")
         }
     }
+    
+    var id: String { rawValue }
 }
 
 /// Bookmarks page switcher options
@@ -62,3 +64,4 @@ enum ViewType {
     }
     
 }
+

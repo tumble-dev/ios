@@ -2230,7 +2230,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.9.1;
+				MARKETING_VERSION = 4.0.0;
 				NETWORK_SETTINGS = testing;
 				NEW_SETTING = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.tumble;
@@ -2392,7 +2392,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.9.1;
+				MARKETING_VERSION = 4.0.0;
 				NETWORK_SETTINGS = testing;
 				NEW_SETTING = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.tumble;
@@ -2437,7 +2437,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.9.1;
+				MARKETING_VERSION = 4.0.0;
 				NETWORK_SETTINGS = production;
 				NEW_SETTING = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.tumble;

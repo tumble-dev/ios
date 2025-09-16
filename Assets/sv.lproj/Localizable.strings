@@ -485,3 +485,9 @@
 "You can later switch between your accounts"="Du kan senare växla mellan dina konton";
 
 "Change account"="Byt konto";
+
+"Special event" = "Särskilt evenemang";
+
+"This event looks like it could be an exam or other important occasion! Make sure to double-check." = "Det här evenemanget verkar kunna vara en tenta eller annan viktig händelse! Se till att dubbelkolla.";
+
+"Last synced %@" = "Senast synkad %@";

@@ -481,3 +481,9 @@
 "You can later switch between your accounts"="Позже вы сможете переключаться между своими аккаунтами";
 
 "Change account"="Сменить аккаунт";
+
+"Special event" = "Особое событие";
+
+"This event looks like it could be an exam or other important occasion! Make sure to double-check." = "Похоже, это событие может быть экзаменом или другим важным мероприятием! Обязательно перепроверьте.";
+
+"Last synced %@" = "Последняя синхронизация %@";

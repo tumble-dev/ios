@@ -485,3 +485,9 @@
 "You can later switch between your accounts"="Sie können später zwischen Ihren Konten wechseln";
 
 "Change account"="Konto wechseln";
+
+"Special event" = "Besonderes Ereignis";
+
+"This event looks like it could be an exam or other important occasion! Make sure to double-check." = "Dieses Ereignis könnte eine Prüfung oder ein anderer wichtiger Termin sein! Bitte überprüfen Sie es zur Sicherheit.";
+
+"Last synced %@" = "Zuletzt synchronisiert %@";

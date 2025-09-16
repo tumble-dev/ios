@@ -15,6 +15,13 @@ struct EventDetailsBody: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.medium) {
+            if (event.isSpecial) {
+                DetailsBuilder(title: NSLocalizedString("Special event", comment: ""), image: "star.fill") {
+                    Text(NSLocalizedString("This event looks like it could be an exam or other important occasion! Make sure to double-check.", comment: ""))
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundColor(.primary)
+                }
+            }
             DetailsBuilder(title: NSLocalizedString("Course", comment: ""), image: "text.book.closed") {
                 Text(event.course?.englishName ?? "")
                     .font(.system(size: 16))

@@ -66,7 +66,6 @@ struct SmallEvent: View {
         }
         .frame(alignment: .leading)
         .frame(maxWidth: .infinity)
-        .background(Color.surface)
     }
 }
 

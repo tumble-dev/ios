@@ -60,24 +60,17 @@ struct Settings: View {
             }
             SettingsListGroup {
                 SettingsExternalButton(
-                    title: NSLocalizedString("Tumble on GitHub", comment: ""),
-                    leadingCustomImage: "github-logo",
-                    leadingIconBackgroundColor: .white,
-                    action: UIApplication.shared.openGitHub
-                )
-                Divider()
-                SettingsExternalButton(
                     title: NSLocalizedString("Tumble on Discord", comment: ""),
                     leadingCustomImage: "discord-logo",
                     leadingIconBackgroundColor: .blue,
                     action: UIApplication.shared.openDiscord
                 )
                 Divider()
-                SettingsNavigationButton(
-                    title: NSLocalizedString("Contributors", comment: ""),
-                    leadingIcon: "person.2.fill",
-                    leadingIconBackgroundColor: .purple,
-                    destination: AnyView(Contributors(viewModel: viewModel))
+                SettingsExternalButton(
+                    title: NSLocalizedString("Buy me a Coffee", comment: ""),
+                    leadingIcon: "cup.and.saucer.fill",
+                    leadingIconBackgroundColor: .yellow,
+                    action: UIApplication.shared.openBuyMeACoffee
                 )
             }
             if let appVersion = appVersion {

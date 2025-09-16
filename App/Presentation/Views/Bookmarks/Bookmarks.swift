@@ -65,6 +65,7 @@ struct Bookmarks: View {
                                     viewType = newValue
                                 }
                             }
+                            .ignoresSafeArea(edges: .bottom)
                             
                             HStack(alignment: .center, spacing: 12.5) {
                                 ViewSwitcher(parentViewModel: viewModel)

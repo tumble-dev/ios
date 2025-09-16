@@ -42,10 +42,16 @@ struct BookmarkWeekView: View {
             VStack {
                 CustomPageControlView(numberOfPages: weekStartDates.count, currentPage: $currentPage)
                     .frame(width: 100, height: 20)
-                    .padding(.bottom, 55 + Spacing.medium)
+                    .apply {
+                        if #available(iOS 26.0, *) {
+                            $0.padding(.bottom, 130 + Spacing.medium)
+                        } else {
+                            $0.padding(.bottom, 55 + Spacing.medium)
+                        }
+                    }
                     .shadow(color: .black.opacity(0.1), radius: 1)
             }
-            .offset(y: viewModel.viewSwitcherVisible ? 0: 150)
+            .offset(y: viewModel.viewSwitcherVisible ? 0: 170)
             .scaleEffect(viewModel.viewSwitcherVisible ? 1 : 0.8, anchor: .bottom)
             .opacity(viewModel.viewSwitcherVisible ? 1 : 0.5)
         }

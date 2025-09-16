@@ -53,7 +53,13 @@ struct WeekPage: View {
             }
             .frame(maxWidth: .infinity)
             .padding([.top, .horizontal], Spacing.medium)
-            .padding(.bottom, Spacing.extraLarge)
+            .apply {
+                if #available(iOS 26.0, *) {
+                    $0.padding(.bottom, 75)
+                } else {
+                    $0.padding(.bottom, Spacing.extraLarge)
+                }
+            }
         }
     }
 }

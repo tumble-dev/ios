@@ -30,19 +30,23 @@ struct Account: View {
             .if(viewModel.authStatus == .authorized) { view in
                 view.navigationTitle(NSLocalizedString("Account", comment: ""))
             }
-            .navigationBarItems(trailing: HStack {
-                if viewModel.authStatus == .authorized {
-                    SignOutButton(showConfirmationDialog: {
-                        isSigningOut = true
-                    })
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    if viewModel.authStatus == .authorized {
+                        SignOutButton(showConfirmationDialog: {
+                            isSigningOut = true
+                        })
+                        .confirmationDialog(LocalizedStringKey("Are you sure you want to log out of your account?"), isPresented: $isSigningOut, actions: {
+                            Button(LocalizedStringKey("Yes"), action: logOut)
+                        }, message: {
+                            Text(LocalizedStringKey("Are you sure you want to log out of your account?"))
+                        })
+                    }
                 }
-                SettingsButton()
-            })
-            .confirmationDialog(LocalizedStringKey("Are you sure you want to log out of your account?"), isPresented: $isSigningOut, actions: {
-                Button(LocalizedStringKey("Yes"), action: logOut)
-            }, message: {
-                Text(LocalizedStringKey("Are you sure you want to log out of your account?"))
-            })
+                ToolbarItem(placement: .primaryAction) {
+                    SettingsButton()
+                }
+            }
             
         }
         .tag(TabbarTabType.account)
