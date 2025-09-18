@@ -21,12 +21,6 @@ enum BookmarksScreenViewModelAction: Equatable {
 }
 
 struct BookmarksScreenViewState: BindableState {
-    var window: UIWindow?
-    var currentTab: Int = 0
-    var animateButton: Bool = true
-    var buttonOffset: CGFloat = 900
-    var offset: CGFloat = .zero
-    var shapeOffset: CGFloat = .zero
     var dataState: BookmarksScreenDataState = .loading
 }
 

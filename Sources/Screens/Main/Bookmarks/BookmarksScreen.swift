@@ -9,7 +9,7 @@ import SwiftUI
 import Combine
 
 struct BookmarksScreen: View {
-    @ObservedObject var context: BookmarksViewModel.Context
+    @ObservedObject var context: BookmarksScreenViewModel.Context
     @Namespace private var animationNamespace
     
     var body: some View {
@@ -60,6 +60,9 @@ struct BookmarksScreen: View {
                             EventCard(event: event)
                                 .padding(.horizontal, 16)
                                 .padding(.top, 12)
+                                .onTapGesture {
+                                    context.send(viewAction: .openEvent(eventId: event.id))
+                                }
                         }
                     }
                 }
@@ -91,7 +94,7 @@ struct BookmarksScreen: View {
                 .font(.system(size: 20, weight: .semibold))
                 .foregroundColor(.white)
                 .frame(width: 56, height: 56)
-                .background(Color.accentColor)
+                .background(Color.primary)
                 .clipShape(Circle())
                 .shadow(color: Color.black.opacity(0.2), radius: 4, x: 0, y: 2)
         }

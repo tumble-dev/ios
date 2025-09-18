@@ -7,9 +7,9 @@
 
 import Combine
 
-typealias BookmarksViewModelType = StateStoreViewModel<BookmarksScreenViewState, BookmarksScreenViewAction>
+typealias BookmarksScreenViewModelType = StateStoreViewModel<BookmarksScreenViewState, BookmarksScreenViewAction>
 
-class BookmarksViewModel: BookmarksViewModelType, ObservableObject {
+class BookmarksScreenViewModel: BookmarksScreenViewModelType, ObservableObject {
     let appSettings: AppSettings
     let eventStorageService: EventStorageService
     

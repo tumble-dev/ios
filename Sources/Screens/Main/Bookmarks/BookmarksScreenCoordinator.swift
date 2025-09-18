@@ -20,7 +20,7 @@ enum BookmarksScreenCoordinatorAction {
 }
 
 final class BookmarksScreenCoordinator: CoordinatorProtocol {
-    private var viewModel: BookmarksViewModel
+    private var viewModel: BookmarksScreenViewModel
     private let actionsSubject: PassthroughSubject<BookmarksScreenCoordinatorAction, Never> = .init()
     private var cancellables = Set<AnyCancellable>()
     
@@ -29,7 +29,7 @@ final class BookmarksScreenCoordinator: CoordinatorProtocol {
     }
     
     init(parameters: BookmarksScreenCoordinatorParameters) {
-        viewModel = BookmarksViewModel(
+        viewModel = BookmarksScreenViewModel(
             appSettings: parameters.appSettings,
             eventStorageService: parameters.eventStorageService
         )

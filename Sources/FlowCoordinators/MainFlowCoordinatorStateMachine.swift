@@ -30,7 +30,7 @@ class MainFlowCoordinatorStateMachine {
         /// Showing the search screen
         case searchScreen
         
-        /// Showing the search quickview screen
+        /// Showing the search quickview screenb
         case searchQuickview(programmeId: String)
     }
     
@@ -45,7 +45,7 @@ class MainFlowCoordinatorStateMachine {
         
         case showEventDetails(eventId: String)
         
-        case dismissEventDetails
+        case dismissedEventDetails
         
         // MARK: - Sheets & Fullscreen Covers
         
@@ -94,7 +94,8 @@ class MainFlowCoordinatorStateMachine {
             switch (fromState, event) {
             case (.bookmarks, .showEventDetails(let eventId)):
                 return .eventDetailsScreen(eventId: eventId)
-            case (.bookmarks, .dismissEventDetails):
+
+            case (.bookmarks, .dismissedEventDetails):
                 return .bookmarks
 
             case (.bookmarks, .showSettingsScreen):
@@ -112,9 +113,12 @@ class MainFlowCoordinatorStateMachine {
             case (.accountScreen, .dismissedAccountScreen):
                 return .bookmarks
                 
+            case (.eventDetailsScreen, .dismissedEventDetails):
+                return .bookmarks
+                
             case (.searchScreen, .showSearchQuickView(let programmeId)):
                 return .searchQuickview(programmeId: programmeId)
-            case (.searchQuickview(let programmeId), .dismissedSearchQuickview):
+            case (.searchQuickview, .dismissedSearchQuickview):
                 return .searchScreen
 
             default:

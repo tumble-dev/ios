@@ -135,7 +135,7 @@ struct InfoView: View {
     private func buttonBackgroundColor(for style: InfoViewActionStyle) -> Color {
         switch style {
         case .primary:
-            return .accentColor
+            return .primary
         case .secondary:
             return Color(.systemGray5)
         case .destructive:

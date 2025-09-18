@@ -28,6 +28,7 @@ class MainFlowCoordinator: FlowCoordinatorProtocol {
     private let selectedBookmarkEventSubjectId = CurrentValueSubject<String?, Never>(nil)
     
     private var searchScreenCoordinator: SearchScreenCoordinator?
+    private var eventDetailsScreenCoordinator: EventDetailsScreenCoordinator?
     private var cancellables = Set<AnyCancellable>()
     
     private let appMediator: AppMediatorProtocol
@@ -158,10 +159,21 @@ private extension MainFlowCoordinator {
                 presentSettingsScreen()
             /// Settings -> Bookmarks
             case (.settingsScreen, .dismissedSettingsScreen, .bookmarks):
-                presentBookmarksScreen()
+                break
             /// Account -> Bookmarks
             case (.accountScreen, .dismissedAccountScreen, .bookmarks):
-                presentBookmarksScreen()
+                break
+            
+            case (.searchScreen, .dismissedSearchScreen, .bookmarks):
+                break
+            case (.bookmarks, .showSearchScreen, .searchScreen):
+                presentSearchScreen()
+                
+            case (.eventDetailsScreen, .dismissedEventDetails, .bookmarks):
+                break
+                
+            case (.bookmarks, .showEventDetails(let eventId), .eventDetailsScreen):
+                presentEventDetailsSreen(eventId: eventId)
                 
             default:
                 fatalError("Unknown transition: \(context)")
@@ -204,11 +216,11 @@ private extension MainFlowCoordinator {
                 guard let self else { return }
                 switch action {
                 case .presentBookmarkedEventDetails(let eventId):
-                    presentEventDetailsSreen(eventId: eventId)
+                    stateMachine.processEvent(.showEventDetails(eventId: eventId))
                 case .presentSettingsScreen:
-                    presentSettingsScreen()
+                    stateMachine.processEvent(.showSettingsScreen)
                 case .presentSearchScreen:
-                    presentSearchScreen()
+                    stateMachine.processEvent(.showSearchScreen)
                 }
             }
             .store(in: &cancellables)
@@ -217,12 +229,38 @@ private extension MainFlowCoordinator {
         navigationRootCoordinator.setRootCoordinator(navigationSplitCoordinator)
     }
     
-    private func presentEventDetailsSreen(eventId: String) { }
-    
-    private func dismissEventDetailsScreen() { }
+    private func presentEventDetailsSreen(eventId: String) {
+        
+        let eventDetailsStackCoordinator = NavigationStackCoordinator()
+        
+        let parameters = EventDetailsScreenCoordinatorParameters(
+            eventId: eventId,
+            appSettings: appSettings,
+            eventStorageService: eventStorageService,
+            notificationManager: notificationManager
+        )
+        
+        let coordinator = EventDetailsScreenCoordinator(parameters: parameters)
+        eventDetailsScreenCoordinator = coordinator
+        
+        coordinator.actions
+            .sink { [weak self] actions in
+                guard let self else { return }
+                switch actions {
+                case .dismiss:
+                    navigationSplitCoordinator.setSheetCoordinator(nil)
+                }
+            }
+            .store(in: &cancellables)
+        
+        eventDetailsStackCoordinator.setRootCoordinator(coordinator)
+        navigationSplitCoordinator.setSheetCoordinator(eventDetailsStackCoordinator, animated: true) { [weak self] in
+            self?.stateMachine.processEvent(.dismissedEventDetails)
+        }
+    }
 
     private func presentSearchScreen() {
-        
+                
         let searchProgrammeStackCoordinator = NavigationStackCoordinator()
         
         let parameters = SearchScreenCoordinatorParameters(
