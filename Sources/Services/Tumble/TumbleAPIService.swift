@@ -1,0 +1,404 @@
+//
+//  TumbleAPIService.swift
+//  Tumble
+//
+//  Created by Adis Veletanlic on 2025-09-17.
+//
+
+import Foundation
+
+// MARK: - Network Swift.Error
+enum NetworkError: Swift.Error, LocalizedError {
+    case invalidURL
+    case noData
+    case decodingError(Swift.Error)
+    case encodingError(Swift.Error)
+    case serverError(Int, Data?)
+    case unauthorized
+    case forbidden
+    case notFound
+    case timeout
+    case noInternetConnection
+    case unknown(Swift.Error)
+    
+    var errorDescription: String? {
+        switch self {
+        case .invalidURL:
+            return "Invalid URL"
+        case .noData:
+            return "No data received"
+        case .decodingError(let error):
+            return "Failed to decode response: \(error.localizedDescription)"
+        case .encodingError(let error):
+            return "Failed to encode request: \(error.localizedDescription)"
+        case .serverError(let code, _):
+            return "Server error (HTTP \(code))"
+        case .unauthorized:
+            return "Unauthorized - Please login again"
+        case .forbidden:
+            return "Access forbidden"
+        case .notFound:
+            return "Resource not found"
+        case .timeout:
+            return "Request timeout"
+        case .noInternetConnection:
+            return "No internet connection"
+        case .unknown(let error):
+            return "Unknown error: \(error.localizedDescription)"
+        }
+    }
+}
+
+// MARK: - API Result
+typealias APIResult<T> = Result<T, NetworkError>
+
+// MARK: - Request Configuration
+struct RequestConfig {
+    let timeout: TimeInterval
+    let retryCount: Int
+    let retryDelay: TimeInterval
+    
+    static let `default` = RequestConfig(
+        timeout: 30,
+        retryCount: 3,
+        retryDelay: 1.0
+    )
+}
+
+// MARK: - API Response Wrapper
+struct APIResponse<T: Codable>: Codable {
+    let data: T?
+    let message: String?
+    let success: Bool
+    let timestamp: Date?
+    
+    enum CodingKeys: String, CodingKey {
+        case data, message, success, timestamp
+    }
+}
+
+// MARK: - Empty Response for endpoints that return no data
+struct EmptyResponse: Codable {
+    let success: Bool
+    let message: String?
+    
+    init() {
+        self.success = true
+        self.message = nil
+    }
+}
+
+// MARK: - Tumble API Service
+class TumbleAPIService {
+    
+    private let session: URLSession
+    private let decoder: JSONDecoder
+    private let encoder: JSONEncoder
+    private let config: RequestConfig
+    
+    init(config: RequestConfig = .default) {
+        self.config = config
+        
+        let sessionConfig = URLSessionConfiguration.default
+        sessionConfig.timeoutIntervalForRequest = config.timeout
+        sessionConfig.timeoutIntervalForResource = config.timeout * 2
+        sessionConfig.waitsForConnectivity = true
+        self.session = URLSession(configuration: sessionConfig)
+        
+        self.decoder = JSONDecoder()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+        decoder.dateDecodingStrategy = .formatted(dateFormatter)
+
+        self.encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .formatted(dateFormatter)
+    }
+    
+    // MARK: - Generic Request Methods
+    
+    /// Performs a GET request
+    func get<T: Codable>(
+        _ endpoint: TumbleEndpoint,
+        responseType: T.Type
+    ) async throws -> T {
+        return try await performRequest(endpoint, responseType: responseType)
+    }
+    
+    /// Performs a POST request with body
+    func post<T: Codable, U: Codable>(
+        _ endpoint: TumbleEndpoint,
+        body: U,
+        responseType: T.Type
+    ) async throws -> T {
+        return try await performRequestWithBody(endpoint, body: body, responseType: responseType)
+    }
+    
+    /// Performs a POST request without body
+    func post<T: Codable>(
+        _ endpoint: TumbleEndpoint,
+        responseType: T.Type
+    ) async throws -> T {
+        return try await performRequest(endpoint, responseType: responseType)
+    }
+    
+    /// Performs a PUT request with body
+    func put<T: Codable, U: Codable>(
+        _ endpoint: TumbleEndpoint,
+        body: U,
+        responseType: T.Type
+    ) async throws -> T {
+        return try await performRequestWithBody(endpoint, body: body, responseType: responseType)
+    }
+    
+    /// Performs a PUT request without body
+    func put<T: Codable>(
+        _ endpoint: TumbleEndpoint,
+        responseType: T.Type
+    ) async throws -> T {
+        return try await performRequest(endpoint, responseType: responseType)
+    }
+    
+    /// Performs a request without expecting a response body (returns success status)
+    func performVoidRequest(_ endpoint: TumbleEndpoint) async throws {
+        let _: EmptyResponse = try await performRequest(endpoint, responseType: EmptyResponse.self)
+    }
+    
+    // MARK: - Private Implementation
+    
+    private func performRequest<T: Codable>(
+        _ endpoint: TumbleEndpoint,
+        responseType: T.Type,
+        retryCount: Int = 0
+    ) async throws -> T {
+        do {
+            let request = endpoint.urlRequest()
+            AppLogger.shared.info("API Request: \(request.httpMethod ?? "GET") \(request.url?.absoluteString ?? "unknown")")
+            
+            // Log headers for debugging
+            AppLogger.shared.info("Request Headers: \(request.allHTTPHeaderFields ?? [:])")
+            
+            let (data, response) = try await session.data(for: request)
+            
+            // Log response details
+            if let httpResponse = response as? HTTPURLResponse {
+                AppLogger.shared.info("Response: HTTP \(httpResponse.statusCode)")
+                AppLogger.shared.info("Response Headers: \(httpResponse.allHeaderFields)")
+            }
+            
+            return try handleResponse(data: data, response: response, responseType: responseType)
+        } catch {
+            AppLogger.shared.error("Request failed: \(error)")
+            return try await handleRequestError(error, endpoint: endpoint, responseType: responseType, retryCount: retryCount)
+        }
+    }
+    
+    private func performRequestWithBody<T: Codable, U: Codable>(
+        _ endpoint: TumbleEndpoint,
+        body: U,
+        responseType: T.Type,
+        retryCount: Int = 0
+    ) async throws -> T {
+        do {
+            var request = endpoint.urlRequest()
+            
+            do {
+                request.httpBody = try encoder.encode(body)
+            } catch {
+                throw NetworkError.encodingError(error)
+            }
+            
+            let (data, response) = try await session.data(for: request)
+            return try handleResponse(data: data, response: response, responseType: responseType)
+        } catch {
+            return try await handleRequestErrorWithBody(error, endpoint: endpoint, body: body, responseType: responseType, retryCount: retryCount)
+        }
+    }
+    
+    private struct APIErrorResponse: Codable {
+        let error: String
+    }
+    
+    private func handleResponse<T: Codable>(
+        data: Data,
+        response: URLResponse,
+        responseType: T.Type
+    ) throws -> T {
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw NetworkError.unknown(URLError(.badServerResponse))
+        }
+        
+        switch httpResponse.statusCode {
+        case 200...299:
+            break
+        case 400, 500...599:
+            if let apiError = try? decoder.decode(APIErrorResponse.self, from: data) {
+                AppLogger.shared.error("API Error (\(httpResponse.statusCode)): \(apiError.error)")
+                throw NetworkError.serverError(httpResponse.statusCode, data)
+            } else {
+                AppLogger.shared.error("API Error (\(httpResponse.statusCode)): Unable to parse error")
+                throw NetworkError.serverError(httpResponse.statusCode, data)
+            }
+        case 401:
+            AppLogger.shared.error("Unauthorized (401): Invalid or expired credentials")
+            throw NetworkError.unauthorized
+        case 403:
+            AppLogger.shared.error("Forbidden (403): Access denied")
+            throw NetworkError.forbidden
+        case 404:
+            AppLogger.shared.error("Not Found (404): Resource missing")
+            throw NetworkError.notFound
+        case 408:
+            AppLogger.shared.error("Timeout (408): Request timed out")
+            throw NetworkError.timeout
+        default:
+            if let apiError = try? decoder.decode(APIErrorResponse.self, from: data) {
+                AppLogger.shared.error("API Error (\(httpResponse.statusCode)): \(apiError.error)")
+                throw NetworkError.serverError(httpResponse.statusCode, data)
+            } else {
+                AppLogger.shared.error("API Error (\(httpResponse.statusCode)): Unknown error")
+                throw NetworkError.serverError(httpResponse.statusCode, data)
+            }
+        }
+        
+        // Handle empty responses for void operations
+        if responseType == EmptyResponse.self && data.isEmpty {
+            return EmptyResponse() as! T
+        }
+        
+        do {
+            return try decoder.decode(responseType, from: data)
+        } catch {
+            // Try to decode as wrapped response first
+            if let wrappedResponse = try? decoder.decode(APIResponse<T>.self, from: data),
+               let actualData = wrappedResponse.data {
+                return actualData
+            }
+            
+            throw NetworkError.decodingError(error)
+        }
+    }
+
+    
+    private func handleRequestError<T: Codable>(
+        _ error: Swift.Error,
+        endpoint: TumbleEndpoint,
+        responseType: T.Type,
+        retryCount: Int
+    ) async throws -> T {
+        let networkError = mapError(error)
+        
+        if shouldRetry(error: networkError) && retryCount < config.retryCount {
+            try await Task.sleep(nanoseconds: UInt64(config.retryDelay * 1_000_000_000))
+            return try await performRequest(endpoint, responseType: responseType, retryCount: retryCount + 1)
+        }
+        
+        throw networkError
+    }
+    
+    private func handleRequestErrorWithBody<T: Codable, U: Codable>(
+        _ error: Swift.Error,
+        endpoint: TumbleEndpoint,
+        body: U,
+        responseType: T.Type,
+        retryCount: Int
+    ) async throws -> T {
+        let networkError = mapError(error)
+        
+        if shouldRetry(error: networkError) && retryCount < config.retryCount {
+            try await Task.sleep(nanoseconds: UInt64(config.retryDelay * 1_000_000_000))
+            return try await performRequestWithBody(endpoint, body: body, responseType: responseType, retryCount: retryCount + 1)
+        }
+        
+        throw networkError
+    }
+    
+    private func mapError(_ error: Swift.Error) -> NetworkError {
+        if let networkError = error as? NetworkError {
+            return networkError
+        }
+        
+        if let urlError = error as? URLError {
+            switch urlError.code {
+            case .notConnectedToInternet, .networkConnectionLost:
+                return .noInternetConnection
+            case .timedOut:
+                return .timeout
+            default:
+                return .unknown(error)
+            }
+        }
+        
+        return .unknown(error)
+    }
+    
+    private func shouldRetry(error: NetworkError) -> Bool {
+        switch error {
+        case .timeout, .noInternetConnection:
+            return true
+        case .serverError(let code, _):
+            return code >= 500 // Retry server errors
+        default:
+            return false
+        }
+    }
+}
+
+// MARK: - Convenience Extensions for Common Patterns
+
+extension TumbleAPIService {
+    
+    // MARK: - News
+    func getNews() async throws -> [Response.NewsItem] {
+        return try await get(.news, responseType: [Response.NewsItem].self)
+    }
+    
+    // MARK: - Authentication
+    func login(credentials: Response.LoginRequest, school: String) async throws -> TumbleUser {
+        return try await post(.loginKronox(school: school), body: credentials, responseType: TumbleUser.self)
+    }
+    
+    // MARK: - Schedule
+    func getScheduleEvents(school: String, scheduleIds: [String]) async throws -> Response.EventsResponse {
+        return try await get(.scheduleEvents(school: school, scheduleIds: scheduleIds), responseType: Response.EventsResponse.self)
+    }
+    
+    // MARK: - Programme Search
+    func searchProgrammes(query: String, school: String) async throws -> Response.ProgrammeSearchResponse {
+        return try await get(.searchProgrammes(query: query, school: school), responseType: Response.ProgrammeSearchResponse.self)
+    }
+    
+    // MARK: - Resources
+    func getAllResources(school: String, date: String? = nil) async throws -> [Response.Resource] {
+        return try await get(.allResources(school: school, date: date), responseType: [Response.Resource].self)
+    }
+    
+    func bookResource(resourceId: String, school: String, booking: Response.BookingRequest) async throws -> Response.Booking {
+        return try await post(.bookResource(resourceId: resourceId, school: school), body: booking, responseType: Response.Booking.self)
+    }
+    
+    func getUserBookings(school: String) async throws -> [Response.Booking] {
+        return try await get(.userBookings(school: school), responseType: [Response.Booking].self)
+    }
+    
+    func unbookResource(bookingId: String, school: String) async throws {
+        try await performVoidRequest(.unbookResource(bookingId: bookingId, school: school))
+    }
+    
+    // MARK: - Events
+    func getRegisteredEvents(school: String) async throws -> [Response.UserEvent] {
+        return try await get(.registeredEvents(school: school), responseType: [Response.UserEvent].self)
+    }
+    
+    func getAvailableEvents(school: String) async throws -> [Response.UserEvent] {
+        return try await get(.availableEvents(school: school), responseType: [Response.UserEvent].self)
+    }
+    
+    func registerForEvent(eventId: String, school: String) async throws {
+        try await performVoidRequest(.registerEvent(eventId: eventId, school: school))
+    }
+    
+    func unregisterFromEvent(eventId: String, school: String) async throws {
+        try await performVoidRequest(.unregisterEvent(eventId: eventId, school: school))
+    }
+}

@@ -11,6 +11,7 @@ import RealmSwift
 class Event: Object {
     @Persisted(primaryKey: true) var _id: ObjectId
     @Persisted var eventId: String
+    @Persisted var scheduleId: String
     @Persisted var title: String
     @Persisted var course: Course? = nil
     @Persisted var from: String

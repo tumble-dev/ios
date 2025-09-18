@@ -10,11 +10,37 @@ import FirebaseMessaging
 import Foundation
 import SwiftUI
 import UIKit
+import Combine
 
-// This AppDelegate does not take into consideration devices
-// that are below iOS 10, delegates are set accordingly.
+enum AppDelegateCallback {
+    case registeredNotifications(deviceToken: Data)
+    case failedToRegisteredNotifications(error: Error)
+}
+
 class AppDelegate: NSObject, UIApplicationDelegate {
     let gcmMessageIDKey = "gcm.message_id"
+    let callbacks = PassthroughSubject<AppDelegateCallback, Never>()
+    var orientationLock = UIInterfaceOrientationMask.all
+    
+    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+        AppLogger.shared.info("[AppDelegate] Configuring UIScene")
+        // Add a SceneDelegate to the SwiftUI scene so that we can connect up the WindowManager.
+        let configuration = UISceneConfiguration(name: nil, sessionRole: connectingSceneSession.role)
+        configuration.delegateClass = SceneDelegate.self
+        return configuration
+    }
+    
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        callbacks.send(.registeredNotifications(deviceToken: deviceToken))
+    }
+
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        callbacks.send(.failedToRegisteredNotifications(error: error))
+    }
+
+    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+        orientationLock
+    }
 
     func application(
         _ application: UIApplication,
@@ -22,17 +48,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     ) -> Bool {
         FirebaseApp.configure()
         Messaging.messaging().delegate = self
-        UNUserNotificationCenter.current().delegate = self
-
-        // Request permission to send remote notifications
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, _ in
-            if granted {
-                DispatchQueue.main.async {
-                    UIApplication.shared.registerForRemoteNotifications()
-                }
-            }
-        }
-            
         return true
     }
 
@@ -61,46 +76,5 @@ extension AppDelegate: MessagingDelegate {
                 }
             }
         }
-    }
-}
-
-extension AppDelegate: UNUserNotificationCenterDelegate {
-    func userNotificationCenter(
-        _ center: UNUserNotificationCenter,
-        willPresent notification: UNNotification,
-        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
-    ) {
-        completionHandler([.banner, .badge, .list, .sound])
-    }
-
-    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        AppLogger.shared.debug("Registered for remote notifications for the current device token: \(deviceToken)")
-    }
-
-    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        AppLogger.shared.error("Failed to register for remote notifications: \(error)")
-    }
-    
-    func userNotificationCenter(
-        _ center: UNUserNotificationCenter,
-        didReceive response: UNNotificationResponse,
-        withCompletionHandler completionHandler: @escaping () -> Void
-    ) {
-        let userInfo = response.notification.request.content.userInfo
-
-        /// Only modify application state if notification comes from
-        /// local Event notification
-        if let userInfoAsDict = userInfo[NotificationContentKey.event.rawValue] as? [String: Any] {
-            if let event = userInfoAsDict.toEvent() {
-                // Message successfully parsed as Event, which means it was a local notification
-                NotificationCenter.default.post(name: .eventReceived, object: event)
-            }
-        }
-        
-        if let messageID = userInfo[gcmMessageIDKey] {
-            AppLogger.shared.debug("Message ID from userNotificationCenter didReceive: \(messageID)")
-        }
-
-        completionHandler()
     }
 }

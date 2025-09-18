@@ -1,5 +1,5 @@
 {
-  "originHash" : "6870f2e5332eca64df9d946df18ab90a6389e0fe75a48088f9e005ac5659b5a7",
+  "originHash" : "ba38c5c9caf9f021eee9935b847a59362a3346c24f9592420ed2b21492bdadf7",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -101,6 +101,15 @@
       }
     },
     {
+      "identity" : "keychainaccess",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kishikawakatsumi/KeychainAccess.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "e0c7eebc5a4465a3c4680764f26b7a61f567cdaf"
+      }
+    },
+    {
       "identity" : "leveldb",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/firebase/leveldb.git",
@@ -170,6 +179,15 @@
       "state" : {
         "revision" : "edb6ed4919f7756157fe02f2552b7e3850a538e5",
         "version" : "1.28.1"
+      }
+    },
+    {
+      "identity" : "swiftstate",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ReactKit/SwiftState.git",
+      "state" : {
+        "revision" : "887e75b96da6be36a062e1b0ef832c32a803348b",
+        "version" : "6.0.1"
       }
     },
     {

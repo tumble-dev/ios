@@ -6,7 +6,7 @@ enum Response {
     
     // MARK: - Models
     
-    struct Event: Codable {
+    struct Event: Codable, Equatable {
         let id: String
         let scheduleId: String
         let title: String
@@ -33,8 +33,29 @@ enum Response {
             case isSpecial = "is_special"
         }
     }
+    
+    struct EventsResponse: Codable, Equatable {
+        let count: Int
+        let events: [Response.Event]
+    }
+    
+    struct NewsItem: Codable {
+        let topic: String
+        let title: String
+        let body: String
+        let longBody: String
+        let timestamp: Date
+        
+        private enum CodingKeys: String, CodingKey {
+            case topic
+            case title
+            case body
+            case longBody = "long_body"
+            case timestamp
+        }
+    }
 
-    struct Teacher: Codable {
+    struct Teacher: Codable, Equatable {
         let id: String
         let firstName: String
         let lastName: String
@@ -46,7 +67,7 @@ enum Response {
         }
     }
 
-    struct Location: Codable {
+    struct Location: Codable, Equatable {
         let id: String
         let name: String
         let building: String
@@ -60,6 +81,11 @@ enum Response {
             case floor
             case maxSeats = "max_seats"
         }
+    }
+    
+    struct ProgrammeSearchResponse: Codable {
+        let count: Int
+        let programmes: [Response.Programme]
     }
 
     struct Programme: Codable {
@@ -188,12 +214,12 @@ enum Response {
     struct User: Codable {
         let name: String
         let username: String
-        let sessionId: String
+        let sessionToken: String
         
         private enum CodingKeys: String, CodingKey {
             case name
             case username
-            case sessionId = "session_id"
+            case sessionToken = "session_token"
         }
     }
 
@@ -204,7 +230,7 @@ enum Response {
         let end: Date
     }
 
-    struct EventsResponse: Codable {
+    struct UserEventsResponse: Codable {
         let registered: [AvailableUserEvent]
         let unregistered: [AvailableUserEvent]
         let upcoming: [UpcomingUserEvent]
