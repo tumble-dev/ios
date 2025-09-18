@@ -149,7 +149,7 @@ struct SearchResults: View {
     
     var body: some View {
         ScrollView() {
-            LazyVStack(spacing: 15) {
+            LazyVStack(spacing: 25) {
                 ForEach(searchResults, id: \.id) { programme in
                     ProgrammeCard(
                         programme: programme,
