@@ -9,6 +9,7 @@ enum SaveButtonState {
     case saved
     case notSaved
     case loading
+    case disabled
 }
 
 enum QuickViewScreenViewAction: Equatable {

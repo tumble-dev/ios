@@ -17,7 +17,6 @@ struct SearchScreen: View {
         VStack(spacing: 0) {
             // Content
             contentView
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
             
             // Search field at bottom
             SearchField(
@@ -149,28 +148,18 @@ struct SearchResults: View {
     let universityImage: Image?
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            HStack {
-                Text("\(numberOfSearchResults) results")
-                    .font(.headline)
-                    .foregroundColor(.primary)
-                Spacer()
-            }
-            .padding(.horizontal)
-            .padding(.bottom, 16)
-            
-            ScrollView(showsIndicators: false) {
-                LazyVStack(spacing: 12) {
-                    ForEach(searchResults, id: \.id) { programme in
-                        ProgrammeCard(
-                            programme: programme,
-                            universityImage: universityImage,
-                            onOpenProgramme: onOpenProgramme
-                        )
-                        .padding(.horizontal)
-                    }
+        ScrollView() {
+            LazyVStack(spacing: 15) {
+                ForEach(searchResults, id: \.id) { programme in
+                    ProgrammeCard(
+                        programme: programme,
+                        universityImage: universityImage,
+                        onOpenProgramme: onOpenProgramme
+                    )
+                    .padding(.horizontal)
                 }
             }
+            .padding(.top, 20)
         }
     }
 }
@@ -180,38 +169,61 @@ struct ProgrammeCard: View {
     let universityImage: Image?
     let onOpenProgramme: (String, String) -> Void
     
+    @State private var isPressed = false
+    
     var body: some View {
         Button(action: {
             onOpenProgramme(programme.id, programme.subtitle)
         }) {
-            HStack {
+            HStack(spacing: 12) {
+                // Programme Details
                 VStack(alignment: .leading, spacing: 4) {
                     Text(programme.title)
-                        .font(.headline)
-                        .foregroundColor(.primary)
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundColor(.onSurface)
                         .multilineTextAlignment(.leading)
+                        .lineLimit(2)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
-                    HStack {
-                        if let universityImage = universityImage {
-                            universityImage
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 22, height: 22)
-                                .cornerRadius(2.5)
-                        }
-                        Text(programme.subtitle.trimmingCharacters(in: .whitespaces))
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
+                    Text(programme.subtitle.trimmingCharacters(in: .whitespaces))
+                        .font(.system(size: 14))
+                        .foregroundColor(.onSurface)
+                        .lineLimit(1)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    
+                    // Show programme ID if it's not blank and not contained in title
+                    if !programme.id.isEmpty &&
+                       !programme.title.localizedCaseInsensitiveContains(programme.id) {
+                        Text(programme.id)
+                            .font(.system(size: 12))
+                            .foregroundColor(.onSurface.opacity(0.9))
+                            .lineLimit(1)
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
-                Spacer()
+                
+                // Chevron Icon
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundColor(.onSurface.opacity(0.6))
+                    .frame(width: 20, height: 20)
             }
-            .padding()
-            .background(Color(.systemBackground))
-            .cornerRadius(8)
+            .padding(16)
+            .frame(maxWidth: .infinity)
+            .background(Color.secondary)
+            .cornerRadius(12)
+            .shadow(
+                color: .black.opacity(isPressed ? 0.1 : 0.05),
+                radius: isPressed ? 4 : 1,
+                x: 0,
+                y: isPressed ? 2 : 0.5
+            )
+            .scaleEffect(isPressed ? 0.98 : 1.0)
+            .animation(.easeInOut(duration: 0.1), value: isPressed)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(PlainButtonStyle())
+        .onLongPressGesture(minimumDuration: 0, maximumDistance: .infinity, pressing: { pressing in
+            isPressed = pressing
+        }, perform: {})
     }
 }

@@ -40,6 +40,7 @@
 		0B19F93B2E7C91A80037E29E /* SearchMenuActionStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F93A2E7C91A80037E29E /* SearchMenuActionStyle.swift */; };
 		0B19F93E2E7C91E20037E29E /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F93D2E7C91DC0037E29E /* ViewExtensions.swift */; };
 		0B19F9402E7C9A1B0037E29E /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F93F2E7C9A1A0037E29E /* Event.swift */; };
+		0B19F9422E7CAAE90037E29E /* InfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F9412E7CAAE90037E29E /* InfoView.swift */; };
 		0B5DC81C2E79C7A0001B668F /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 0B5DC81B2E79C7A0001B668F /* FirebaseAnalytics */; };
 		0B5DC81E2E79C7A0001B668F /* FirebaseAnalyticsCore in Frameworks */ = {isa = PBXBuildFile; productRef = 0B5DC81D2E79C7A0001B668F /* FirebaseAnalyticsCore */; };
 		0B5DC8202E79C7A0001B668F /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 0B5DC81F2E79C7A0001B668F /* FirebaseCore */; };
@@ -166,6 +167,7 @@
 		0B19F93A2E7C91A80037E29E /* SearchMenuActionStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchMenuActionStyle.swift; sourceTree = "<group>"; };
 		0B19F93D2E7C91DC0037E29E /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		0B19F93F2E7C9A1A0037E29E /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
+		0B19F9412E7CAAE90037E29E /* InfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoView.swift; sourceTree = "<group>"; };
 		0BAEDEFA2E7B175900EA6796 /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
 		0BAEDEFB2E7B175900EA6796 /* NetworkSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkSettings.swift; sourceTree = "<group>"; };
 		0BAEDF012E7B176400EA6796 /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
@@ -521,6 +523,7 @@
 		0BAEE20B2E7B638700EA6796 /* Other */ = {
 			isa = PBXGroup;
 			children = (
+				0B19F9412E7CAAE90037E29E /* InfoView.swift */,
 				0B19F9382E7C916E0037E29E /* SearchField.swift */,
 				0B19F9362E7C8B4B0037E29E /* DateSectionHeader.swift */,
 				0B19F9322E7C785C0037E29E /* EventCard.swift */,
@@ -826,6 +829,7 @@
 				0B19F92B2E7C68140037E29E /* QuickViewScreenCoordinator.swift in Sources */,
 				D4722149292454560063BDB7 /* Application.swift in Sources */,
 				0B19F93B2E7C91A80037E29E /* SearchMenuActionStyle.swift in Sources */,
+				0B19F9422E7CAAE90037E29E /* InfoView.swift in Sources */,
 				0BAEE20F2E7B644400EA6796 /* MainFlowCoordinatorStateMachine.swift in Sources */,
 				0B19F7EF2E7C44B90037E29E /* EventStorage.swift in Sources */,
 				0B19F7E52E7C3A490037E29E /* SearchScreenViewModel.swift in Sources */,

@@ -15,6 +15,11 @@ class SplashScreenCoordinator: CoordinatorProtocol {
 
 struct SplashScreen: View {
     var body: some View {
-        Image("AppIconOpaque")
+        ZStack {
+            Color.background
+                .ignoresSafeArea(.all)
+            
+            Image("AppIconOpaque")
+        }
     }
 }

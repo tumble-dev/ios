@@ -54,7 +54,6 @@ class QuickViewScreenViewModel: QuickViewScreenViewModelType {
             .sink { [weak self] savedIds in
                 guard let self else { return }
                 let isBookmarked = savedIds.contains(self.programmeId)
-                AppLogger.shared.info("PROGRAMME EXISTS IN SETTINGS")
                 self.updateSaveButtonState(isBookmarked ? .saved : .notSaved)
             }
             .store(in: &cancellables)
@@ -100,6 +99,11 @@ class QuickViewScreenViewModel: QuickViewScreenViewModelType {
         do {
             updateDataState(newDataState: .loading)
             let res: Response.EventsResponse = try await tumbleApiService.getScheduleEvents(school: school, scheduleIds: [programmeId])
+            if res.events.isEmpty {
+                updateDataState(newDataState: .empty)
+                updateSaveButtonState(.disabled)
+                return
+            }
             updateDataState(newDataState: .loaded(res.events))
         } catch (let error) {
             updateDataState(newDataState: .error(error.localizedDescription))
