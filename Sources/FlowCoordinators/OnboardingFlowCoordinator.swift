@@ -15,6 +15,7 @@ class OnboardingFlowCoordinator: FlowCoordinatorProtocol {
     private let stateMachine: StateMachine<State, Event>
     
     private let appSettings: AppSettings
+    private let analyticsService: AnalyticsServiceProtocol
     private let notificationManager: NotificationManagerProtocol
     private let isFirstOpen: Bool
     
@@ -25,6 +26,7 @@ class OnboardingFlowCoordinator: FlowCoordinatorProtocol {
     
     init(
         appSettings: AppSettings,
+        analyticsService: AnalyticsServiceProtocol,
         notificationManager: NotificationManagerProtocol,
         isFirstOpen: Bool,
         rootNavigationStackCoordinator: NavigationStackCoordinator
@@ -32,6 +34,7 @@ class OnboardingFlowCoordinator: FlowCoordinatorProtocol {
         self.rootNavigationStackCoordinator = rootNavigationStackCoordinator
         self.navigationStackCoordinator = NavigationStackCoordinator()
         self.appSettings = appSettings
+        self.analyticsService = analyticsService
         self.notificationManager = notificationManager
         self.isFirstOpen = isFirstOpen
         

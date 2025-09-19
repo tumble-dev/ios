@@ -41,7 +41,8 @@ final class UserPreference<T: Codable> {
     init(key: String,
          defaultValue: T,
          keyedStorage: any KeyedStorage<T>,
-         mode: Mode) {
+         mode: Mode,
+    ) {
         self.key = key
         self.defaultValue = defaultValue
         self.keyedStorage = keyedStorage

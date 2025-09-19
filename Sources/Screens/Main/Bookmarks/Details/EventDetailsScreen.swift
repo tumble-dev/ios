@@ -255,7 +255,7 @@ struct DetailCard<Content: View>: View {
             // Content
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
-                    .font(.caption)
+                    .font(.caption2)
                     .fontWeight(.medium)
                     .foregroundColor(.onSurface)
                     .textCase(.uppercase)

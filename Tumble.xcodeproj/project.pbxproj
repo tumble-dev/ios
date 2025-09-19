@@ -45,6 +45,25 @@
 		0B19F9492E7CB3210037E29E /* EventDetailsScreenModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F9482E7CB3170037E29E /* EventDetailsScreenModels.swift */; };
 		0B19F94B2E7CB3340037E29E /* EventDetailsScreenCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F94A2E7CB32F0037E29E /* EventDetailsScreenCoordinator.swift */; };
 		0B19F94F2E7CB3B20037E29E /* EventDetailsScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F94E2E7CB3AE0037E29E /* EventDetailsScreenViewModel.swift */; };
+		0B19F9512E7D76130037E29E /* SettingsFlowCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F9502E7D76080037E29E /* SettingsFlowCoordinator.swift */; };
+		0B19F9532E7D76330037E29E /* AuthFlowCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F9522E7D76300037E29E /* AuthFlowCoordinator.swift */; };
+		0B19F9562E7D77F00037E29E /* SettingsScreenCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F9552E7D77F00037E29E /* SettingsScreenCoordinator.swift */; };
+		0B19F9582E7D783A0037E29E /* SettingsScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F9572E7D783A0037E29E /* SettingsScreenViewModel.swift */; };
+		0B19F95A2E7D78790037E29E /* SettingsScreenViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F9592E7D78790037E29E /* SettingsScreenViewModelProtocol.swift */; };
+		0B19F95C2E7D78900037E29E /* SettingsScreenModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F95B2E7D78900037E29E /* SettingsScreenModels.swift */; };
+		0B19F95E2E7D799A0037E29E /* SettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F95D2E7D79980037E29E /* SettingsScreen.swift */; };
+		0B19F9612E7DA59C0037E29E /* AdvancedSettingsScreenCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F9602E7DA59C0037E29E /* AdvancedSettingsScreenCoordinator.swift */; };
+		0B19F9632E7DA5BC0037E29E /* AdvancedSettingsScreenViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F9622E7DA5BC0037E29E /* AdvancedSettingsScreenViewModelProtocol.swift */; };
+		0B19F9652E7DA5CA0037E29E /* AdvancedSettingsScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F9642E7DA5CA0037E29E /* AdvancedSettingsScreenViewModel.swift */; };
+		0B19F9672E7DAB680037E29E /* AdvancedSettingsScreenModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F9662E7DAB680037E29E /* AdvancedSettingsScreenModels.swift */; };
+		0B19F9692E7DAB940037E29E /* AppAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F9682E7DAB940037E29E /* AppAppearance.swift */; };
+		0B30C8E42E7DAC4E0002D799 /* AdvancedSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B30C8E32E7DAC4E0002D799 /* AdvancedSettingsScreen.swift */; };
+		0B30C8E72E7E04F50002D799 /* AnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B30C8E62E7E04F50002D799 /* AnalyticsService.swift */; };
+		0B30C8EA2E7E10E70002D799 /* NotificationsSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B30C8E92E7E10E20002D799 /* NotificationsSettingsScreen.swift */; };
+		0B30C8EC2E7E10F40002D799 /* NotificationsSettingsScreenModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B30C8EB2E7E10F10002D799 /* NotificationsSettingsScreenModels.swift */; };
+		0B30C8EE2E7E10FB0002D799 /* NotificationsSettingsScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B30C8ED2E7E10F70002D799 /* NotificationsSettingsScreenViewModel.swift */; };
+		0B30C8F02E7E11020002D799 /* NotificationsSettingsScreenCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B30C8EF2E7E11000002D799 /* NotificationsSettingsScreenCoordinator.swift */; };
+		0B30C8F22E7E11330002D799 /* NotificationsSettingsScreenViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B30C8F12E7E112B0002D799 /* NotificationsSettingsScreenViewModelProtocol.swift */; };
 		0B5DC81C2E79C7A0001B668F /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 0B5DC81B2E79C7A0001B668F /* FirebaseAnalytics */; };
 		0B5DC81E2E79C7A0001B668F /* FirebaseAnalyticsCore in Frameworks */ = {isa = PBXBuildFile; productRef = 0B5DC81D2E79C7A0001B668F /* FirebaseAnalyticsCore */; };
 		0B5DC8202E79C7A0001B668F /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 0B5DC81F2E79C7A0001B668F /* FirebaseCore */; };
@@ -176,6 +195,25 @@
 		0B19F9482E7CB3170037E29E /* EventDetailsScreenModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailsScreenModels.swift; sourceTree = "<group>"; };
 		0B19F94A2E7CB32F0037E29E /* EventDetailsScreenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailsScreenCoordinator.swift; sourceTree = "<group>"; };
 		0B19F94E2E7CB3AE0037E29E /* EventDetailsScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailsScreenViewModel.swift; sourceTree = "<group>"; };
+		0B19F9502E7D76080037E29E /* SettingsFlowCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsFlowCoordinator.swift; sourceTree = "<group>"; };
+		0B19F9522E7D76300037E29E /* AuthFlowCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthFlowCoordinator.swift; sourceTree = "<group>"; };
+		0B19F9552E7D77F00037E29E /* SettingsScreenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScreenCoordinator.swift; sourceTree = "<group>"; };
+		0B19F9572E7D783A0037E29E /* SettingsScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScreenViewModel.swift; sourceTree = "<group>"; };
+		0B19F9592E7D78790037E29E /* SettingsScreenViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScreenViewModelProtocol.swift; sourceTree = "<group>"; };
+		0B19F95B2E7D78900037E29E /* SettingsScreenModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScreenModels.swift; sourceTree = "<group>"; };
+		0B19F95D2E7D79980037E29E /* SettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
+		0B19F9602E7DA59C0037E29E /* AdvancedSettingsScreenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedSettingsScreenCoordinator.swift; sourceTree = "<group>"; };
+		0B19F9622E7DA5BC0037E29E /* AdvancedSettingsScreenViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedSettingsScreenViewModelProtocol.swift; sourceTree = "<group>"; };
+		0B19F9642E7DA5CA0037E29E /* AdvancedSettingsScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedSettingsScreenViewModel.swift; sourceTree = "<group>"; };
+		0B19F9662E7DAB680037E29E /* AdvancedSettingsScreenModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedSettingsScreenModels.swift; sourceTree = "<group>"; };
+		0B19F9682E7DAB940037E29E /* AppAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAppearance.swift; sourceTree = "<group>"; };
+		0B30C8E32E7DAC4E0002D799 /* AdvancedSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedSettingsScreen.swift; sourceTree = "<group>"; };
+		0B30C8E62E7E04F50002D799 /* AnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
+		0B30C8E92E7E10E20002D799 /* NotificationsSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsSettingsScreen.swift; sourceTree = "<group>"; };
+		0B30C8EB2E7E10F10002D799 /* NotificationsSettingsScreenModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsSettingsScreenModels.swift; sourceTree = "<group>"; };
+		0B30C8ED2E7E10F70002D799 /* NotificationsSettingsScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsSettingsScreenViewModel.swift; sourceTree = "<group>"; };
+		0B30C8EF2E7E11000002D799 /* NotificationsSettingsScreenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsSettingsScreenCoordinator.swift; sourceTree = "<group>"; };
+		0B30C8F12E7E112B0002D799 /* NotificationsSettingsScreenViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsSettingsScreenViewModelProtocol.swift; sourceTree = "<group>"; };
 		0BAEDEFA2E7B175900EA6796 /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
 		0BAEDEFB2E7B175900EA6796 /* NetworkSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkSettings.swift; sourceTree = "<group>"; };
 		0BAEDF012E7B176400EA6796 /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
@@ -382,6 +420,52 @@
 			path = Details;
 			sourceTree = "<group>";
 		};
+		0B19F9542E7D77EB0037E29E /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				0B30C8E82E7E10D10002D799 /* Notifications */,
+				0B19F95F2E7DA5920037E29E /* Advanced */,
+				0B19F95D2E7D79980037E29E /* SettingsScreen.swift */,
+				0B19F95B2E7D78900037E29E /* SettingsScreenModels.swift */,
+				0B19F9592E7D78790037E29E /* SettingsScreenViewModelProtocol.swift */,
+				0B19F9572E7D783A0037E29E /* SettingsScreenViewModel.swift */,
+				0B19F9552E7D77F00037E29E /* SettingsScreenCoordinator.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		0B19F95F2E7DA5920037E29E /* Advanced */ = {
+			isa = PBXGroup;
+			children = (
+				0B30C8E32E7DAC4E0002D799 /* AdvancedSettingsScreen.swift */,
+				0B19F9662E7DAB680037E29E /* AdvancedSettingsScreenModels.swift */,
+				0B19F9642E7DA5CA0037E29E /* AdvancedSettingsScreenViewModel.swift */,
+				0B19F9622E7DA5BC0037E29E /* AdvancedSettingsScreenViewModelProtocol.swift */,
+				0B19F9602E7DA59C0037E29E /* AdvancedSettingsScreenCoordinator.swift */,
+			);
+			path = Advanced;
+			sourceTree = "<group>";
+		};
+		0B30C8E52E7E04ED0002D799 /* Analytics */ = {
+			isa = PBXGroup;
+			children = (
+				0B30C8E62E7E04F50002D799 /* AnalyticsService.swift */,
+			);
+			path = Analytics;
+			sourceTree = "<group>";
+		};
+		0B30C8E82E7E10D10002D799 /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				0B30C8F12E7E112B0002D799 /* NotificationsSettingsScreenViewModelProtocol.swift */,
+				0B30C8EF2E7E11000002D799 /* NotificationsSettingsScreenCoordinator.swift */,
+				0B30C8ED2E7E10F70002D799 /* NotificationsSettingsScreenViewModel.swift */,
+				0B30C8EB2E7E10F10002D799 /* NotificationsSettingsScreenModels.swift */,
+				0B30C8E92E7E10E20002D799 /* NotificationsSettingsScreen.swift */,
+			);
+			path = Notifications;
+			sourceTree = "<group>";
+		};
 		0BAEDEFD2E7B175900EA6796 /* Network */ = {
 			isa = PBXGroup;
 			children = (
@@ -403,6 +487,7 @@
 		0BAEDF042E7B176400EA6796 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				0B30C8E52E7E04ED0002D799 /* Analytics */,
 				0BAEE22F2E7BF8FC00EA6796 /* Notification */,
 				0BAEDF1B2E7B1B1600EA6796 /* Tumble */,
 				0BAEDF032E7B176400EA6796 /* Authentication */,
@@ -442,6 +527,7 @@
 		0BAEDF222E7B231B00EA6796 /* Other */ = {
 			isa = PBXGroup;
 			children = (
+				0B19F9682E7DAB940037E29E /* AppAppearance.swift */,
 				0B19F7FB2E7C4AD50037E29E /* Schools.swift */,
 				0B19F7F52E7C47D30037E29E /* Extensions */,
 				0BAEDF252E7B236B00EA6796 /* NetworkMonitor */,
@@ -501,6 +587,8 @@
 		0BAEE1DD2E7B434000EA6796 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				0B19F9542E7D77EB0037E29E /* Settings */,
+				0B19F7E12E7C36650037E29E /* Search */,
 				0BAEE20A2E7B638200EA6796 /* Main */,
 				0BAEE1DE2E7B434700EA6796 /* Onboarding */,
 			);
@@ -539,7 +627,6 @@
 		0BAEE20A2E7B638200EA6796 /* Main */ = {
 			isa = PBXGroup;
 			children = (
-				0B19F7E12E7C36650037E29E /* Search */,
 				0BAEE2152E7B688800EA6796 /* Bookmarks */,
 				0BAEE20B2E7B638700EA6796 /* Other */,
 			);
@@ -609,6 +696,8 @@
 		0BAEE22B2E7BEF1B00EA6796 /* FlowCoordinators */ = {
 			isa = PBXGroup;
 			children = (
+				0B19F9522E7D76300037E29E /* AuthFlowCoordinator.swift */,
+				0B19F9502E7D76080037E29E /* SettingsFlowCoordinator.swift */,
 				0BAEE2112E7B66C100EA6796 /* OnboardingFlowCoordinator.swift */,
 				0BAEE2082E7B5E7600EA6796 /* MainFlowCoordinator.swift */,
 				0BAEE20E2E7B643F00EA6796 /* MainFlowCoordinatorStateMachine.swift */,
@@ -854,6 +943,7 @@
 				0B19F9312E7C6DAA0037E29E /* QuickViewScreen.swift in Sources */,
 				0BAEDF2E2E7B2C1F00EA6796 /* StateStoreViewModel.swift in Sources */,
 				0BAEE2002E7B5BDB00EA6796 /* NavigationModule.swift in Sources */,
+				0B30C8F22E7E11330002D799 /* NotificationsSettingsScreenViewModelProtocol.swift in Sources */,
 				0B19F7F72E7C47E40037E29E /* Color.swift in Sources */,
 				0B19F92B2E7C68140037E29E /* QuickViewScreenCoordinator.swift in Sources */,
 				D4722149292454560063BDB7 /* Application.swift in Sources */,
@@ -865,17 +955,26 @@
 				0B19F69B2E7C10C60037E29E /* NotificationConstants.swift in Sources */,
 				0B19F7FA2E7C480D0037E29E /* PillStyle.swift in Sources */,
 				0B19F93E2E7C91E20037E29E /* ViewExtensions.swift in Sources */,
+				0B19F9632E7DA5BC0037E29E /* AdvancedSettingsScreenViewModelProtocol.swift in Sources */,
 				D42BAC1E298D3D6A0025EAA9 /* AppLogger.swift in Sources */,
 				0BAEE20D2E7B639100EA6796 /* PlaceholderScreenCoordinator.swift in Sources */,
 				0B19F7FC2E7C4AD70037E29E /* Schools.swift in Sources */,
+				0B30C8EC2E7E10F40002D799 /* NotificationsSettingsScreenModels.swift in Sources */,
+				0B19F95E2E7D799A0037E29E /* SettingsScreen.swift in Sources */,
+				0B30C8E42E7DAC4E0002D799 /* AdvancedSettingsScreen.swift in Sources */,
 				0BAEDF272E7B238000EA6796 /* NetworkMonitorProtocol.swift in Sources */,
+				0B19F9672E7DAB680037E29E /* AdvancedSettingsScreenModels.swift in Sources */,
+				0B19F9562E7D77F00037E29E /* SettingsScreenCoordinator.swift in Sources */,
+				0B30C8E72E7E04F50002D799 /* AnalyticsService.swift in Sources */,
 				0BAEE1F62E7B491700EA6796 /* SceneDelegate.swift in Sources */,
 				0BAEDF0B2E7B177800EA6796 /* Config.swift in Sources */,
 				0BAEDF292E7B23B200EA6796 /* CurrentValuePublisher.swift in Sources */,
 				0BAEDF052E7B176400EA6796 /* KeychainService.swift in Sources */,
 				0BAEDF062E7B176400EA6796 /* AuthenticationService.swift in Sources */,
 				0BAEE2042E7B5CB400EA6796 /* ApplicationCoordinatorProtocol.swift in Sources */,
+				0B19F9692E7DAB940037E29E /* AppAppearance.swift in Sources */,
 				0BAEDF302E7B2C4400EA6796 /* BindableState.swift in Sources */,
+				0B30C8EA2E7E10E70002D799 /* NotificationsSettingsScreen.swift in Sources */,
 				0B19F6AF2E7C1D070037E29E /* NotificationPermissionsScreenViewModel.swift in Sources */,
 				0BAEE2092E7B5E7900EA6796 /* MainFlowCoordinator.swift in Sources */,
 				D4A433B829951F2B00BFEB7A /* AppDelegate.swift in Sources */,
@@ -889,19 +988,23 @@
 				0B19F6A32E7C16A60037E29E /* Popup.swift in Sources */,
 				0B19F7E32E7C38700037E29E /* SearchScreenCoordinator.swift in Sources */,
 				0BAEE2122E7B66C600EA6796 /* OnboardingFlowCoordinator.swift in Sources */,
+				0B19F95C2E7D78900037E29E /* SettingsScreenModels.swift in Sources */,
 				0BAEE1EE2E7B476F00EA6796 /* CoordinatorProtocol.swift in Sources */,
 				0BAEE1F82E7B497F00EA6796 /* WindowManagerDelegate.swift in Sources */,
 				0B19F94F2E7CB3B20037E29E /* EventDetailsScreenViewModel.swift in Sources */,
 				0BAEE2292E7B6E1800EA6796 /* SplashScreenCoordinator.swift in Sources */,
 				0B19F7F42E7C47A20037E29E /* SchoolPill.swift in Sources */,
+				0B19F95A2E7D78790037E29E /* SettingsScreenViewModelProtocol.swift in Sources */,
 				0BAEE1FA2E7B4A9F00EA6796 /* WindowManager.swift in Sources */,
 				D4562E0B2A27E9020059ED36 /* PopupFactory.swift in Sources */,
+				0B19F9582E7D783A0037E29E /* SettingsScreenViewModel.swift in Sources */,
 				0BAEDF162E7B181C00EA6796 /* Method.swift in Sources */,
 				0BAEDF332E7B3E0F00EA6796 /* ApplicationCoordinatorStateMachine.swift in Sources */,
 				0B19F7E92E7C3F4C0037E29E /* SearchScreen.swift in Sources */,
 				0B19F94B2E7CB3340037E29E /* EventDetailsScreenCoordinator.swift in Sources */,
 				0BAEE1F02E7B47BF00EA6796 /* FlowCoordinatorProtocol.swift in Sources */,
 				0BAEDF242E7B232500EA6796 /* NetworkMonitor.swift in Sources */,
+				0B19F9612E7DA59C0037E29E /* AdvancedSettingsScreenCoordinator.swift in Sources */,
 				0B19F7ED2E7C42970037E29E /* AppMediator.swift in Sources */,
 				0BAEE2232E7B6CB100EA6796 /* BookmarksScreen.swift in Sources */,
 				0BAEDEFF2E7B175900EA6796 /* NetworkSettings.swift in Sources */,
@@ -914,9 +1017,14 @@
 				0BAEE2022E7B5C0A00EA6796 /* NavigationStackCoordinator.swift in Sources */,
 				0BAEE1FC2E7B4AFF00EA6796 /* CancellableTask.swift in Sources */,
 				0BAEDF1F2E7B1D4900EA6796 /* AppSettings.swift in Sources */,
+				0B19F9532E7D76330037E29E /* AuthFlowCoordinator.swift in Sources */,
+				0B30C8EE2E7E10FB0002D799 /* NotificationsSettingsScreenViewModel.swift in Sources */,
+				0B30C8F02E7E11020002D799 /* NotificationsSettingsScreenCoordinator.swift in Sources */,
 				0BAEE2062E7B5D0C00EA6796 /* ApplicationCoordinator.swift in Sources */,
 				0B19F6B12E7C1D440037E29E /* NotificationPermissionsScreen.swift in Sources */,
+				0B19F9652E7DA5CA0037E29E /* AdvancedSettingsScreenViewModel.swift in Sources */,
 				0BAEE1F32E7B47F300EA6796 /* AppRoute.swift in Sources */,
+				0B19F9512E7D76130037E29E /* SettingsFlowCoordinator.swift in Sources */,
 				0BAEE2172E7B689D00EA6796 /* BookmarksScreenCoordinator.swift in Sources */,
 				0B19F9492E7CB3210037E29E /* EventDetailsScreenModels.swift in Sources */,
 				0B19F9332E7C785D0037E29E /* EventCard.swift in Sources */,

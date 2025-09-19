@@ -48,10 +48,10 @@ final class NotificationManager: NSObject, NotificationManagerProtocol {
         notificationCenter.setNotificationCategories([messageCategory, inviteCategory])
         notificationCenter.delegate = self
         
-        notificationsEnabled = appSettings.enableNotifications
+        notificationsEnabled = appSettings.notificationsEnabled
         AppLogger.shared.info("[NotificationManager] app setting 'enableNotifications' is '\(notificationsEnabled)'")
         
-        appSettings.$enableNotifications
+        appSettings.$notificationsEnabled
             .sink { [weak self] newValue in
                 self?.enableNotifications(newValue)
             }
@@ -59,7 +59,7 @@ final class NotificationManager: NSObject, NotificationManagerProtocol {
     }
         
     func requestAuthorization() {
-        guard appSettings.enableNotifications else { return }
+        guard appSettings.notificationsEnabled else { return }
         Task {
             do {
                 let permissionGranted = try await notificationCenter.requestAuthorization(options: [.alert, .sound, .badge])
@@ -117,9 +117,11 @@ final class NotificationManager: NSObject, NotificationManagerProtocol {
 // MARK: - UNUserNotificationCenterDelegate
 
 extension NotificationManager: UNUserNotificationCenterDelegate {
-    func userNotificationCenter(_ center: UNUserNotificationCenter,
-                                willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
-        guard appSettings.enableInAppNotifications else {
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification
+    ) async -> UNNotificationPresentationOptions {
+        guard appSettings.inAppMessagingEnabled else {
             return []
         }
         guard let delegate else {

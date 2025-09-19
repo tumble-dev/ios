@@ -24,6 +24,7 @@ class MainFlowCoordinator: FlowCoordinatorProtocol {
     private let stateMachine: MainFlowCoordinatorStateMachine
     
     private let onboardingFlowCoordinator: OnboardingFlowCoordinator
+    private let settingsFlowCoordinator: SettingsFlowCoordinator
     
     private let selectedBookmarkEventSubjectId = CurrentValueSubject<String?, Never>(nil)
     
@@ -34,6 +35,7 @@ class MainFlowCoordinator: FlowCoordinatorProtocol {
     private let appMediator: AppMediatorProtocol
     private let appSettings: AppSettings
     private let tumbleApiService: TumbleAPIService
+    private let analyticsService: AnalyticsServiceProtocol
     private let eventStorageService: EventStorageService
     private let notificationManager: NotificationManagerProtocol
     
@@ -47,6 +49,7 @@ class MainFlowCoordinator: FlowCoordinatorProtocol {
         appMediator: AppMediatorProtocol,
         notificationManager: NotificationManagerProtocol,
         tumbleApiService: TumbleAPIService,
+        analyticsService: AnalyticsServiceProtocol,
         eventStorageService: EventStorageService,
         navigationRootCoordinator: NavigationRootCoordinator,
         isFirstOpen: Bool
@@ -57,6 +60,7 @@ class MainFlowCoordinator: FlowCoordinatorProtocol {
         self.eventStorageService = eventStorageService
         self.appMediator = appMediator
         self.tumbleApiService = tumbleApiService
+        self.analyticsService = analyticsService
         self.notificationManager = notificationManager
         self.navigationSplitCoordinator = NavigationSplitCoordinator(placeholderCoordinator: PlaceholderScreenCoordinator())
         
@@ -67,9 +71,19 @@ class MainFlowCoordinator: FlowCoordinatorProtocol {
         
         self.onboardingFlowCoordinator = OnboardingFlowCoordinator(
             appSettings: appSettings,
+            analyticsService: analyticsService,
             notificationManager: notificationManager,
             isFirstOpen: isFirstOpen,
             rootNavigationStackCoordinator: detailNavigationStackCoordinator
+        )
+        
+        self.settingsFlowCoordinator = SettingsFlowCoordinator(
+            parameters: .init(
+                windowManager: appMediator.windowManager,
+                appSettings: appSettings,
+                analyticsService: analyticsService,
+                navigationSplitCoordinator: navigationSplitCoordinator
+            )
         )
         
         setupStateMachine()
@@ -156,7 +170,7 @@ private extension MainFlowCoordinator {
                 attemptStartingOnboarding()
             /// Bookmarks -> Account
             case (.bookmarks, .showSettingsScreen, .settingsScreen):
-                presentSettingsScreen()
+                break
             /// Settings -> Bookmarks
             case (.settingsScreen, .dismissedSettingsScreen, .bookmarks):
                 break
@@ -218,7 +232,7 @@ private extension MainFlowCoordinator {
                 case .presentBookmarkedEventDetails(let eventId):
                     stateMachine.processEvent(.showEventDetails(eventId: eventId))
                 case .presentSettingsScreen:
-                    stateMachine.processEvent(.showSettingsScreen)
+                    settingsFlowCoordinator.handleAppRoute(.settings, animated: true)
                 case .presentSearchScreen:
                     stateMachine.processEvent(.showSearchScreen)
                 }
@@ -297,10 +311,6 @@ private extension MainFlowCoordinator {
             self?.stateMachine.processEvent(.dismissedSearchScreen)
         }
     }
-    
-    private func presentSettingsScreen() { }
-    
-    private func dismissSettingsScreen() {}
     
     private func presentLogoutConfirmationScreen() {}
     
