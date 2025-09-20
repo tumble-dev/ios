@@ -1,6 +1,6 @@
 //
 //  InfoViewType.swift
-//  App
+// Tumble
 //
 //  Created by Adis Veletanlic on 2025-09-18.
 //
@@ -222,10 +222,11 @@ extension InfoView {
     static func empty(
         title: String,
         subtitle: String? = nil,
-        action: InfoViewAction? = nil
+        action: InfoViewAction? = nil,
+        icon: String = "tray"
     ) -> InfoView {
         InfoView(type: .custom(
-            icon: "tray",
+            icon: icon,
             title: title,
             subtitle: subtitle,
             action: action

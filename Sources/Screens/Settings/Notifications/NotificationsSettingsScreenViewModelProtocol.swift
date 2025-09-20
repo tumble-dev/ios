@@ -1,6 +1,6 @@
 //
 //  NotificationsSettingsScreenViewModelProtocol.swift
-//  App
+// Tumble
 //
 //  Created by Adis Veletanlic on 2025-09-20.
 //

@@ -52,7 +52,7 @@ class BookmarksFlowCoordinatorStateMachine {
         case dismissedSettingsScreen
         
         /// Request presentation of the account screen.
-        case showAccountScreen(userId: String)
+        case showAccountScreen
         /// The user profile screen has been dismissed.
         case dismissedAccountScreen
         

@@ -1,6 +1,6 @@
 //
 //  SettingsScreenViewModel.swift
-//  App
+// Tumble
 //
 //  Created by Adis Veletanlic on 2025-09-19.
 //
@@ -35,7 +35,7 @@ class SettingsScreenViewModel: SettingsScreenViewModelType, SettingsScreenViewMo
         let publishers = [
             appSettings.$appearance.map { _ in () }.eraseToAnyPublisher(),
             appSettings.$bookmarkedProgrammes.map { _ in () }.eraseToAnyPublisher(),
-            appSettings.$activeUserId.map { _ in () }.eraseToAnyPublisher(),
+            appSettings.$activeUsername.map { _ in () }.eraseToAnyPublisher(),
             appSettings.$openEventFromWidget.map { _ in () }.eraseToAnyPublisher(),
         ]
         

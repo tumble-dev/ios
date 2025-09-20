@@ -46,7 +46,7 @@
 		0B19F94B2E7CB3340037E29E /* EventDetailsScreenCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F94A2E7CB32F0037E29E /* EventDetailsScreenCoordinator.swift */; };
 		0B19F94F2E7CB3B20037E29E /* EventDetailsScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F94E2E7CB3AE0037E29E /* EventDetailsScreenViewModel.swift */; };
 		0B19F9512E7D76130037E29E /* SettingsFlowCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F9502E7D76080037E29E /* SettingsFlowCoordinator.swift */; };
-		0B19F9532E7D76330037E29E /* AuthFlowCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F9522E7D76300037E29E /* AuthFlowCoordinator.swift */; };
+		0B19F9532E7D76330037E29E /* AccountFlowCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F9522E7D76300037E29E /* AccountFlowCoordinator.swift */; };
 		0B19F9562E7D77F00037E29E /* SettingsScreenCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F9552E7D77F00037E29E /* SettingsScreenCoordinator.swift */; };
 		0B19F9582E7D783A0037E29E /* SettingsScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F9572E7D783A0037E29E /* SettingsScreenViewModel.swift */; };
 		0B19F95A2E7D78790037E29E /* SettingsScreenViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F9592E7D78790037E29E /* SettingsScreenViewModelProtocol.swift */; };
@@ -70,6 +70,11 @@
 		0B30C8FC2E7E2BC30002D799 /* BookmarksSettingsScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B30C8FB2E7E2BC00002D799 /* BookmarksSettingsScreenViewModel.swift */; };
 		0B30C8FE2E7E2BCB0002D799 /* BookmarksSettingsScreenCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B30C8FD2E7E2BC90002D799 /* BookmarksSettingsScreenCoordinator.swift */; };
 		0B30C9012E7ED6480002D799 /* SearchFlowCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B30C9002E7ED6450002D799 /* SearchFlowCoordinator.swift */; };
+		0B30C9042E7EE6430002D799 /* AccountScreenCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B30C9032E7EE6400002D799 /* AccountScreenCoordinator.swift */; };
+		0B30C9062E7EE6760002D799 /* AccountScreenModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B30C9052E7EE6720002D799 /* AccountScreenModels.swift */; };
+		0B30C9082E7EE9B20002D799 /* AccountScreenViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B30C9072E7EE9AE0002D799 /* AccountScreenViewModelProtocol.swift */; };
+		0B30C90A2E7EE9CD0002D799 /* AccountScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B30C9092E7EE9CA0002D799 /* AccountScreenViewModel.swift */; };
+		0B30C90C2E7EF0EA0002D799 /* AccountScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B30C90B2E7EF0E70002D799 /* AccountScreen.swift */; };
 		0B5DC81C2E79C7A0001B668F /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 0B5DC81B2E79C7A0001B668F /* FirebaseAnalytics */; };
 		0B5DC81E2E79C7A0001B668F /* FirebaseAnalyticsCore in Frameworks */ = {isa = PBXBuildFile; productRef = 0B5DC81D2E79C7A0001B668F /* FirebaseAnalyticsCore */; };
 		0B5DC8202E79C7A0001B668F /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 0B5DC81F2E79C7A0001B668F /* FirebaseCore */; };
@@ -197,7 +202,7 @@
 		0B19F94A2E7CB32F0037E29E /* EventDetailsScreenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailsScreenCoordinator.swift; sourceTree = "<group>"; };
 		0B19F94E2E7CB3AE0037E29E /* EventDetailsScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailsScreenViewModel.swift; sourceTree = "<group>"; };
 		0B19F9502E7D76080037E29E /* SettingsFlowCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsFlowCoordinator.swift; sourceTree = "<group>"; };
-		0B19F9522E7D76300037E29E /* AuthFlowCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthFlowCoordinator.swift; sourceTree = "<group>"; };
+		0B19F9522E7D76300037E29E /* AccountFlowCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountFlowCoordinator.swift; sourceTree = "<group>"; };
 		0B19F9552E7D77F00037E29E /* SettingsScreenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScreenCoordinator.swift; sourceTree = "<group>"; };
 		0B19F9572E7D783A0037E29E /* SettingsScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScreenViewModel.swift; sourceTree = "<group>"; };
 		0B19F9592E7D78790037E29E /* SettingsScreenViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScreenViewModelProtocol.swift; sourceTree = "<group>"; };
@@ -221,6 +226,11 @@
 		0B30C8FB2E7E2BC00002D799 /* BookmarksSettingsScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksSettingsScreenViewModel.swift; sourceTree = "<group>"; };
 		0B30C8FD2E7E2BC90002D799 /* BookmarksSettingsScreenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksSettingsScreenCoordinator.swift; sourceTree = "<group>"; };
 		0B30C9002E7ED6450002D799 /* SearchFlowCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchFlowCoordinator.swift; sourceTree = "<group>"; };
+		0B30C9032E7EE6400002D799 /* AccountScreenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountScreenCoordinator.swift; sourceTree = "<group>"; };
+		0B30C9052E7EE6720002D799 /* AccountScreenModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountScreenModels.swift; sourceTree = "<group>"; };
+		0B30C9072E7EE9AE0002D799 /* AccountScreenViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountScreenViewModelProtocol.swift; sourceTree = "<group>"; };
+		0B30C9092E7EE9CA0002D799 /* AccountScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountScreenViewModel.swift; sourceTree = "<group>"; };
+		0B30C90B2E7EF0E70002D799 /* AccountScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountScreen.swift; sourceTree = "<group>"; };
 		0BAEDEFA2E7B175900EA6796 /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
 		0BAEDEFB2E7B175900EA6796 /* NetworkSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkSettings.swift; sourceTree = "<group>"; };
 		0BAEDF012E7B176400EA6796 /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
@@ -483,6 +493,18 @@
 			path = Bookmarks;
 			sourceTree = "<group>";
 		};
+		0B30C9022E7EE6380002D799 /* Account */ = {
+			isa = PBXGroup;
+			children = (
+				0B30C90B2E7EF0E70002D799 /* AccountScreen.swift */,
+				0B30C9092E7EE9CA0002D799 /* AccountScreenViewModel.swift */,
+				0B30C9072E7EE9AE0002D799 /* AccountScreenViewModelProtocol.swift */,
+				0B30C9052E7EE6720002D799 /* AccountScreenModels.swift */,
+				0B30C9032E7EE6400002D799 /* AccountScreenCoordinator.swift */,
+			);
+			path = Account;
+			sourceTree = "<group>";
+		};
 		0BAEDEFD2E7B175900EA6796 /* Network */ = {
 			isa = PBXGroup;
 			children = (
@@ -604,6 +626,7 @@
 		0BAEE1DD2E7B434000EA6796 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				0B30C9022E7EE6380002D799 /* Account */,
 				0B19F9542E7D77EB0037E29E /* Settings */,
 				0B19F7E12E7C36650037E29E /* Search */,
 				0BAEE20A2E7B638200EA6796 /* Bookmarks */,
@@ -706,7 +729,7 @@
 			isa = PBXGroup;
 			children = (
 				0B30C9002E7ED6450002D799 /* SearchFlowCoordinator.swift */,
-				0B19F9522E7D76300037E29E /* AuthFlowCoordinator.swift */,
+				0B19F9522E7D76300037E29E /* AccountFlowCoordinator.swift */,
 				0B19F9502E7D76080037E29E /* SettingsFlowCoordinator.swift */,
 				0BAEE2112E7B66C100EA6796 /* OnboardingFlowCoordinator.swift */,
 				0BAEE2082E7B5E7600EA6796 /* BookmarksFlowCoordinator.swift */,
@@ -934,6 +957,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				0B19F69F2E7C144F0037E29E /* AppSettingsHookProtocol.swift in Sources */,
+				0B30C9082E7EE9B20002D799 /* AccountScreenViewModelProtocol.swift in Sources */,
+				0B30C9062E7EE6760002D799 /* AccountScreenModels.swift in Sources */,
 				0BAEE2252E7B6CBA00EA6796 /* BookmarksScreenViewModel.swift in Sources */,
 				0B19F6A12E7C14770037E29E /* AppHooks.swift in Sources */,
 				0B19F6AD2E7C1CE50037E29E /* NotificationPermissionsScreenModels.swift in Sources */,
@@ -969,6 +994,7 @@
 				0B19F95E2E7D799A0037E29E /* SettingsScreen.swift in Sources */,
 				0B30C8E42E7DAC4E0002D799 /* AdvancedSettingsScreen.swift in Sources */,
 				0BAEDF272E7B238000EA6796 /* NetworkMonitorProtocol.swift in Sources */,
+				0B30C90C2E7EF0EA0002D799 /* AccountScreen.swift in Sources */,
 				0B19F9672E7DAB680037E29E /* AdvancedSettingsScreenModels.swift in Sources */,
 				0B19F9562E7D77F00037E29E /* SettingsScreenCoordinator.swift in Sources */,
 				0B30C8E72E7E04F50002D799 /* AnalyticsService.swift in Sources */,
@@ -1027,7 +1053,8 @@
 				0BAEE1FC2E7B4AFF00EA6796 /* CancellableTask.swift in Sources */,
 				0BAEDF1F2E7B1D4900EA6796 /* AppSettings.swift in Sources */,
 				0B30C8FE2E7E2BCB0002D799 /* BookmarksSettingsScreenCoordinator.swift in Sources */,
-				0B19F9532E7D76330037E29E /* AuthFlowCoordinator.swift in Sources */,
+				0B30C90A2E7EE9CD0002D799 /* AccountScreenViewModel.swift in Sources */,
+				0B19F9532E7D76330037E29E /* AccountFlowCoordinator.swift in Sources */,
 				0B30C8EE2E7E10FB0002D799 /* NotificationsSettingsScreenViewModel.swift in Sources */,
 				0B30C8F02E7E11020002D799 /* NotificationsSettingsScreenCoordinator.swift in Sources */,
 				0BAEE2062E7B5D0C00EA6796 /* ApplicationCoordinator.swift in Sources */,
@@ -1035,6 +1062,7 @@
 				0B19F9652E7DA5CA0037E29E /* AdvancedSettingsScreenViewModel.swift in Sources */,
 				0BAEE1F32E7B47F300EA6796 /* AppRoute.swift in Sources */,
 				0B19F9512E7D76130037E29E /* SettingsFlowCoordinator.swift in Sources */,
+				0B30C9042E7EE6430002D799 /* AccountScreenCoordinator.swift in Sources */,
 				0BAEE2172E7B689D00EA6796 /* BookmarksScreenCoordinator.swift in Sources */,
 				0B19F9492E7CB3210037E29E /* EventDetailsScreenModels.swift in Sources */,
 				0B19F9332E7C785D0037E29E /* EventCard.swift in Sources */,

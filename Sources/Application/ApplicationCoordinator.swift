@@ -17,6 +17,7 @@ class ApplicationCoordinator: ApplicationCoordinatorProtocol, NotificationManage
     private let notificationManager: NotificationManagerProtocol
     private let tumbleApiService: TumbleAPIService
     private let analyticsService: AnalyticsServiceProtocol
+    private let keychainService: KeychainService
     private let eventStorageService: EventStorageService
     
     private let appDelegate: AppDelegate
@@ -50,6 +51,7 @@ class ApplicationCoordinator: ApplicationCoordinatorProtocol, NotificationManage
         self.tumbleApiService = TumbleAPIService()
         self.eventStorageService = EventStorageService(appSettings: appSettings)
         self.analyticsService = AnalyticsService(appSettings: appSettings)
+        self.keychainService = KeychainService(accessGroup: Config.keychainAccessGroupIdentifier)
         
         self.stateMachine = ApplicationCoordinatorStateMachine()
         self.navigationRootCoordinator = NavigationRootCoordinator()
@@ -109,6 +111,7 @@ class ApplicationCoordinator: ApplicationCoordinatorProtocol, NotificationManage
             appMediator: appMediator,
             notificationManager: notificationManager,
             tumbleApiService: tumbleApiService,
+            keychainService: keychainService,
             analyticsService: analyticsService,
             eventStorageService: eventStorageService,
             navigationRootCoordinator: navigationRootCoordinator,

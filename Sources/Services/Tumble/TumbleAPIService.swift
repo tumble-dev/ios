@@ -89,7 +89,7 @@ struct EmptyResponse: Codable {
 }
 
 // MARK: - Tumble API Service
-class TumbleAPIService {
+actor TumbleAPIService {
     
     private let session: URLSession
     private let decoder: JSONDecoder

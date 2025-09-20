@@ -1,6 +1,6 @@
 //
 //  SettingsScreen.swift
-//  App
+// Tumble
 //
 //  Created by Adis Veletanlic on 2025-09-19.
 //
@@ -34,7 +34,7 @@ struct SettingsScreen: View {
     @ViewBuilder
     private var accountSection: some View {
         Section {
-            if let userId = context.viewState.bindings.activeUserId {
+            if let userId = context.viewState.bindings.activeUsername {
                 // User is logged in
                 HStack {
                     Image(systemName: "person.circle.fill")
@@ -42,7 +42,7 @@ struct SettingsScreen: View {
                         .font(.title2)
                     
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(context.viewState.bindings.activeUserId ?? "User")
+                        Text(context.viewState.bindings.activeUsername ?? "User")
                             .font(.headline)
                         Text(userId)
                             .font(.caption)

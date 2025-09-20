@@ -1,40 +1,41 @@
 //
-//  SearchFlowCoordinator.swift
+//  AuthFlowCoordinator.swift
 // Tumble
 //
-//  Created by Adis Veletanlic on 2025-09-20.
+//  Created by Adis Veletanlic on 2025-09-19.
 //
 
 import Combine
 import SwiftUI
 
-enum SearchFlowCoordinatorAction {
-    case presentedSearch
-    case dismissedSearch
+enum AccountFlowCoordinatorAction {
+    case presentedAccount
+    case dismissedAccount
 }
 
-struct SearchFlowCoordinatorParameters {
+struct AccountFlowCoordinatorParameters {
     let windowManager: WindowManagerProtocol
     let appSettings: AppSettings
+    let keychainService: KeychainService
     let tumbleApiService: TumbleAPIService
     let eventStorageService: EventStorageService
     let analyticsService: AnalyticsServiceProtocol
     let navigationSplitCoordinator: NavigationSplitCoordinator
 }
 
-class SearchFlowCoordinator: FlowCoordinatorProtocol {
-    private let parameters: SearchFlowCoordinatorParameters
+class AccountFlowCoordinator: FlowCoordinatorProtocol {
+    private let parameters: AccountFlowCoordinatorParameters
     
     private var navigationStackCoordinator: NavigationStackCoordinator!
     
     private var cancellables = Set<AnyCancellable>()
     
-    private let actionsSubject: PassthroughSubject<SearchFlowCoordinatorAction, Never> = .init()
-    var actions: AnyPublisher<SearchFlowCoordinatorAction, Never> {
+    private let actionsSubject: PassthroughSubject<AccountFlowCoordinatorAction, Never> = .init()
+    var actions: AnyPublisher<AccountFlowCoordinatorAction, Never> {
         actionsSubject.eraseToAnyPublisher()
     }
     
-    init(parameters: SearchFlowCoordinatorParameters) {
+    init(parameters: AccountFlowCoordinatorParameters) {
         self.parameters = parameters
     }
     
@@ -44,8 +45,8 @@ class SearchFlowCoordinator: FlowCoordinatorProtocol {
     
     func handleAppRoute(_ appRoute: AppRoute, animated: Bool) {
         switch appRoute {
-        case .search:
-            presentSearchScreen(animated: animated)
+        case .account:
+            presentAccountScreen(animated: animated)
         default:
             break
         }
@@ -57,55 +58,52 @@ class SearchFlowCoordinator: FlowCoordinatorProtocol {
     
     // MARK: - Private
     
-    private func presentSearchScreen(animated: Bool) {
+    private func presentAccountScreen(animated: Bool) {
         navigationStackCoordinator = NavigationStackCoordinator()
-        
-        let searchScreenCoordinator = SearchScreenCoordinator(
+
+        let accountScreenCoordinator = AccountScreenCoordinator(
             parameters: .init(
-                tumbleApiService: parameters.tumbleApiService
+                tumbleApiService: parameters.tumbleApiService,
+                analyticsService: parameters.analyticsService,
+                appSettings: parameters.appSettings,
+                keychainService: parameters.keychainService
             )
         )
         
-        searchScreenCoordinator.actions
+        accountScreenCoordinator.actions
             .sink { [weak self] action in
                 guard let self else { return }
                 
                 switch action {
+                case .resourcesScreen:
+                    break
+                case .eventsScreen:
+                    break
+                case .resourceBookingDetails:
+                    break
+                case .eventDetails:
+                    break
                 case .dismiss:
                     parameters.navigationSplitCoordinator.setSheetCoordinator(nil)
-                    
-                case .quickView(programmeId: let programmeId, school: let school):
-                    presentSearchQuickView(programmeId: programmeId, school: school)
                 }
+                
             }
             .store(in: &cancellables)
         
-        navigationStackCoordinator.setRootCoordinator(searchScreenCoordinator, animated: animated)
+        navigationStackCoordinator.setRootCoordinator(accountScreenCoordinator, animated: animated)
         
         parameters.navigationSplitCoordinator.setSheetCoordinator(navigationStackCoordinator) { [weak self] in
             guard let self else { return }
             
             navigationStackCoordinator = nil
             // notify BookmarksFlowCoordinator to properly set state
-            actionsSubject.send(.dismissedSearch)
+            actionsSubject.send(.dismissedAccount)
         }
         
         // notify BookmarksFlowCoordinator to properly set state
-        actionsSubject.send(.presentedSearch)
+        actionsSubject.send(.presentedAccount)
     }
     
     // MARK: - Navigation Methods
     
-    private func presentSearchQuickView(programmeId: String, school: String) {
-        let coordinator = QuickViewScreenCoordinator(
-            parameters: .init(
-                appSettings: parameters.appSettings,
-                tumbleApiService: parameters.tumbleApiService,
-                eventStorageService: parameters.eventStorageService,
-                programmeId: programmeId,
-                school: school
-            )
-        )
-        navigationStackCoordinator.push(coordinator)
-    }
 }

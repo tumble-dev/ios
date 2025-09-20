@@ -26,6 +26,7 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
     private let onboardingFlowCoordinator: OnboardingFlowCoordinator
     private let settingsFlowCoordinator: SettingsFlowCoordinator
     private let searchFlowCoordinator: SearchFlowCoordinator
+    private let accountFlowCoordinator: AccountFlowCoordinator
     
     private let selectedBookmarkEventSubjectId = CurrentValueSubject<String?, Never>(nil)
     
@@ -39,6 +40,7 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
     private let analyticsService: AnalyticsServiceProtocol
     private let eventStorageService: EventStorageService
     private let notificationManager: NotificationManagerProtocol
+    private let keychainService: KeychainService
     
     private let actionsSubject: PassthroughSubject<BookmarksFlowCoordinatorAction, Never> = .init()
     var actionsPublisher: AnyPublisher<BookmarksFlowCoordinatorAction, Never> {
@@ -50,6 +52,7 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
         appMediator: AppMediatorProtocol,
         notificationManager: NotificationManagerProtocol,
         tumbleApiService: TumbleAPIService,
+        keychainService: KeychainService,
         analyticsService: AnalyticsServiceProtocol,
         eventStorageService: EventStorageService,
         navigationRootCoordinator: NavigationRootCoordinator,
@@ -63,6 +66,7 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
         self.tumbleApiService = tumbleApiService
         self.analyticsService = analyticsService
         self.notificationManager = notificationManager
+        self.keychainService = keychainService
         self.navigationSplitCoordinator = NavigationSplitCoordinator(placeholderCoordinator: PlaceholderScreenCoordinator())
         
         self.sidebarNavigationStackCoordinator = NavigationStackCoordinator(navigationSplitCoordinator: navigationSplitCoordinator)
@@ -99,11 +103,22 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
             )
         )
         
+        self.accountFlowCoordinator = AccountFlowCoordinator(
+            parameters: .init(
+                windowManager: appMediator.windowManager,
+                appSettings: appSettings,
+                keychainService: keychainService,
+                tumbleApiService: tumbleApiService,
+                eventStorageService: eventStorageService,
+                analyticsService: analyticsService,
+                navigationSplitCoordinator: navigationSplitCoordinator
+            )
+        )
+        
         setupStateMachine()
         setupObservers()
     }
-    
-    func setupObservers() {
+    private func setupObservers() {
         settingsFlowCoordinator.actions
             .sink { [weak self] action in
                 guard let self else { return }
@@ -124,6 +139,18 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
                     stateMachine.processEvent(.showSearchScreen)
                 case .dismissedSearch:
                     stateMachine.processEvent(.dismissedSearchScreen)
+                }
+            }
+            .store(in: &cancellables)
+        
+        accountFlowCoordinator.actions
+            .sink { [weak self] action in
+                guard let self else { return }
+                switch action {
+                case .presentedAccount:
+                    stateMachine.processEvent(.showAccountScreen)
+                case .dismissedAccount:
+                    stateMachine.processEvent(.dismissedAccountScreen)
                 }
             }
             .store(in: &cancellables)
@@ -190,16 +217,16 @@ private extension BookmarksFlowCoordinator {
             case (.initial, .start, .bookmarks):
                 presentBookmarksScreen()
                 attemptStartingOnboarding()
-            /// Bookmarks -> Account
-            case (.bookmarks, .showSettingsScreen, .settingsScreen):
+            /// Account -> Bookmarks
+            case (.accountScreen, .dismissedAccountScreen, .bookmarks):
+                break
+            case (.bookmarks, .showAccountScreen, .accountScreen):
                 break
             /// Settings -> Bookmarks
             case (.settingsScreen, .dismissedSettingsScreen, .bookmarks):
                 break
-            /// Account -> Bookmarks
-            case (.accountScreen, .dismissedAccountScreen, .bookmarks):
+            case (.bookmarks, .showSettingsScreen, .settingsScreen):
                 break
-            
             case (.searchScreen, .dismissedSearchScreen, .bookmarks):
                 break
             case (.bookmarks, .showSearchScreen, .searchScreen):
@@ -209,6 +236,8 @@ private extension BookmarksFlowCoordinator {
                 
             case (.bookmarks, .showEventDetails(let eventId), .eventDetailsScreen):
                 presentEventDetailsSreen(eventId: eventId)
+                
+            
                 
             default:
                 fatalError("Unknown transition: \(context)")
@@ -257,7 +286,7 @@ private extension BookmarksFlowCoordinator {
                 case .presentSearchScreen:
                     searchFlowCoordinator.handleAppRoute(.search, animated: true)
                 case .presentAccountScreen:
-                    break
+                    accountFlowCoordinator.handleAppRoute(.account, animated: true)
                 }
             }
             .store(in: &cancellables)

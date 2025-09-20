@@ -51,6 +51,7 @@ class BookmarksScreenViewModel: BookmarksScreenViewModelType, ObservableObject {
         )
         .sink { [weak self] allEvents, bookmarkedProgrammes in
             guard let self else { return }
+            
             guard !allEvents.isEmpty else {
                 state.dataState = .empty
                 return

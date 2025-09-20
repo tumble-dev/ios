@@ -1,6 +1,6 @@
 //
 //  SettingsScreenViewModelAction.swift
-//  App
+// Tumble
 //
 //  Created by Adis Veletanlic on 2025-09-19.
 //
@@ -55,7 +55,7 @@ struct SettingsScreenViewStateBindings {
 protocol SettingsProtocol: AnyObject {
     var openEventFromWidget: Bool { get set }
     var appearance: AppAppearance { get set }
-    var activeUserId: String? { get set }
+    var activeUsername: String? { get set }
     var bookmarkedProgrammes: [String : Bool] { get set }
 }
 

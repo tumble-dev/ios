@@ -12,8 +12,7 @@ final class AppSettings: ObservableObject {
     private enum UserDefaultsKeys: String {
         // Internal
         case lastVersionLaunched
-        case activeSchool // "hkr", "mau"
-        case activeUserId
+        case activeUsername
         case onboarded
         case bookmarkViewType
         case hasRunNotificationPermissionsOnboarding
@@ -85,11 +84,8 @@ final class AppSettings: ObservableObject {
     @UserPreference(key: UserDefaultsKeys.appearance, defaultValue: .system, storageType: .userDefaults(store))
     var appearance: AppAppearance
     
-    @UserPreference(key: UserDefaultsKeys.activeSchool, storageType: .userDefaults(store))
-    var activeSchool: String?
-    
-    @UserPreference(key: UserDefaultsKeys.activeUserId, storageType: .userDefaults(store))
-    var activeUserId: String?
+    @UserPreference(key: UserDefaultsKeys.activeUsername, storageType: .userDefaults(store))
+    var activeUsername: String?
     
     @UserPreference(key: UserDefaultsKeys.language, defaultValue: "en", storageType: .userDefaults(store))
     var language: String

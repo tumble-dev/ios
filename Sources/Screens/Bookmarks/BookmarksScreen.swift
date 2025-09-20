@@ -24,7 +24,8 @@ struct BookmarksScreen: View {
                         title: "Browse Events",
                         action: { context.send(viewAction: .showSearch) },
                         style: .primary
-                    )
+                    ),
+                    icon: "bookmark.slash"
                 )
                 
             case .hidden:
@@ -35,7 +36,8 @@ struct BookmarksScreen: View {
                         title: "Show Settings",
                         action: { context.send(viewAction: .showSettings) },
                         style: .primary
-                    )
+                    ),
+                    icon: "eye.slash"
                 )
                 
             case .loading:
@@ -50,42 +52,11 @@ struct BookmarksScreen: View {
             case .loaded(let events):
                 bookmarksListView(events: events)
             }
-            
-            if case .loaded = context.viewState.dataState, searchText.isEmpty {
-                VStack {
-                    Spacer()
-                    HStack {
-                        Spacer()
-                        floatingSearchButton
-                            .padding(.trailing, 20)
-                            .padding(.bottom, 20)
-                    }
-                }
-            }
         }
         .toolbar { toolbar }
         .navigationTitle("Bookmarks")
         .navigationBarTitleDisplayMode(.inline)
         .background(Color.background)
-        .searchable(
-            text: $searchText,
-            placement: .toolbar,
-            prompt: "Filter by title, course, or teacher"
-        )
-    }
-    
-    private var floatingSearchButton: some View {
-        Button {
-            context.send(viewAction: .showSearch)
-        } label: {
-            Image(systemName: "plus")
-                .font(.system(size: 18, weight: .medium))
-                .foregroundColor(.onSurface)
-                .frame(width: 44, height: 44)
-                .background(Color.surface, in: Circle())
-                .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
-        }
-        .accessibilityLabel("Browse programmes")
     }
     
     private func bookmarksListView(events: [Response.Event]) -> some View {
@@ -184,7 +155,24 @@ struct BookmarksScreen: View {
             } label: {
                 Image(systemName: "person.crop.circle")
             }
-            .accessibilityLabel("Settings")
+            .accessibilityLabel("Account")
+        }
+        ToolbarItem(placement: .bottomBar) {
+            HStack {
+                TextField("Filter events ..", text: $searchText)
+                    .textFieldStyle(.automatic)
+                    
+                
+                Button {
+                    context.send(viewAction: .showSearch)
+                } label: {
+                    Image(systemName: "plus")
+                        .font(.body)
+                        .foregroundColor(.onPrimary)
+                }
+            }
+            .padding(.horizontal, 8)
+            .frame(maxWidth: .infinity)
         }
     }
 }
