@@ -36,6 +36,16 @@ final class EventDetailsScreenCoordinator: CoordinatorProtocol {
             eventStorageService: parameters.eventStorageService,
             notificationManager: parameters.notificationManager
         )
+        
+        viewModel.actions
+            .sink { [weak self] action in
+                guard let self else { return }
+                switch action {
+                case .close:
+                    actionsSubject.send(.dismiss)
+                }
+            }
+            .store(in: &cancellables)
     }
     
     func start() {

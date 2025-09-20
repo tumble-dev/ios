@@ -46,9 +46,29 @@ struct EventDetailsScreen: View {
             }
             .padding(20)
         }
-        .background(Color.background)
         .onAppear {
             context.send(viewAction: .loadEvent)
+        }
+        .toolbar { toolbar }
+        .background(Color.background)
+    }
+    
+    // MARK: - Private
+    
+    @ToolbarContentBuilder
+    private var toolbar: some ToolbarContent {
+        ToolbarItem(placement: .primaryAction) {
+            Button("Done") {
+                context.send(viewAction: .close)
+            }
+        }
+        ToolbarItem(placement: .topBarLeading) {
+            Button {
+                context.send(viewAction: .showColorPicker)
+            } label: {
+                Image(systemName: "paintpalette")
+            }
+            .accessibilityLabel("Change Color")
         }
     }
 }
@@ -169,13 +189,6 @@ struct EventInfo: View {
                             .fontWeight(.medium)
                     }
                 }
-                
-                Spacer(minLength: 24)
-                
-                // Action buttons
-                ActionButtonsSection {
-                    showColorPicker = true
-                }
             }
         }
     }
@@ -271,32 +284,5 @@ struct DetailCard<Content: View>: View {
                 .fill(Color.surface)
                 .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
         )
-    }
-}
-
-struct ActionButtonsSection: View {
-    let onChangeColor: () -> Void
-    
-    var body: some View {
-        VStack(spacing: 12) {
-            Button(action: onChangeColor) {
-                HStack(spacing: 8) {
-                    Image(systemName: "paintpalette.fill")
-                        .font(.system(size: 20))
-                        .foregroundColor(.onPrimary)
-                    
-                    Text("Change Color")
-                        .font(.title3)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.onPrimary)
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 16)
-            }
-            .background(
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(Color.primary)
-            )
-        }
     }
 }

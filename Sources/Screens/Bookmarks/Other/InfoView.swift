@@ -137,7 +137,7 @@ struct InfoView: View {
         case .primary:
             return .primary
         case .secondary:
-            return Color(.systemGray5)
+            return .surface
         case .destructive:
             return .red
         }
@@ -146,7 +146,7 @@ struct InfoView: View {
     private func buttonForegroundColor(for style: InfoViewActionStyle) -> Color {
         switch style {
         case .primary, .destructive:
-            return .white
+            return .onPrimary
         case .secondary:
             return .primary
         }

@@ -29,6 +29,13 @@ struct SearchScreen: View {
             )
             .padding()
         }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button("Done") {
+                    context.send(viewAction: .close)
+                }
+            }
+        }
         .background(Color.background)
     }
     

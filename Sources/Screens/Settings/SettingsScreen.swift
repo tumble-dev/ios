@@ -16,7 +16,6 @@ struct SettingsScreen: View {
         Form {
             accountSection
             generalSection
-            behaviorSection
             supportSection
             advancedSection
         }
@@ -35,7 +34,7 @@ struct SettingsScreen: View {
     @ViewBuilder
     private var accountSection: some View {
         Section {
-            if let userId = context.viewState.userId {
+            if let userId = context.viewState.bindings.activeUserId {
                 // User is logged in
                 HStack {
                     Image(systemName: "person.circle.fill")
@@ -43,7 +42,7 @@ struct SettingsScreen: View {
                         .font(.title2)
                     
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(context.viewState.userDisplayName ?? "User")
+                        Text(context.viewState.bindings.activeUserId ?? "User")
                             .font(.headline)
                         Text(userId)
                             .font(.caption)
@@ -93,6 +92,15 @@ struct SettingsScreen: View {
     @ViewBuilder
     private var generalSection: some View {
         Section {
+            
+            Picker("Apperance", selection: context.viewState.bindings.binding(for: \.appearance)) {
+                ForEach(AppAppearance.allCases, id: \.self) { appearance in
+                    Text(appearance.displayName).tag(appearance)
+                }
+            }
+            
+            Toggle("Open Event from Widget", isOn: context.viewState.bindings.binding(for: \.openEventFromWidget))
+            
             SettingsRow(
                 icon: "bell.fill",
                 iconColor: .red,
@@ -100,15 +108,6 @@ struct SettingsScreen: View {
                 subtitle: "Manage notification preferences"
             ) {
                 context.send(viewAction: .notifications)
-            }
-            
-            SettingsRow(
-                icon: "moon.fill",
-                iconColor: .indigo,
-                title: "Appearance",
-                subtitle: "Light, Dark, or System"
-            ) {
-                context.send(viewAction: .appearance)
             }
             
             SettingsRow(
@@ -124,29 +123,13 @@ struct SettingsScreen: View {
                 icon: "bookmark",
                 iconColor: .primary,
                 title: "Bookmarked Programmes",
-                subtitle: "You have \(context.viewState.bookmarkedProgrammesCount) bookmarked programmes"
+                subtitle: "You have \(context.viewState.bindings.bookmarkedProgrammes.count) bookmarked programmes"
             ) {
-                context.send(viewAction: .language)
+                context.send(viewAction: .bookmarkedProgrammes)
             }
             
         } header: {
             Text("General")
-        }
-    }
-    
-    @ViewBuilder
-    private var behaviorSection: some View {
-        Section {
-            SettingsRow(
-                icon: "widget.small",
-                iconColor: .green,
-                title: "Widget",
-                subtitle: "Manage widget related preferences"
-            ) {
-                context.send(viewAction: .widget)
-            }
-        } header: {
-            Text("Behavior")
         }
     }
     
@@ -210,7 +193,7 @@ struct SettingsScreen: View {
             Text("Advanced")
         } footer: {
             VStack(alignment: .center, spacing: 8) {
-                Text("Version \(context.viewState.appVersion) (Build \(context.viewState.buildNumber))")
+                Text("Version \(Config.appVersion) (Build \(Config.bundleVersion))")
                     .font(.caption)
                     .foregroundColor(.onBackground)
                 

@@ -1,5 +1,5 @@
 {
-  "originHash" : "ba38c5c9caf9f021eee9935b847a59362a3346c24f9592420ed2b21492bdadf7",
+  "originHash" : "aac9fbbf3be27d5dcba850aa854a1563fa25a9051e1a1d339070c81af18b072f",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -146,24 +146,6 @@
       }
     },
     {
-      "identity" : "realm-core",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/realm/realm-core.git",
-      "state" : {
-        "revision" : "b36f2436c2746c32b1f93dcc06ea8b859671a767",
-        "version" : "14.12.1"
-      }
-    },
-    {
-      "identity" : "realm-swift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/realm/realm-swift.git",
-      "state" : {
-        "revision" : "9b9992d59a5148eb557e6c0445fec05009022c8c",
-        "version" : "10.53.1"
-      }
-    },
-    {
       "identity" : "swift-log",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-log",
@@ -188,24 +170,6 @@
       "state" : {
         "revision" : "887e75b96da6be36a062e1b0ef832c32a803348b",
         "version" : "6.0.1"
-      }
-    },
-    {
-      "identity" : "swiftsvg",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/mchoe/SwiftSVG",
-      "state" : {
-        "branch" : "master",
-        "revision" : "88b9ee086b29019e35f6f49c8e30e5552eb8fa9d"
-      }
-    },
-    {
-      "identity" : "swipeactions",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/aheze/SwipeActions.git",
-      "state" : {
-        "revision" : "41e6f6dce02d8cfa164f8c5461a41340850ca3ab",
-        "version" : "1.1.0"
       }
     }
   ],

@@ -46,6 +46,10 @@ class EventDetailsScreenViewModel: EventDetailsScreenViewModelType, ObservableOb
         switch viewAction {
         case .loadEvent:
             fetchEvent(eventId: eventId)
+        case .close:
+            actionsSubject.send(.close)
+        case .showColorPicker:
+            break // TODO: Show color picker
         }
     }
     

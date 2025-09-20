@@ -114,7 +114,6 @@ class AdvancedSettingsScreenViewModel: AdvancedSettingsScreenViewModelType, Adva
     }
     
     private func handleResetAllSettings() {
-        guard let appSettings = advancedSettings as? AppSettings else { return }
-        appSettings.resetAdvancedSettings()
+        advancedSettings.resetAdvancedSettings()
     }
 }

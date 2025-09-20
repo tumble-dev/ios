@@ -11,14 +11,12 @@ import SwiftUI
 enum SettingsFlowCoordinatorAction {
     case presentedSettings
     case dismissedSettings
-    case runLogoutFlow
-    case runLoginFlow
-    case clearCache
 }
 
 struct SettingsFlowCoordinatorParameters {
     let windowManager: WindowManagerProtocol
     let appSettings: AppSettings
+    let eventStorageService: EventStorageService
     let analyticsService: AnalyticsServiceProtocol
     let navigationSplitCoordinator: NavigationSplitCoordinator
 }
@@ -85,13 +83,10 @@ class SettingsFlowCoordinator: FlowCoordinatorProtocol {
                     presentAdvancedSettings()
                     
                 case .addAccount:
-                    actionsSubject.send(.runLoginFlow)
+                    break // TODO: Use authflowcoordinator
                     
                 case .removeAccount:
-                    actionsSubject.send(.runLogoutFlow)
-                    
-                case .appearance:
-                    presentAppearanceSettings()
+                    break // TODO: Use authflowcoordinator
                     
                 case .language:
                     presentLanguageSettings()
@@ -107,9 +102,6 @@ class SettingsFlowCoordinator: FlowCoordinatorProtocol {
                     
                 case .bookmarkedProgrammes:
                     presentBookmarksSettings()
-                    
-                case .widget:
-                    presentWidgetSettings()
                 }
             }
             .store(in: &cancellables)
@@ -120,9 +112,11 @@ class SettingsFlowCoordinator: FlowCoordinatorProtocol {
             guard let self else { return }
             
             navigationStackCoordinator = nil
+            // notify BookmarksFlowCoordinator to properly set state
             actionsSubject.send(.dismissedSettings)
         }
         
+        // notify BookmarksFlowCoordinator to properly set state
         actionsSubject.send(.presentedSettings)
     }
     
@@ -147,12 +141,15 @@ class SettingsFlowCoordinator: FlowCoordinatorProtocol {
         navigationStackCoordinator.push(coordinator)
     }
     
-    private func presentAppearanceSettings() {
-        // TODO: Create AppearanceSettingsScreenCoordinator
-        // let coordinator = AppearanceSettingsScreenCoordinator(parameters: .init(appSettings: parameters.appSettings))
-        // navigationStackCoordinator.push(coordinator)
-        
-        AppLogger.shared.info("Navigate to Appearance Settings")
+    private func presentBookmarksSettings() {
+        let coordinator = BookmarksSettingsScreenCoordinator(
+            parameters: .init(
+                appSettings: parameters.appSettings,
+                eventStorageService: parameters.eventStorageService
+                )
+            
+        )
+        navigationStackCoordinator.push(coordinator)
     }
     
     private func presentLanguageSettings() {
@@ -196,12 +193,6 @@ class SettingsFlowCoordinator: FlowCoordinatorProtocol {
         
         AppLogger.shared.info("Navigate to About Screen")
     }
-    
-    private func presentBookmarksSettings() {
-        
-    }
-    
-    private func presentWidgetSettings() { }
     
     // MARK: - Helper Methods
     

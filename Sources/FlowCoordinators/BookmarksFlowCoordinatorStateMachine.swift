@@ -1,5 +1,5 @@
 //
-//  MainFlowCoordinatorStateMachine.swift
+//  BookmarksFlowCoordinatorStateMachine.swift
 //  Tumble
 //
 //  Created by Adis Veletanlic on 2025-09-17.
@@ -9,7 +9,7 @@ import Combine
 import Foundation
 import SwiftState
 
-class MainFlowCoordinatorStateMachine {
+class BookmarksFlowCoordinatorStateMachine {
     /// States the AppCoordinator can find itself in
     enum State: StateType {
         /// The initial state, used before the coordinator starts
@@ -29,9 +29,6 @@ class MainFlowCoordinatorStateMachine {
         
         /// Showing the search screen
         case searchScreen
-        
-        /// Showing the search quickview screenb
-        case searchQuickview(programmeId: String)
     }
     
     struct EventUserInfo {
@@ -64,16 +61,11 @@ class MainFlowCoordinatorStateMachine {
         /// The search screen has been dismissed
         case dismissedSearchScreen
         
-        /// Request presentation of quickview for programme events
-        case showSearchQuickView(eventId: String)
-        /// The search quickview has been dismissed
-        case dismissedSearchQuickview
-        
     }
     
     private let stateMachine: StateMachine<State, Event>
     
-    var state: MainFlowCoordinatorStateMachine.State {
+    var state: BookmarksFlowCoordinatorStateMachine.State {
         stateMachine.state
     }
     
@@ -105,6 +97,10 @@ class MainFlowCoordinatorStateMachine {
                   
             case (.bookmarks, .showSearchScreen):
                 return .searchScreen
+            
+            case (.settingsScreen, .showSearchScreen):
+                return .searchScreen
+            
             case (.searchScreen, .dismissedSearchScreen):
                 return .bookmarks
             
@@ -115,12 +111,7 @@ class MainFlowCoordinatorStateMachine {
                 
             case (.eventDetailsScreen, .dismissedEventDetails):
                 return .bookmarks
-                
-            case (.searchScreen, .showSearchQuickView(let programmeId)):
-                return .searchQuickview(programmeId: programmeId)
-            case (.searchQuickview, .dismissedSearchQuickview):
-                return .searchScreen
-
+    
             default:
                 return nil
             }

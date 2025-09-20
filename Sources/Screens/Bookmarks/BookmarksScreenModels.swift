@@ -12,12 +12,14 @@ enum BookmarksScreenViewAction: Equatable {
     case openEvent(eventId: String)
     case showSearch
     case showSettings
+    case showAccount
 }
 
 enum BookmarksScreenViewModelAction: Equatable {
     case presentEventDetails(eventId: String)
     case presentSearchScreen
     case presentSettingsScreen
+    case presentAccountScreen
 }
 
 struct BookmarksScreenViewState: BindableState {

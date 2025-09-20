@@ -39,6 +39,8 @@ class SearchScreenViewModel: SearchScreenViewModelType {
             state.dataState = .initial
         case .clearSearch:
             state.dataState = .initial
+        case .close:
+            actionsSubject.send(.dismiss)
         }
     }
     

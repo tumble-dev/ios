@@ -41,14 +41,15 @@ struct NotificationsSettingsScreenViewStateBindings {
 }
 
 enum NotificationsSettingsScreenViewAction {
-    case disableInAppMessaging
-    case disableNotifications
-    case changeNotificationOffset
+    case resetAllSettings
 }
 
 // MARK: - Protocol Extension
 
 protocol NotificationsSettingsProtocol: AnyObject {
+    
+    func resetNotificationsSettings() -> Void
+    
     var notificationOffset: NotificationOffset { get set }
     var notificationsEnabled: Bool { get set }
     var inAppMessagingEnabled: Bool { get set }

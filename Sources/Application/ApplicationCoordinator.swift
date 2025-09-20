@@ -26,7 +26,7 @@ class ApplicationCoordinator: ApplicationCoordinatorProtocol, NotificationManage
     private var userSessionObserver: AnyCancellable?
 
     private var cancellables = Set<AnyCancellable>()
-    private var mainFlowCoordinator: MainFlowCoordinator?
+    private var mainFlowCoordinator: BookmarksFlowCoordinator?
     private let navigationRootCoordinator: NavigationRootCoordinator
     private let stateMachine: ApplicationCoordinatorStateMachine
     
@@ -88,14 +88,23 @@ class ApplicationCoordinator: ApplicationCoordinatorProtocol, NotificationManage
     func toPresentable() -> AnyView {
         AppLogger.shared.info("[ApplicationCoordinator] Calling .toPresentable()")
         return AnyView(
-            navigationRootCoordinator.toPresentable()
+            navigationRootCoordinator
+                .toPresentable()
+                .onReceive(appSettings.$appearance) { [weak self] appearance in
+                    guard let self else { return }
+                    
+                    windowManager.windows.forEach { window in
+                        // Unfortunately .preferredColorScheme doesn't propagate properly throughout the app when changed
+                        window.overrideUserInterfaceStyle = appearance.interfaceStyle
+                    }
+                }
         )
     }
     
     /// Initializes and starts the main coordinator flow
     func startMainFlow(isFirstOpen: Bool = false) {
         AppLogger.shared.info("[ApplicationCoordinator] Starting main application flow")
-        let mainFlowCoordinator = MainFlowCoordinator(
+        let mainFlowCoordinator = BookmarksFlowCoordinator(
             appSettings: appSettings,
             appMediator: appMediator,
             notificationManager: notificationManager,
@@ -107,7 +116,7 @@ class ApplicationCoordinator: ApplicationCoordinatorProtocol, NotificationManage
         )
         
         mainFlowCoordinator.actionsPublisher
-            .sink { [weak self] (action: MainFlowCoordinatorAction) in
+            .sink { [weak self] (action: BookmarksFlowCoordinatorAction) in
                 guard let self else { return }
                 
                 switch action {

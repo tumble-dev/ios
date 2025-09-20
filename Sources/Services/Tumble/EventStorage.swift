@@ -22,6 +22,7 @@ enum EventStorageEvent {
 enum EventStorageError: Error, LocalizedError {
     case fileOperationFailed
     case eventNotFound(id: String)
+    case programmeNotFound(id: String)
     case encodingFailed
     case decodingFailed
     case invalidEventData
@@ -34,6 +35,8 @@ enum EventStorageError: Error, LocalizedError {
             return "File operation failed"
         case .eventNotFound(let id):
             return "Event with ID '\(id)' not found"
+        case .programmeNotFound(let id):
+            return "Events with programme identifier '\(id)' not found"
         case .encodingFailed:
             return "Failed to encode event data"
         case .decodingFailed:
@@ -183,13 +186,13 @@ class EventStorageService: ObservableObject {
         }
     }
     
-    /// Remove all events for a given scheduleId
-    func removeEvents(forScheduleId scheduleId: String) throws {
+    /// Remove all events for a given programmeId
+    func removeEvents(forProgrammeId programmeId: String) throws {
         try queue.sync(flags: .barrier) {
-            let matchingEvents = events.values.filter { $0.scheduleId == scheduleId }
+            let matchingEvents = events.values.filter { $0.scheduleId == programmeId }
             
             guard !matchingEvents.isEmpty else {
-                throw EventStorageError.eventNotFound(id: scheduleId)
+                throw EventStorageError.programmeNotFound(id: programmeId)
             }
             
             for event in matchingEvents {

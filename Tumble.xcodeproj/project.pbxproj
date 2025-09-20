@@ -64,6 +64,12 @@
 		0B30C8EE2E7E10FB0002D799 /* NotificationsSettingsScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B30C8ED2E7E10F70002D799 /* NotificationsSettingsScreenViewModel.swift */; };
 		0B30C8F02E7E11020002D799 /* NotificationsSettingsScreenCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B30C8EF2E7E11000002D799 /* NotificationsSettingsScreenCoordinator.swift */; };
 		0B30C8F22E7E11330002D799 /* NotificationsSettingsScreenViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B30C8F12E7E112B0002D799 /* NotificationsSettingsScreenViewModelProtocol.swift */; };
+		0B30C8F62E7E2BA20002D799 /* BookmarksSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B30C8F52E7E2B9E0002D799 /* BookmarksSettingsScreen.swift */; };
+		0B30C8F82E7E2BAF0002D799 /* BookmarksSettingsScreenModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B30C8F72E7E2BA80002D799 /* BookmarksSettingsScreenModels.swift */; };
+		0B30C8FA2E7E2BBC0002D799 /* BookmarksSettingsScreenViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B30C8F92E7E2BB40002D799 /* BookmarksSettingsScreenViewModelProtocol.swift */; };
+		0B30C8FC2E7E2BC30002D799 /* BookmarksSettingsScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B30C8FB2E7E2BC00002D799 /* BookmarksSettingsScreenViewModel.swift */; };
+		0B30C8FE2E7E2BCB0002D799 /* BookmarksSettingsScreenCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B30C8FD2E7E2BC90002D799 /* BookmarksSettingsScreenCoordinator.swift */; };
+		0B30C9012E7ED6480002D799 /* SearchFlowCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B30C9002E7ED6450002D799 /* SearchFlowCoordinator.swift */; };
 		0B5DC81C2E79C7A0001B668F /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 0B5DC81B2E79C7A0001B668F /* FirebaseAnalytics */; };
 		0B5DC81E2E79C7A0001B668F /* FirebaseAnalyticsCore in Frameworks */ = {isa = PBXBuildFile; productRef = 0B5DC81D2E79C7A0001B668F /* FirebaseAnalyticsCore */; };
 		0B5DC8202E79C7A0001B668F /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 0B5DC81F2E79C7A0001B668F /* FirebaseCore */; };
@@ -104,9 +110,9 @@
 		0BAEE2022E7B5C0A00EA6796 /* NavigationStackCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAEE2012E7B5C0700EA6796 /* NavigationStackCoordinator.swift */; };
 		0BAEE2042E7B5CB400EA6796 /* ApplicationCoordinatorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAEE2032E7B5CB100EA6796 /* ApplicationCoordinatorProtocol.swift */; };
 		0BAEE2062E7B5D0C00EA6796 /* ApplicationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAEE2052E7B5D0C00EA6796 /* ApplicationCoordinator.swift */; };
-		0BAEE2092E7B5E7900EA6796 /* MainFlowCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAEE2082E7B5E7600EA6796 /* MainFlowCoordinator.swift */; };
+		0BAEE2092E7B5E7900EA6796 /* BookmarksFlowCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAEE2082E7B5E7600EA6796 /* BookmarksFlowCoordinator.swift */; };
 		0BAEE20D2E7B639100EA6796 /* PlaceholderScreenCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAEE20C2E7B638C00EA6796 /* PlaceholderScreenCoordinator.swift */; };
-		0BAEE20F2E7B644400EA6796 /* MainFlowCoordinatorStateMachine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAEE20E2E7B643F00EA6796 /* MainFlowCoordinatorStateMachine.swift */; };
+		0BAEE20F2E7B644400EA6796 /* BookmarksFlowCoordinatorStateMachine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAEE20E2E7B643F00EA6796 /* BookmarksFlowCoordinatorStateMachine.swift */; };
 		0BAEE2122E7B66C600EA6796 /* OnboardingFlowCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAEE2112E7B66C100EA6796 /* OnboardingFlowCoordinator.swift */; };
 		0BAEE2172E7B689D00EA6796 /* BookmarksScreenCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAEE2162E7B688D00EA6796 /* BookmarksScreenCoordinator.swift */; };
 		0BAEE2232E7B6CB100EA6796 /* BookmarksScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAEE2222E7B6CAE00EA6796 /* BookmarksScreen.swift */; };
@@ -115,7 +121,6 @@
 		0BAEE2292E7B6E1800EA6796 /* SplashScreenCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAEE2282E7B6E1400EA6796 /* SplashScreenCoordinator.swift */; };
 		0BAEE2322E7BF90700EA6796 /* NotificationManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAEE2312E7BF90700EA6796 /* NotificationManagerProtocol.swift */; };
 		0BAEE2382E7BFD3500EA6796 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 0BAEE2372E7BFD3500EA6796 /* KeychainAccess */; };
-		1CB196312CA600FE00B747BF /* SwiftSVG in Frameworks */ = {isa = PBXBuildFile; productRef = 1CB196302CA600FE00B747BF /* SwiftSVG */; };
 		D42BAC1C298D3D590025EAA9 /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = D42BAC1B298D3D590025EAA9 /* Logging */; };
 		D42BAC1E298D3D6A0025EAA9 /* AppLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = D42BAC1D298D3D6A0025EAA9 /* AppLogger.swift */; };
 		D430F74329C615DC00E30E48 /* FSCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = D430F74229C615DC00E30E48 /* FSCalendar */; };
@@ -126,10 +131,7 @@
 		D4A433B829951F2B00BFEB7A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A433B729951F2B00BFEB7A /* AppDelegate.swift */; };
 		D4ACD86E2AD9436C00780998 /* MijickPopupView in Frameworks */ = {isa = PBXBuildFile; productRef = D4ACD86D2AD9436C00780998 /* MijickPopupView */; };
 		D4CD0F0529D5DC9D00AB5FD0 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D4CD0F0729D5DC9D00AB5FD0 /* Localizable.strings */; };
-		D4D04DFD29FB29BC008858F0 /* SwipeActions in Frameworks */ = {isa = PBXBuildFile; productRef = D4D04DFC29FB29BC008858F0 /* SwipeActions */; };
-		D4D5F1202C860D1200301A90 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D4FFCC1E29EDA9A700708CC0 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		D4D7B45B29F1505A0032AEEF /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = D4D7B45A29F1505A0032AEEF /* README.md */; };
-		D4FFCC1F29EDA9A700708CC0 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = D4FFCC1E29EDA9A700708CC0 /* RealmSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -139,7 +141,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				D4D5F1202C860D1200301A90 /* RealmSwift in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -214,6 +215,12 @@
 		0B30C8ED2E7E10F70002D799 /* NotificationsSettingsScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsSettingsScreenViewModel.swift; sourceTree = "<group>"; };
 		0B30C8EF2E7E11000002D799 /* NotificationsSettingsScreenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsSettingsScreenCoordinator.swift; sourceTree = "<group>"; };
 		0B30C8F12E7E112B0002D799 /* NotificationsSettingsScreenViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsSettingsScreenViewModelProtocol.swift; sourceTree = "<group>"; };
+		0B30C8F52E7E2B9E0002D799 /* BookmarksSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksSettingsScreen.swift; sourceTree = "<group>"; };
+		0B30C8F72E7E2BA80002D799 /* BookmarksSettingsScreenModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksSettingsScreenModels.swift; sourceTree = "<group>"; };
+		0B30C8F92E7E2BB40002D799 /* BookmarksSettingsScreenViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksSettingsScreenViewModelProtocol.swift; sourceTree = "<group>"; };
+		0B30C8FB2E7E2BC00002D799 /* BookmarksSettingsScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksSettingsScreenViewModel.swift; sourceTree = "<group>"; };
+		0B30C8FD2E7E2BC90002D799 /* BookmarksSettingsScreenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksSettingsScreenCoordinator.swift; sourceTree = "<group>"; };
+		0B30C9002E7ED6450002D799 /* SearchFlowCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchFlowCoordinator.swift; sourceTree = "<group>"; };
 		0BAEDEFA2E7B175900EA6796 /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
 		0BAEDEFB2E7B175900EA6796 /* NetworkSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkSettings.swift; sourceTree = "<group>"; };
 		0BAEDF012E7B176400EA6796 /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
@@ -247,9 +254,9 @@
 		0BAEE2012E7B5C0700EA6796 /* NavigationStackCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationStackCoordinator.swift; sourceTree = "<group>"; };
 		0BAEE2032E7B5CB100EA6796 /* ApplicationCoordinatorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationCoordinatorProtocol.swift; sourceTree = "<group>"; };
 		0BAEE2052E7B5D0C00EA6796 /* ApplicationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationCoordinator.swift; sourceTree = "<group>"; };
-		0BAEE2082E7B5E7600EA6796 /* MainFlowCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainFlowCoordinator.swift; sourceTree = "<group>"; };
+		0BAEE2082E7B5E7600EA6796 /* BookmarksFlowCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksFlowCoordinator.swift; sourceTree = "<group>"; };
 		0BAEE20C2E7B638C00EA6796 /* PlaceholderScreenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderScreenCoordinator.swift; sourceTree = "<group>"; };
-		0BAEE20E2E7B643F00EA6796 /* MainFlowCoordinatorStateMachine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainFlowCoordinatorStateMachine.swift; sourceTree = "<group>"; };
+		0BAEE20E2E7B643F00EA6796 /* BookmarksFlowCoordinatorStateMachine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksFlowCoordinatorStateMachine.swift; sourceTree = "<group>"; };
 		0BAEE2112E7B66C100EA6796 /* OnboardingFlowCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFlowCoordinator.swift; sourceTree = "<group>"; };
 		0BAEE2162E7B688D00EA6796 /* BookmarksScreenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksScreenCoordinator.swift; sourceTree = "<group>"; };
 		0BAEE2222E7B6CAE00EA6796 /* BookmarksScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksScreen.swift; sourceTree = "<group>"; };
@@ -290,10 +297,7 @@
 				0B5DC81C2E79C7A0001B668F /* FirebaseAnalytics in Frameworks */,
 				0BAEE2382E7BFD3500EA6796 /* KeychainAccess in Frameworks */,
 				0BAEDF372E7B3E5A00EA6796 /* SwiftState in Frameworks */,
-				D4FFCC1F29EDA9A700708CC0 /* RealmSwift in Frameworks */,
-				D4D04DFD29FB29BC008858F0 /* SwipeActions in Frameworks */,
 				D4ACD86E2AD9436C00780998 /* MijickPopupView in Frameworks */,
-				1CB196312CA600FE00B747BF /* SwiftSVG in Frameworks */,
 				D430F74329C615DC00E30E48 /* FSCalendar in Frameworks */,
 				0B5DC8242E79C7A0001B668F /* FirebaseInAppMessaging-Beta in Frameworks */,
 				D42BAC1C298D3D590025EAA9 /* Logging in Frameworks */,
@@ -423,6 +427,7 @@
 		0B19F9542E7D77EB0037E29E /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				0B30C8F42E7E2B980002D799 /* Bookmarks */,
 				0B30C8E82E7E10D10002D799 /* Notifications */,
 				0B19F95F2E7DA5920037E29E /* Advanced */,
 				0B19F95D2E7D79980037E29E /* SettingsScreen.swift */,
@@ -457,13 +462,25 @@
 		0B30C8E82E7E10D10002D799 /* Notifications */ = {
 			isa = PBXGroup;
 			children = (
+				0B30C8E92E7E10E20002D799 /* NotificationsSettingsScreen.swift */,
 				0B30C8F12E7E112B0002D799 /* NotificationsSettingsScreenViewModelProtocol.swift */,
 				0B30C8EF2E7E11000002D799 /* NotificationsSettingsScreenCoordinator.swift */,
 				0B30C8ED2E7E10F70002D799 /* NotificationsSettingsScreenViewModel.swift */,
 				0B30C8EB2E7E10F10002D799 /* NotificationsSettingsScreenModels.swift */,
-				0B30C8E92E7E10E20002D799 /* NotificationsSettingsScreen.swift */,
 			);
 			path = Notifications;
+			sourceTree = "<group>";
+		};
+		0B30C8F42E7E2B980002D799 /* Bookmarks */ = {
+			isa = PBXGroup;
+			children = (
+				0B30C8F52E7E2B9E0002D799 /* BookmarksSettingsScreen.swift */,
+				0B30C8F72E7E2BA80002D799 /* BookmarksSettingsScreenModels.swift */,
+				0B30C8FB2E7E2BC00002D799 /* BookmarksSettingsScreenViewModel.swift */,
+				0B30C8F92E7E2BB40002D799 /* BookmarksSettingsScreenViewModelProtocol.swift */,
+				0B30C8FD2E7E2BC90002D799 /* BookmarksSettingsScreenCoordinator.swift */,
+			);
+			path = Bookmarks;
 			sourceTree = "<group>";
 		};
 		0BAEDEFD2E7B175900EA6796 /* Network */ = {
@@ -589,7 +606,7 @@
 			children = (
 				0B19F9542E7D77EB0037E29E /* Settings */,
 				0B19F7E12E7C36650037E29E /* Search */,
-				0BAEE20A2E7B638200EA6796 /* Main */,
+				0BAEE20A2E7B638200EA6796 /* Bookmarks */,
 				0BAEE1DE2E7B434700EA6796 /* Onboarding */,
 			);
 			path = Screens;
@@ -624,13 +641,19 @@
 			path = Windowing;
 			sourceTree = "<group>";
 		};
-		0BAEE20A2E7B638200EA6796 /* Main */ = {
+		0BAEE20A2E7B638200EA6796 /* Bookmarks */ = {
 			isa = PBXGroup;
 			children = (
-				0BAEE2152E7B688800EA6796 /* Bookmarks */,
+				0B19F9452E7CB1530037E29E /* Details */,
+				0B19F9432E7CB13C0037E29E /* Shared */,
+				0BAEE21E2E7B6C8600EA6796 /* ViewTypes */,
+				0BAEE2242E7B6CB600EA6796 /* BookmarksScreenViewModel.swift */,
+				0BAEE2262E7B6CFA00EA6796 /* BookmarksScreenModels.swift */,
+				0BAEE2222E7B6CAE00EA6796 /* BookmarksScreen.swift */,
+				0BAEE2162E7B688D00EA6796 /* BookmarksScreenCoordinator.swift */,
 				0BAEE20B2E7B638700EA6796 /* Other */,
 			);
-			path = Main;
+			path = Bookmarks;
 			sourceTree = "<group>";
 		};
 		0BAEE20B2E7B638700EA6796 /* Other */ = {
@@ -646,20 +669,6 @@
 				0BAEE20C2E7B638C00EA6796 /* PlaceholderScreenCoordinator.swift */,
 			);
 			path = Other;
-			sourceTree = "<group>";
-		};
-		0BAEE2152E7B688800EA6796 /* Bookmarks */ = {
-			isa = PBXGroup;
-			children = (
-				0B19F9452E7CB1530037E29E /* Details */,
-				0B19F9432E7CB13C0037E29E /* Shared */,
-				0BAEE21E2E7B6C8600EA6796 /* ViewTypes */,
-				0BAEE2242E7B6CB600EA6796 /* BookmarksScreenViewModel.swift */,
-				0BAEE2262E7B6CFA00EA6796 /* BookmarksScreenModels.swift */,
-				0BAEE2222E7B6CAE00EA6796 /* BookmarksScreen.swift */,
-				0BAEE2162E7B688D00EA6796 /* BookmarksScreenCoordinator.swift */,
-			);
-			path = Bookmarks;
 			sourceTree = "<group>";
 		};
 		0BAEE21E2E7B6C8600EA6796 /* ViewTypes */ = {
@@ -696,11 +705,12 @@
 		0BAEE22B2E7BEF1B00EA6796 /* FlowCoordinators */ = {
 			isa = PBXGroup;
 			children = (
+				0B30C9002E7ED6450002D799 /* SearchFlowCoordinator.swift */,
 				0B19F9522E7D76300037E29E /* AuthFlowCoordinator.swift */,
 				0B19F9502E7D76080037E29E /* SettingsFlowCoordinator.swift */,
 				0BAEE2112E7B66C100EA6796 /* OnboardingFlowCoordinator.swift */,
-				0BAEE2082E7B5E7600EA6796 /* MainFlowCoordinator.swift */,
-				0BAEE20E2E7B643F00EA6796 /* MainFlowCoordinatorStateMachine.swift */,
+				0BAEE2082E7B5E7600EA6796 /* BookmarksFlowCoordinator.swift */,
+				0BAEE20E2E7B643F00EA6796 /* BookmarksFlowCoordinatorStateMachine.swift */,
 			);
 			path = FlowCoordinators;
 			sourceTree = "<group>";
@@ -840,10 +850,7 @@
 			packageProductDependencies = (
 				D42BAC1B298D3D590025EAA9 /* Logging */,
 				D430F74229C615DC00E30E48 /* FSCalendar */,
-				D4FFCC1E29EDA9A700708CC0 /* RealmSwift */,
-				D4D04DFC29FB29BC008858F0 /* SwipeActions */,
 				D4ACD86D2AD9436C00780998 /* MijickPopupView */,
-				1CB196302CA600FE00B747BF /* SwiftSVG */,
 				0B5DC81B2E79C7A0001B668F /* FirebaseAnalytics */,
 				0B5DC81D2E79C7A0001B668F /* FirebaseAnalyticsCore */,
 				0B5DC81F2E79C7A0001B668F /* FirebaseCore */,
@@ -891,10 +898,7 @@
 			packageReferences = (
 				D42BAC1A298D3D590025EAA9 /* XCRemoteSwiftPackageReference "swift-log" */,
 				D430F74129C615DC00E30E48 /* XCRemoteSwiftPackageReference "FSCalendar" */,
-				D4FFCC1B29EDA9A700708CC0 /* XCRemoteSwiftPackageReference "realm-swift" */,
-				D4D04DFB29FB29BC008858F0 /* XCRemoteSwiftPackageReference "SwipeActions" */,
 				D4ACD86C2AD9436C00780998 /* XCRemoteSwiftPackageReference "PopupView" */,
-				1CB1962F2CA600FE00B747BF /* XCRemoteSwiftPackageReference "SwiftSVG" */,
 				0B5DC81A2E79C7A0001B668F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				0BAEDF352E7B3E5A00EA6796 /* XCRemoteSwiftPackageReference "SwiftState" */,
 				0BAEE2362E7BFD3500EA6796 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
@@ -937,10 +941,12 @@
 				0BAEDF112E7B17B900EA6796 /* Request.swift in Sources */,
 				0B19F9392E7C916E0037E29E /* SearchField.swift in Sources */,
 				0B19F9472E7CB1AB0037E29E /* EventDetailsScreen.swift in Sources */,
+				0B30C9012E7ED6480002D799 /* SearchFlowCoordinator.swift in Sources */,
 				0BAEDF122E7B17B900EA6796 /* Response.swift in Sources */,
 				0B19F9372E7C8B4B0037E29E /* DateSectionHeader.swift in Sources */,
 				0BAEDF1D2E7B1B1E00EA6796 /* TumbleAPIService.swift in Sources */,
 				0B19F9312E7C6DAA0037E29E /* QuickViewScreen.swift in Sources */,
+				0B30C8F82E7E2BAF0002D799 /* BookmarksSettingsScreenModels.swift in Sources */,
 				0BAEDF2E2E7B2C1F00EA6796 /* StateStoreViewModel.swift in Sources */,
 				0BAEE2002E7B5BDB00EA6796 /* NavigationModule.swift in Sources */,
 				0B30C8F22E7E11330002D799 /* NotificationsSettingsScreenViewModelProtocol.swift in Sources */,
@@ -949,7 +955,7 @@
 				D4722149292454560063BDB7 /* Application.swift in Sources */,
 				0B19F93B2E7C91A80037E29E /* SearchMenuActionStyle.swift in Sources */,
 				0B19F9422E7CAAE90037E29E /* InfoView.swift in Sources */,
-				0BAEE20F2E7B644400EA6796 /* MainFlowCoordinatorStateMachine.swift in Sources */,
+				0BAEE20F2E7B644400EA6796 /* BookmarksFlowCoordinatorStateMachine.swift in Sources */,
 				0B19F7EF2E7C44B90037E29E /* EventStorage.swift in Sources */,
 				0B19F7E52E7C3A490037E29E /* SearchScreenViewModel.swift in Sources */,
 				0B19F69B2E7C10C60037E29E /* NotificationConstants.swift in Sources */,
@@ -971,13 +977,16 @@
 				0BAEDF292E7B23B200EA6796 /* CurrentValuePublisher.swift in Sources */,
 				0BAEDF052E7B176400EA6796 /* KeychainService.swift in Sources */,
 				0BAEDF062E7B176400EA6796 /* AuthenticationService.swift in Sources */,
+				0B30C8FC2E7E2BC30002D799 /* BookmarksSettingsScreenViewModel.swift in Sources */,
 				0BAEE2042E7B5CB400EA6796 /* ApplicationCoordinatorProtocol.swift in Sources */,
 				0B19F9692E7DAB940037E29E /* AppAppearance.swift in Sources */,
 				0BAEDF302E7B2C4400EA6796 /* BindableState.swift in Sources */,
 				0B30C8EA2E7E10E70002D799 /* NotificationsSettingsScreen.swift in Sources */,
+				0B30C8F62E7E2BA20002D799 /* BookmarksSettingsScreen.swift in Sources */,
 				0B19F6AF2E7C1D070037E29E /* NotificationPermissionsScreenViewModel.swift in Sources */,
-				0BAEE2092E7B5E7900EA6796 /* MainFlowCoordinator.swift in Sources */,
+				0BAEE2092E7B5E7900EA6796 /* BookmarksFlowCoordinator.swift in Sources */,
 				D4A433B829951F2B00BFEB7A /* AppDelegate.swift in Sources */,
+				0B30C8FA2E7E2BBC0002D799 /* BookmarksSettingsScreenViewModelProtocol.swift in Sources */,
 				0B19F6A92E7C1CC40037E29E /* NotificationPermissionsScreenCoordinator.swift in Sources */,
 				0B19F92F2E7C6AB10037E29E /* QuickViewScreenViewModel.swift in Sources */,
 				0BAEE2322E7BF90700EA6796 /* NotificationManagerProtocol.swift in Sources */,
@@ -1017,6 +1026,7 @@
 				0BAEE2022E7B5C0A00EA6796 /* NavigationStackCoordinator.swift in Sources */,
 				0BAEE1FC2E7B4AFF00EA6796 /* CancellableTask.swift in Sources */,
 				0BAEDF1F2E7B1D4900EA6796 /* AppSettings.swift in Sources */,
+				0B30C8FE2E7E2BCB0002D799 /* BookmarksSettingsScreenCoordinator.swift in Sources */,
 				0B19F9532E7D76330037E29E /* AuthFlowCoordinator.swift in Sources */,
 				0B30C8EE2E7E10FB0002D799 /* NotificationsSettingsScreenViewModel.swift in Sources */,
 				0B30C8F02E7E11020002D799 /* NotificationsSettingsScreenCoordinator.swift in Sources */,
@@ -1204,14 +1214,6 @@
 				kind = branch;
 			};
 		};
-		1CB1962F2CA600FE00B747BF /* XCRemoteSwiftPackageReference "SwiftSVG" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/mchoe/SwiftSVG";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
 		D42BAC1A298D3D590025EAA9 /* XCRemoteSwiftPackageReference "swift-log" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-log";
@@ -1234,22 +1236,6 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 2.7.0;
-			};
-		};
-		D4D04DFB29FB29BC008858F0 /* XCRemoteSwiftPackageReference "SwipeActions" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/aheze/SwipeActions.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
-		D4FFCC1B29EDA9A700708CC0 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/realm/realm-swift.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 10.53.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -1295,11 +1281,6 @@
 			package = 0BAEE2362E7BFD3500EA6796 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
 			productName = KeychainAccess;
 		};
-		1CB196302CA600FE00B747BF /* SwiftSVG */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1CB1962F2CA600FE00B747BF /* XCRemoteSwiftPackageReference "SwiftSVG" */;
-			productName = SwiftSVG;
-		};
 		D42BAC1B298D3D590025EAA9 /* Logging */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = D42BAC1A298D3D590025EAA9 /* XCRemoteSwiftPackageReference "swift-log" */;
@@ -1314,16 +1295,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D4ACD86C2AD9436C00780998 /* XCRemoteSwiftPackageReference "PopupView" */;
 			productName = MijickPopupView;
-		};
-		D4D04DFC29FB29BC008858F0 /* SwipeActions */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D4D04DFB29FB29BC008858F0 /* XCRemoteSwiftPackageReference "SwipeActions" */;
-			productName = SwipeActions;
-		};
-		D4FFCC1E29EDA9A700708CC0 /* RealmSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D4FFCC1B29EDA9A700708CC0 /* XCRemoteSwiftPackageReference "realm-swift" */;
-			productName = RealmSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

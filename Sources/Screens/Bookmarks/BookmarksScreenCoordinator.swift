@@ -17,6 +17,7 @@ enum BookmarksScreenCoordinatorAction {
     case presentBookmarkedEventDetails(eventId: String)
     case presentSettingsScreen
     case presentSearchScreen
+    case presentAccountScreen
 }
 
 final class BookmarksScreenCoordinator: CoordinatorProtocol {
@@ -47,6 +48,8 @@ final class BookmarksScreenCoordinator: CoordinatorProtocol {
                 actionsSubject.send(.presentSearchScreen)
             case .presentSettingsScreen:
                 actionsSubject.send(.presentSettingsScreen)
+            case .presentAccountScreen:
+                actionsSubject.send(.presentAccountScreen)
             }
         }
         .store(in: &cancellables)

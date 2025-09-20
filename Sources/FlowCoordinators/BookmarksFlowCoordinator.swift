@@ -1,5 +1,5 @@
 //
-//  MainFlowCoordinator.swift
+//  BookmarksFlowCoordinator.swift
 //  Tumble
 //
 //  Created by Adis Veletanlic on 2025-09-17.
@@ -9,11 +9,11 @@ import UIKit
 import Combine
 import SwiftUI
 
-enum MainFlowCoordinatorAction {
+enum BookmarksFlowCoordinatorAction {
     case clearCache
 }
 
-class MainFlowCoordinator: FlowCoordinatorProtocol {
+class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
     
     private let navigationRootCoordinator: NavigationRootCoordinator
     private let navigationSplitCoordinator: NavigationSplitCoordinator
@@ -21,10 +21,11 @@ class MainFlowCoordinator: FlowCoordinatorProtocol {
     private let sidebarNavigationStackCoordinator: NavigationStackCoordinator
     private let detailNavigationStackCoordinator: NavigationStackCoordinator
     
-    private let stateMachine: MainFlowCoordinatorStateMachine
+    private let stateMachine: BookmarksFlowCoordinatorStateMachine
     
     private let onboardingFlowCoordinator: OnboardingFlowCoordinator
     private let settingsFlowCoordinator: SettingsFlowCoordinator
+    private let searchFlowCoordinator: SearchFlowCoordinator
     
     private let selectedBookmarkEventSubjectId = CurrentValueSubject<String?, Never>(nil)
     
@@ -39,8 +40,8 @@ class MainFlowCoordinator: FlowCoordinatorProtocol {
     private let eventStorageService: EventStorageService
     private let notificationManager: NotificationManagerProtocol
     
-    private let actionsSubject: PassthroughSubject<MainFlowCoordinatorAction, Never> = .init()
-    var actionsPublisher: AnyPublisher<MainFlowCoordinatorAction, Never> {
+    private let actionsSubject: PassthroughSubject<BookmarksFlowCoordinatorAction, Never> = .init()
+    var actionsPublisher: AnyPublisher<BookmarksFlowCoordinatorAction, Never> {
         actionsSubject.eraseToAnyPublisher()
     }
     
@@ -54,7 +55,7 @@ class MainFlowCoordinator: FlowCoordinatorProtocol {
         navigationRootCoordinator: NavigationRootCoordinator,
         isFirstOpen: Bool
     ) {
-        self.stateMachine = MainFlowCoordinatorStateMachine()
+        self.stateMachine = BookmarksFlowCoordinatorStateMachine()
         self.navigationRootCoordinator = navigationRootCoordinator
         self.appSettings = appSettings
         self.eventStorageService = eventStorageService
@@ -81,23 +82,58 @@ class MainFlowCoordinator: FlowCoordinatorProtocol {
             parameters: .init(
                 windowManager: appMediator.windowManager,
                 appSettings: appSettings,
+                eventStorageService: eventStorageService,
+                analyticsService: analyticsService,
+                navigationSplitCoordinator: navigationSplitCoordinator
+            )
+        )
+        
+        self.searchFlowCoordinator = SearchFlowCoordinator(
+            parameters: .init(
+                windowManager: appMediator.windowManager,
+                appSettings: appSettings,
+                tumbleApiService: tumbleApiService,
+                eventStorageService: eventStorageService,
                 analyticsService: analyticsService,
                 navigationSplitCoordinator: navigationSplitCoordinator
             )
         )
         
         setupStateMachine()
+        setupObservers()
     }
     
     func setupObservers() {
-        // TODO
+        settingsFlowCoordinator.actions
+            .sink { [weak self] action in
+                guard let self else { return }
+                switch action {
+                case .presentedSettings:
+                    stateMachine.processEvent(.showSettingsScreen)
+                case .dismissedSettings:
+                    stateMachine.processEvent(.dismissedSettingsScreen)
+                }
+            }
+            .store(in: &cancellables)
+        
+        searchFlowCoordinator.actions
+            .sink { [weak self] action in
+                guard let self else { return }
+                switch action {
+                case .presentedSearch:
+                    stateMachine.processEvent(.showSearchScreen)
+                case .dismissedSearch:
+                    stateMachine.processEvent(.dismissedSearchScreen)
+                }
+            }
+            .store(in: &cancellables)
     }
     
     func attemptStartingOnboarding() {
         AppLogger.shared.info("Attempting to start onboarding")
         
         if onboardingFlowCoordinator.shouldStart {
-            AppLogger.shared.info("[MainFlowCoordinator] Onboarding should not happen")
+            AppLogger.shared.info("[BookmarksFlowCoordinator] Onboarding should not happen")
             clearRoute(animated: false)
             onboardingFlowCoordinator.start()
         }
@@ -136,21 +172,7 @@ class MainFlowCoordinator: FlowCoordinatorProtocol {
     
     func asyncHandleAppRoute(_ appRoute: AppRoute, animated: Bool) async {
         switch appRoute {
-        case .bookmarks:
-            break
-        case .eventDetails(let eventId):
-            break
-        case .search:
-            break
-        case .searchResult(let query):
-            break
-        case .searchQuickview(let programmeId):
-            break
-        case .account:
-            break
-        case .settings:
-            break
-        case .settingsDetails(let category):
+        default:
             break
         }
     }
@@ -158,7 +180,7 @@ class MainFlowCoordinator: FlowCoordinatorProtocol {
 
 // MARK: - Setup
 
-private extension MainFlowCoordinator {
+private extension BookmarksFlowCoordinator {
     
     private func setupStateMachine() {
         stateMachine.addTransitionHandler { [weak self] context in
@@ -181,8 +203,7 @@ private extension MainFlowCoordinator {
             case (.searchScreen, .dismissedSearchScreen, .bookmarks):
                 break
             case (.bookmarks, .showSearchScreen, .searchScreen):
-                presentSearchScreen()
-                
+                break
             case (.eventDetailsScreen, .dismissedEventDetails, .bookmarks):
                 break
                 
@@ -215,7 +236,7 @@ private extension MainFlowCoordinator {
 
 // MARK: - Showing Screens
 
-private extension MainFlowCoordinator {
+private extension BookmarksFlowCoordinator {
     
     /// Single home screen instead of tabs
     private func presentBookmarksScreen() {
@@ -234,7 +255,9 @@ private extension MainFlowCoordinator {
                 case .presentSettingsScreen:
                     settingsFlowCoordinator.handleAppRoute(.settings, animated: true)
                 case .presentSearchScreen:
-                    stateMachine.processEvent(.showSearchScreen)
+                    searchFlowCoordinator.handleAppRoute(.search, animated: true)
+                case .presentAccountScreen:
+                    break
                 }
             }
             .store(in: &cancellables)
@@ -272,51 +295,4 @@ private extension MainFlowCoordinator {
             self?.stateMachine.processEvent(.dismissedEventDetails)
         }
     }
-
-    private func presentSearchScreen() {
-                
-        let searchProgrammeStackCoordinator = NavigationStackCoordinator()
-        
-        let parameters = SearchScreenCoordinatorParameters(
-            tumbleApiService: tumbleApiService,
-        )
-        let coordinator = SearchScreenCoordinator(parameters: parameters)
-        searchScreenCoordinator = coordinator
-        
-        coordinator.actions
-            .sink { [weak self] actions in
-                guard let self else { return }
-                
-                switch actions {
-                case .dismiss:
-                    navigationSplitCoordinator.setSheetCoordinator(nil)
-                case .quickView(let programmeId, let school):
-                    let quickViewParameters = QuickViewScreenCoordinatorParameters(
-                        appSettings: appSettings,
-                        tumbleApiService: tumbleApiService,
-                        eventStorageService: eventStorageService,
-                        programmeId: programmeId,
-                        school: school
-                    )
-                    let quickViewScreenCoordinator = QuickViewScreenCoordinator(parameters: quickViewParameters)
-                    
-                    searchProgrammeStackCoordinator.push(quickViewScreenCoordinator, animated: true)
-                }
-            }
-            .store(in: &cancellables)
-        
-        searchProgrammeStackCoordinator.setRootCoordinator(coordinator)
-        
-        navigationSplitCoordinator.setSheetCoordinator(searchProgrammeStackCoordinator, animated: true) { [weak self] in
-            self?.stateMachine.processEvent(.dismissedSearchScreen)
-        }
-    }
-    
-    private func presentLogoutConfirmationScreen() {}
-    
-    private func dismissLogoutConfirmationScreen() {}
-    
-    private func presentLoginScreen() {}
-    
-    private func dismissLoginScreen() {}
 }

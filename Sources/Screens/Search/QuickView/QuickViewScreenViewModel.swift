@@ -50,10 +50,10 @@ class QuickViewScreenViewModel: QuickViewScreenViewModelType {
     
     private func setupListeners() {
         // Listen to appSettings changes to update button state
-        appSettings.$savedProgrammeIds
+        appSettings.$bookmarkedProgrammes
             .sink { [weak self] savedIds in
                 guard let self else { return }
-                let isBookmarked = savedIds.contains(self.programmeId)
+                let isBookmarked = savedIds.keys.contains(self.programmeId)
                 self.updateSaveButtonState(isBookmarked ? .saved : .notSaved)
             }
             .store(in: &cancellables)
@@ -62,27 +62,27 @@ class QuickViewScreenViewModel: QuickViewScreenViewModelType {
     private func toggleBookmark(events: [Response.Event]) {
         updateSaveButtonState(.loading)
         
-        let isCurrentlyBookmarked = appSettings.savedProgrammeIds.contains(programmeId)
+        let isCurrentlyBookmarked = appSettings.bookmarkedProgrammes.keys.contains(programmeId)
         
         if isCurrentlyBookmarked {
             // Remove from saved programmes and event storage
-            appSettings.savedProgrammeIds.removeAll { $0 == programmeId }
+            appSettings.bookmarkedProgrammes.removeValue(forKey: programmeId)
             do {
-                try eventStorageService.removeEvents(forScheduleId: programmeId)
+                try eventStorageService.removeEvents(forProgrammeId: programmeId)
             } catch {
                 // Revert if removal fails
-                appSettings.savedProgrammeIds.append(programmeId)
+                appSettings.bookmarkedProgrammes.updateValue(true, forKey: programmeId)
                 updateSaveButtonState(.saved)
                 return
             }
         } else {
             // Add to saved programmes and save events
-            appSettings.savedProgrammeIds.append(programmeId)
+            appSettings.bookmarkedProgrammes.updateValue(true, forKey: programmeId)
             do {
                 try eventStorageService.saveEvents(events)
             } catch {
                 // Revert if saving events fails
-                appSettings.savedProgrammeIds.removeAll { $0 == programmeId }
+                appSettings.bookmarkedProgrammes.removeValue(forKey: programmeId)
                 updateSaveButtonState(.notSaved)
                 return
             }

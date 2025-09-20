@@ -13,17 +13,15 @@ final class AppSettings: ObservableObject {
         // Internal
         case lastVersionLaunched
         case activeSchool // "hkr", "mau"
-        case activeUser
+        case activeUserId
         case onboarded
         case bookmarkViewType
         case hasRunNotificationPermissionsOnboarding
-        case hiddenProgrammeIds
         
         // Notification Settings - Messaging
         case notificationsEnabled
         case inAppMessagingEnabled
         case notificationOffset
-        
         
         // Settings - General
         case appearance
@@ -32,9 +30,8 @@ final class AppSettings: ObservableObject {
         // Settings - Behavior
         case openEventFromWidget
         
-        
         // Bookmark Settings - Programmes
-        case savedProgrammeIds
+        case bookmarkedProgrammes
         
         // Advanced Settings - Performance & Data
         case wifiOnlyMode
@@ -85,14 +82,14 @@ final class AppSettings: ObservableObject {
     @UserPreference(key: UserDefaultsKeys.lastVersionLaunched, storageType: .userDefaults(store))
     var lastVersionLaunched: String?
     
-    @UserPreference(key: UserDefaultsKeys.appearance, defaultValue: "light", storageType: .userDefaults(store))
-    var appearance: String
+    @UserPreference(key: UserDefaultsKeys.appearance, defaultValue: .system, storageType: .userDefaults(store))
+    var appearance: AppAppearance
     
     @UserPreference(key: UserDefaultsKeys.activeSchool, storageType: .userDefaults(store))
     var activeSchool: String?
     
-    @UserPreference(key: UserDefaultsKeys.activeUser, storageType: .userDefaults(store))
-    var activeUser: String?
+    @UserPreference(key: UserDefaultsKeys.activeUserId, storageType: .userDefaults(store))
+    var activeUserId: String?
     
     @UserPreference(key: UserDefaultsKeys.language, defaultValue: "en", storageType: .userDefaults(store))
     var language: String
@@ -103,11 +100,8 @@ final class AppSettings: ObservableObject {
     @UserPreference(key: UserDefaultsKeys.onboarded, defaultValue: false, storageType: .userDefaults(store))
     var onboarded: Bool
     
-    @UserPreference(key: UserDefaultsKeys.hiddenProgrammeIds, defaultValue: [], storageType: .userDefaults(store))
-    var hiddenProgrammeIds: [String]
-    
-    @UserPreference(key: UserDefaultsKeys.savedProgrammeIds, defaultValue: [], storageType: .userDefaults(store))
-    var savedProgrammeIds: [String]
+    @UserPreference(key: UserDefaultsKeys.bookmarkedProgrammes, defaultValue: [:], storageType: .userDefaults(store))
+    var bookmarkedProgrammes: [String : Bool]
     
     @UserPreference(key: UserDefaultsKeys.openEventFromWidget, defaultValue: false, storageType: .userDefaults(store))
     var openEventFromWidget: Bool
@@ -162,6 +156,10 @@ final class AppSettings: ObservableObject {
     var betaFeaturesEnabled: Bool
 }
 
+
+// MARK: - Protocol Extensions for Settings
+
+
 // MARK: - AdvancedSettingsProtocol Extension
 
 extension AppSettings: AdvancedSettingsProtocol {
@@ -199,10 +197,16 @@ extension AppSettings: AdvancedSettingsProtocol {
     }
 }
 
+// MARK: - NotificationsSettingsProtocol Extension
+
 extension AppSettings: NotificationsSettingsProtocol {
-    func resetNotificationSettings() {
+    func resetNotificationsSettings() {
         self.notificationOffset = .hour
         self.inAppMessagingEnabled = true
         self.notificationsEnabled = true
     }
 }
+
+// MARK: - SettingsProtocol Extension
+
+extension AppSettings: SettingsProtocol { }

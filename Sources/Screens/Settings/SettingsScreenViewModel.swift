@@ -11,7 +11,7 @@ import SwiftUI
 typealias SettingsScreenViewModelType = StateStoreViewModel<SettingsScreenViewState, SettingsScreenViewAction>
 
 class SettingsScreenViewModel: SettingsScreenViewModelType, SettingsScreenViewModelProtocol {
-    private let appSettings: AppSettings
+    private let quickSettings: SettingsProtocol
     private let analyticsService: AnalyticsServiceProtocol
     
     private var actionsSubject: PassthroughSubject<SettingsScreenViewModelAction, Never> = .init()
@@ -20,27 +20,31 @@ class SettingsScreenViewModel: SettingsScreenViewModelType, SettingsScreenViewMo
         actionsSubject.eraseToAnyPublisher()
     }
     
-    init(appSettings: AppSettings, analyticsService: AnalyticsServiceProtocol) {
-        self.appSettings = appSettings
+    init(quickSettings: SettingsProtocol, analyticsService: AnalyticsServiceProtocol) {
         self.analyticsService = analyticsService
-        
-        let userDisplayName: String? = {
-            guard let userId = appSettings.activeUser else { return nil }
-            return userId.capitalized
-        }()
-        
-        let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
-        let buildNumber = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"
-        
-        let initialState = SettingsScreenViewState(
-            userId: appSettings.activeUser,
-            userDisplayName: userDisplayName,
-            appVersion: appVersion,
-            buildNumber: buildNumber,
-            bookmarkedProgrammesCount: appSettings.savedProgrammeIds.count
-        )
-        
+        self.quickSettings = quickSettings
+        let initialState = SettingsScreenViewState(bindings: .init(quickSettings: quickSettings))
         super.init(initialViewState: initialState)
+        
+        setupObservers()
+    }
+    
+    func setupObservers() {
+        guard let appSettings = quickSettings as? AppSettings else { return }
+        
+        let publishers = [
+            appSettings.$appearance.map { _ in () }.eraseToAnyPublisher(),
+            appSettings.$bookmarkedProgrammes.map { _ in () }.eraseToAnyPublisher(),
+            appSettings.$activeUserId.map { _ in () }.eraseToAnyPublisher(),
+            appSettings.$openEventFromWidget.map { _ in () }.eraseToAnyPublisher(),
+        ]
+        
+        Publishers.MergeMany(publishers)
+            .sink { [weak self] _ in
+                guard let self = self else { return }
+                self.state.bindings = SettingsScreenViewStateBindings(quickSettings: self.quickSettings)
+            }
+            .store(in: &cancellables)
     }
     
     override func process(viewAction: SettingsScreenViewAction) {
@@ -55,14 +59,8 @@ class SettingsScreenViewModel: SettingsScreenViewModelType, SettingsScreenViewMo
             actionsSubject.send(.notifications)
         case .advancedSettings:
             actionsSubject.send(.advancedSettings)
-        case .appearance:
-            actionsSubject.send(.appearance)
         case .language:
             actionsSubject.send(.language)
-        case .privacy:
-            actionsSubject.send(.privacy)
-        case .security:
-            actionsSubject.send(.security)
         case .help:
             actionsSubject.send(.help)
         case .rateApp:
@@ -73,8 +71,6 @@ class SettingsScreenViewModel: SettingsScreenViewModelType, SettingsScreenViewMo
             actionsSubject.send(.about)
         case .bookmarkedProgrammes:
             actionsSubject.send(.bookmarkedProgrammes)
-        case .widget:
-            actionsSubject.send(.widget)
         }
     }
     
@@ -82,11 +78,6 @@ class SettingsScreenViewModel: SettingsScreenViewModelType, SettingsScreenViewMo
     
     private func handleRemoveAccount() {
         // Clear user-related settings
-        appSettings.activeUser = nil
-        
-        // Update view state
-        state.userId = nil
-        state.userDisplayName = nil
         
         actionsSubject.send(.removeAccount)
     }

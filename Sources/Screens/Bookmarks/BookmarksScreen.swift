@@ -51,7 +51,6 @@ struct BookmarksScreen: View {
                 bookmarksListView(events: events)
             }
             
-            // Only show floating search button when there's content and no active search
             if case .loaded = context.viewState.dataState, searchText.isEmpty {
                 VStack {
                     Spacer()
@@ -70,9 +69,23 @@ struct BookmarksScreen: View {
         .background(Color.background)
         .searchable(
             text: $searchText,
-            placement: .navigationBarDrawer(displayMode: .always),
-            prompt: "Search by title, course, teacher, or ID"
+            placement: .toolbar,
+            prompt: "Filter by title, course, or teacher"
         )
+    }
+    
+    private var floatingSearchButton: some View {
+        Button {
+            context.send(viewAction: .showSearch)
+        } label: {
+            Image(systemName: "plus")
+                .font(.system(size: 18, weight: .medium))
+                .foregroundColor(.onSurface)
+                .frame(width: 44, height: 44)
+                .background(Color.surface, in: Circle())
+                .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
+        }
+        .accessibilityLabel("Browse programmes")
     }
     
     private func bookmarksListView(events: [Response.Event]) -> some View {
@@ -83,8 +96,8 @@ struct BookmarksScreen: View {
                 // No search results
                 VStack(spacing: 20) {
                     InfoView.empty(
-                        title: "No matching bookmarks",
-                        subtitle: "No bookmarks match your search for \"\(searchText)\"",
+                        title: "No matching events",
+                        subtitle: "No events match your search for \"\(searchText)\"",
                         action: InfoViewAction(
                             title: "Clear Search",
                             action: { searchText = "" },
@@ -95,14 +108,6 @@ struct BookmarksScreen: View {
             } else {
                 ScrollView {
                     LazyVStack(spacing: 0) {
-                        // Search results header
-                        if !searchText.isEmpty {
-                            searchResultsHeader(
-                                totalCount: events.count,
-                                filteredCount: filteredEvents.count
-                            )
-                        }
-                        
                         let groupedEvents = filteredEvents.groupByDate()
                         ForEach(groupedEvents, id: \.date) { dateGroup in
                             // Date Header
@@ -126,61 +131,28 @@ struct BookmarksScreen: View {
         }
     }
     
-    private func searchResultsHeader(totalCount: Int, filteredCount: Int) -> some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("\(filteredCount) of \(totalCount) event\(totalCount == 1 ? "" : "s")")
-                    .font(.headline)
-                    .foregroundColor(.onBackground)
-                
-                Text("matching \"\(searchText)\"")
-                    .font(.subheadline)
-                    .foregroundColor(.onBackground)
-            }
-            
-            Spacer()
-            
-            Button("Clear") {
-                searchText = ""
-            }
-            .font(.subheadline)
-            .foregroundColor(.primary)
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
-        .background(Color.secondary.opacity(0.05))
-        .cornerRadius(8)
-        .padding(.horizontal, 16)
-        .padding(.bottom, 8)
-    }
-    
     private func filterEvents(_ events: [Response.Event]) -> [Response.Event] {
         guard !searchText.isEmpty else { return events }
         
         let query = searchText.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
         
         return events.filter { event in
-            // Search in title
             if event.title.lowercased().contains(query) {
                 return true
             }
             
-            // Search in event ID
             if event.id.lowercased().contains(query) {
                 return true
             }
             
-            // Search in course name
             if event.courseName.lowercased().contains(query) {
                 return true
             }
             
-            // Search in course ID
             if event.courseId.lowercased().contains(query) {
                 return true
             }
             
-            // Search in teacher names
             for teacher in event.teachers {
                 let fullName = "\(teacher.firstName) \(teacher.lastName)".lowercased()
                 let firstName = teacher.firstName.lowercased()
@@ -195,21 +167,6 @@ struct BookmarksScreen: View {
         }
     }
     
-    private var floatingSearchButton: some View {
-        Button {
-            context.send(viewAction: .showSearch)
-        } label: {
-            Image(systemName: "magnifyingglass")
-                .font(.system(size: 20, weight: .semibold))
-                .foregroundColor(.white)
-                .frame(width: 56, height: 56)
-                .background(Color.primary)
-                .clipShape(Circle())
-                .shadow(color: Color.black.opacity(0.2), radius: 4, x: 0, y: 2)
-        }
-        .accessibilityLabel("Search programmes")
-    }
-    
     // MARK: - Private
     @ToolbarContentBuilder
     private var toolbar: some ToolbarContent {
@@ -218,6 +175,14 @@ struct BookmarksScreen: View {
                 context.send(viewAction: .showSettings)
             } label: {
                 Image(systemName: "gearshape")
+            }
+            .accessibilityLabel("Settings")
+        }
+        ToolbarItem(placement: .topBarLeading) {
+            Button {
+                context.send(viewAction: .showAccount)
+            } label: {
+                Image(systemName: "person.crop.circle")
             }
             .accessibilityLabel("Settings")
         }

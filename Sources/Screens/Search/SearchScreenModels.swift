@@ -15,6 +15,7 @@ enum SearchScreenViewAction: Equatable {
     case clearSearch
     case selectSchool(school: School)
     case changeSchool
+    case close
 }
 
 enum SearchScreenViewModelAction: Equatable {

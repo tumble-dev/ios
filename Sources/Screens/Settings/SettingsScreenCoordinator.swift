@@ -19,13 +19,11 @@ enum SettingsScreenCoordinatorAction {
     case addAccount
     case notifications
     case advancedSettings
-    case appearance
     case language
     case help
     case sendFeedback
     case about
     case bookmarkedProgrammes
-    case widget
 }
 
 final class SettingsScreenCoordinator: CoordinatorProtocol {
@@ -42,7 +40,7 @@ final class SettingsScreenCoordinator: CoordinatorProtocol {
     
     init(parameters: SettingsScreenCoordinatorParameters) {
         viewModel = SettingsScreenViewModel(
-            appSettings: parameters.appSettings,
+            quickSettings: parameters.appSettings,
             analyticsService: parameters.analyticsService
         )
         
@@ -61,8 +59,6 @@ final class SettingsScreenCoordinator: CoordinatorProtocol {
                     actionsSubject.send(.removeAccount)
                 case .addAccount:
                     actionsSubject.send(.addAccount)
-                case .appearance:
-                    actionsSubject.send(.appearance)
                 case .language:
                     actionsSubject.send(.language)
                 case .help:
@@ -73,8 +69,6 @@ final class SettingsScreenCoordinator: CoordinatorProtocol {
                     actionsSubject.send(.about)
                 case .bookmarkedProgrammes:
                     actionsSubject.send(.bookmarkedProgrammes)
-                case .widget:
-                    actionsSubject.send(.widget)
                 }
             }
             .store(in: &cancellables)

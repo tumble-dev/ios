@@ -38,35 +38,37 @@ class BookmarksScreenViewModel: BookmarksScreenViewModelType, ObservableObject {
             actionsSubject.send(.presentSearchScreen)
         case .showSettings:
             actionsSubject.send(.presentSettingsScreen)
+        case .showAccount:
+            actionsSubject.send(.presentAccountScreen)
         }
     }
     
     private func setupListeners() {
-        eventStorageService.allEventsPublisher
-            .sink { [weak self] allEvents in
-                guard let self else { return }
-                
-                // 1. If allEvents is empty, set state.dataState = .empty
-                guard !allEvents.isEmpty else {
-                    state.dataState = .empty
-                    return
-                }
-                
-                // 2. Filter allEvents by their scheduleId to appSettings.hiddenScheduleIds
-                let hiddenScheduleIds = appSettings.hiddenProgrammeIds
-                let visibleEvents = allEvents.filter { event in
-                    !hiddenScheduleIds.contains(event.scheduleId)
-                }
-                
-                // Check if filtered events is empty, if so set state.dataState = .hidden
-                guard !visibleEvents.isEmpty else {
-                    state.dataState = .hidden
-                    return
-                }
-                
-                state.dataState = .loaded(visibleEvents)
+        // Listen to both allEvents and bookmarkedProgrammes changes
+        Publishers.CombineLatest(
+            eventStorageService.allEventsPublisher,
+            appSettings.$bookmarkedProgrammes
+        )
+        .sink { [weak self] allEvents, bookmarkedProgrammes in
+            guard let self else { return }
+            guard !allEvents.isEmpty else {
+                state.dataState = .empty
+                return
             }
-            .store(in: &cancellables)
-
+            let enabledProgrammeIds = Set(bookmarkedProgrammes.compactMap { key, value in
+                value ? key : nil
+            })
+            let visibleEvents = allEvents.filter { event in
+                enabledProgrammeIds.contains(event.scheduleId)
+            }
+            
+            guard !visibleEvents.isEmpty else {
+                state.dataState = .hidden
+                return
+            }
+            
+            state.dataState = .loaded(visibleEvents)
+        }
+        .store(in: &cancellables)
     }
 }

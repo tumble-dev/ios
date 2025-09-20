@@ -10,11 +10,13 @@ struct EventDetailsScreenViewState: BindableState {
 }
 
 enum EventDetailsScreenViewModelAction: Equatable {
-    
+    case close
 }
 
 enum EventDetailsScreenViewAction: Equatable {
     case loadEvent
+    case close
+    case showColorPicker
 }
 
 enum EventDetailsDataState: Equatable {
