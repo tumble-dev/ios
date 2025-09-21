@@ -1,0 +1,21 @@
+//
+//  AuthenticationServiceProtocol.swift
+//  Tumble iOS
+//
+//  Created by Adis Veletanlic on 2025-09-21.
+//
+
+protocol AuthenticationServiceProtocol {
+    func initialize() async
+    func login(username: String, password: String, school: String) async throws -> TumbleUser
+    func getCurrentSessionToken() async throws -> String
+    func isAuthenticated() -> Bool
+    func getCurrentUser() -> TumbleUser?
+    func logout() async
+    func logOutUser(username: String) async throws -> [TumbleUser]
+    func logoutAllUsers() async throws
+    func getAllUsers() -> [TumbleUser]
+    func getRememberedUsers() -> [TumbleUser]
+    func switchToUser(username: String) async throws -> TumbleUser
+    func autoReLogin() async throws
+}

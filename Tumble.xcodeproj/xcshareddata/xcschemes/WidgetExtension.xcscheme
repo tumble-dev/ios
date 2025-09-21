@@ -32,7 +32,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D4722144292454560063BDB7"
                BuildableName = "Tumble.app"
-               BlueprintName = "App"
+               BlueprintName = "Tumble iOS"
                ReferencedContainer = "container:Tumble.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -63,7 +63,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D4722144292454560063BDB7"
             BuildableName = "Tumble.app"
-            BlueprintName = "App"
+            BlueprintName = "Tumble iOS"
             ReferencedContainer = "container:Tumble.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -99,7 +99,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D4722144292454560063BDB7"
             BuildableName = "Tumble.app"
-            BlueprintName = "App"
+            BlueprintName = "Tumble iOS"
             ReferencedContainer = "container:Tumble.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
