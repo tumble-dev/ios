@@ -106,6 +106,7 @@ class QuickViewScreenViewModel: QuickViewScreenViewModelType {
             }
             updateDataState(newDataState: .loaded(res.events))
         } catch (let error) {
+            updateSaveButtonState(.disabled)
             updateDataState(newDataState: .error(error.localizedDescription))
         }
     }

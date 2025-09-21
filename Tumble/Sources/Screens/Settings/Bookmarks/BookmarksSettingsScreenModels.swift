@@ -43,6 +43,7 @@ struct BookmarksSettingsScreenViewStateBindings {
 }
 
 enum BookmarksSettingsScreenViewModelAction {
+    case popBack
 }
 
 enum BookmarksSettingsScreenViewAction {

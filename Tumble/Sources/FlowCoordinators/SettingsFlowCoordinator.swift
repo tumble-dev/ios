@@ -151,6 +151,16 @@ class SettingsFlowCoordinator: FlowCoordinatorProtocol {
             )
             
         )
+        
+        coordinator.actions
+            .sink { [weak self] action in
+                guard let self else { return }
+                switch action {
+                case .dismiss:
+                    navigationStackCoordinator.pop(animated: true)
+                }
+            }.store(in: &cancellables)
+        
         navigationStackCoordinator.push(coordinator)
     }
     

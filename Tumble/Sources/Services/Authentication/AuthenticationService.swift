@@ -61,6 +61,8 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
     private let tumbleApiService: TumbleApiServiceProtocol
     private let appSettings: AppSettings
     
+    var authStatePublisher: Published<AuthState>.Publisher { $authState }
+    
     init(
         keychainController: KeychainControllerProtocol,
         userDataStorage: UserDataStorageServiceProtocol,
@@ -122,6 +124,7 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
             let loginRequest = Response.LoginRequest(username: username, password: password)
             
             // Authenticate with backend using TumbleAPIService
+            AppLogger.shared.info("Using credentials to sign in again manually")
             let apiUser = try await tumbleApiService.login(credentials: loginRequest, school: school)
             
             // Create TumbleUser from Response.User

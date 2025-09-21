@@ -103,21 +103,16 @@ extension View {
     /// Standard card styling
     func cardStyle() -> some View {
         self
-            .background(Color.surface)
-            .cornerRadius(.radiusM)
-            .shadowS()
+            .background(
+                RoundedRectangle(cornerRadius: .radiusL)
+                    .fill(Color.surface)
+                    .background(
+                        RoundedRectangle(cornerRadius: .radiusL)
+                            .stroke(Color.onSurface.opacity(0.3), lineWidth: 0.5)
+                    )
+            )
     }
     
-    /// Standard button styling
-    func buttonStyle(backgroundColor: Color = .blue) -> some View {
-        self
-            .font(.labelLarge)
-            .padding(.horizontal, .spacingL)
-            .padding(.vertical, .spacingM)
-            .background(backgroundColor)
-            .foregroundColor(.white)
-            .cornerRadius(.radiusM)
-    }
     
     /// Standard input field styling
     func inputFieldStyle() -> some View {

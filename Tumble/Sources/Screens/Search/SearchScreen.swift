@@ -216,17 +216,7 @@ struct ProgrammeCard: View {
                     .frame(width: 20, height: 20)
             }
             .padding(16)
-            .frame(maxWidth: .infinity)
-            .background(Color.secondary)
-            .cornerRadius(12)
-            .shadow(
-                color: .black.opacity(isPressed ? 0.1 : 0.05),
-                radius: isPressed ? 4 : 1,
-                x: 0,
-                y: isPressed ? 2 : 0.5
-            )
-            .scaleEffect(isPressed ? 0.98 : 1.0)
-            .animation(.easeInOut(duration: 0.1), value: isPressed)
+            .cardStyle()
         }
         .buttonStyle(PlainButtonStyle())
         .onLongPressGesture(minimumDuration: 0, maximumDistance: .infinity, pressing: { pressing in

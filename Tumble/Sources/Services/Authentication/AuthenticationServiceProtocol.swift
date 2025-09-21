@@ -5,7 +5,12 @@
 //  Created by Adis Veletanlic on 2025-09-21.
 //
 
+import SwiftUI
+
 protocol AuthenticationServiceProtocol {
+    
+    var authStatePublisher: Published<AuthState>.Publisher { get }
+    
     func initialize() async
     func login(username: String, password: String, school: String) async throws -> TumbleUser
     func getCurrentSessionToken() async throws -> String

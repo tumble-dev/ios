@@ -77,9 +77,7 @@ struct EventCard: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.surface)
-        .cornerRadius(12)
-        .shadow(color: Color.black.opacity(0.1), radius: 2, x: 0, y: 1)
+        .cardStyle()
     }
     
     private var teacherDisplayName: String {

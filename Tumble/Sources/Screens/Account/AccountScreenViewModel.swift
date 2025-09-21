@@ -69,7 +69,6 @@ class AccountScreenViewModel: AccountScreenViewModelType, AccountScreenViewModel
     private func fetchUserRegisteredEvents(from school: String) async throws -> [Response.UserEvent] {
         do {
             let token = try await authenticationService.getCurrentSessionToken()
-            AppLogger.shared.info("Using token \(token)")
             return try await tumbleApiService.getRegisteredEvents(school: school, authToken: token)
         } catch NetworkError.unauthorized {
             try await authenticationService.autoReLogin()
@@ -83,10 +82,14 @@ class AccountScreenViewModel: AccountScreenViewModelType, AccountScreenViewModel
         state.dataState = newState
     }
     
+    @MainActor
+    private func updateUserState(newState: AccountScreenUserState) {
+        state.userState = newState
+    }
+    
     private func fetchUserBookings(from school: String) async throws -> [Response.Booking] {
         do {
             let token = try await authenticationService.getCurrentSessionToken()
-            AppLogger.shared.info("Using token \(token)")
             return try await tumbleApiService.getUserBookings(school: school, authToken: token)
         } catch NetworkError.unauthorized {
             try await authenticationService.autoReLogin()
@@ -96,33 +99,22 @@ class AccountScreenViewModel: AccountScreenViewModelType, AccountScreenViewModel
     }
     
     private func setupListeners() {
-        appSettings.$activeUsername
-            .sink { [weak self] username in
-                guard let self else { return }
-                guard let username else {
-                    state.userState = .missing
-                    return
+        authenticationService.authStatePublisher
+            .sink { [weak self] authState in
+                guard let self = self else { return }
+                AppLogger.shared.info("Got state: \(authState)")
+                switch authState {
+                case .authenticated(let user):
+                    updateUserState(newState: .loaded(user: user))
+                    Task { await self.loadUserData(from: user.school) }
+                case .unauthenticated:
+                    updateUserState(newState: .missing)
+                case .error(let message):
+                    updateUserState(newState: .error(message))
+                case .loading:
+                    updateUserState(newState: .loading)
                 }
-                Task { await self.loadActiveUser(username: username) }
             }
             .store(in: &cancellables)
-    }
-    
-    private func loadActiveUser(username: String) async {
-        await MainActor.run {
-            state.userState = .loading
-        }
-        let user = userDataStorageService.getUserProfile(username: username)
-        guard let user else {
-            await MainActor.run {
-                state.userState = .error("Could not get user \(username)")
-            }
-            return
-        }
-        await MainActor.run {
-            state.userState = .loaded(user: user)
-        }
-        AppLogger.shared.info("[AccountScreenViewModel] Loaded user \(user.username)")
-        await loadUserData(from: user.school)
     }
 }

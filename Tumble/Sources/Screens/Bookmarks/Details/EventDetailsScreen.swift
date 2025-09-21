@@ -232,12 +232,8 @@ struct EventHeaderCard: View {
                 Spacer()
             }
         }
-        .padding(20)
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color.surface)
-                .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
-        )
+        .padding(.spacingL)
+        .cardStyle()
     }
 }
 
@@ -278,11 +274,7 @@ struct DetailCard<Content: View>: View {
             
             Spacer()
         }
-        .padding(16)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color.surface)
-                .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
-        )
+        .padding(.spacingM)
+        .cardStyle()
     }
 }

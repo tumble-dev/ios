@@ -14,7 +14,7 @@ struct BookmarksSettingsScreenCoordinatorParameters {
 }
 
 enum BookmarksSettingsScreenCoordinatorAction {
-    case openSearch
+    case dismiss
 }
 
 final class BookmarksSettingsScreenCoordinator: CoordinatorProtocol {
@@ -32,6 +32,16 @@ final class BookmarksSettingsScreenCoordinator: CoordinatorProtocol {
             appSettings: parameters.appSettings,
             eventStorageService: parameters.eventStorageService
         )
+        
+        viewModel.actions
+            .sink { [weak self] action in
+                guard let self else { return }
+                switch action {
+                case .popBack:
+                    actionsSubject.send(.dismiss)
+                }
+            }
+            .store(in: &cancellables)
         
     }
             
