@@ -5,12 +5,12 @@
 //  Created by Adis Veletanlic on 2023-02-09.
 //
 
+import Combine
 import FirebaseCore
 import FirebaseMessaging
 import Foundation
 import SwiftUI
 import UIKit
-import Combine
 
 enum AppDelegateCallback {
     case registeredNotifications(deviceToken: Data)
@@ -32,6 +32,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         callbacks.send(.registeredNotifications(deviceToken: deviceToken))
+        
+        // Optionally set APNs token here as well if some flows bypass NotificationManager.
+        // Messaging.messaging().apnsToken = deviceToken
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
@@ -66,15 +69,11 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
 extension AppDelegate: MessagingDelegate {
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-        let deviceToken: [String: String] = ["token": fcmToken ?? ""]
-        if deviceToken["token"] != nil {
-            Messaging.messaging().subscribe(toTopic: "updates") { error in
-                if let error = error {
-                    AppLogger.shared.error("Failed to subscribe to updates topic: \(error.localizedDescription)", source: "AppDelegate")
-                } else {
-                    AppLogger.shared.debug("Subscribed to updates topic", source: "AppDelegate")
-                }
-            }
+        // We no longer subscribe to topics here; NotificationManager handles it after APNs token registration.
+        if let fcmToken, !fcmToken.isEmpty {
+            AppLogger.shared.debug("FCM registration token refreshed: \(fcmToken)", source: "AppDelegate")
+        } else {
+            AppLogger.shared.debug("FCM registration token is nil/empty", source: "AppDelegate")
         }
     }
 }

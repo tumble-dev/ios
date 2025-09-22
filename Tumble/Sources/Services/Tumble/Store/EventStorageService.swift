@@ -5,10 +5,11 @@
 //  Created by Adis Veletanlic on 2025-09-18.
 //
 
-import Foundation
 import Combine
+import Foundation
 
 // MARK: - Event Storage Change Types
+
 enum EventStorageEvent {
     case eventAdded(event: Response.Event)
     case eventUpdated(event: Response.Event, previousEvent: Response.Event?)
@@ -19,6 +20,7 @@ enum EventStorageEvent {
 }
 
 // MARK: - Event Storage Error Types
+
 enum EventStorageError: Error, LocalizedError {
     case fileOperationFailed
     case eventNotFound(id: String)
@@ -52,15 +54,17 @@ enum EventStorageError: Error, LocalizedError {
 }
 
 // MARK: - Storage Format Types
+
 enum StorageFormat {
     case standard
     case optimized
 }
 
 // MARK: - Event Document Storage
+
 class EventStorageService: EventStorageServiceProtocol, ObservableObject {
-    
     // MARK: - Properties
+
     private let standardFileURL: URL
     private let optimizedFileURL: URL
     private let queue = DispatchQueue(label: "event.storage.queue", attributes: .concurrent)
@@ -81,13 +85,14 @@ class EventStorageService: EventStorageServiceProtocol, ObservableObject {
     }
     
     // MARK: - Initialization
+
     init(filename: String = "events_storage", appSettings: AppSettings) {
         self.appSettings = appSettings
         
         let documentsPath = FileManager.default.urls(for: .documentDirectory,
-                                                   in: .userDomainMask).first!
-        self.standardFileURL = documentsPath.appendingPathComponent("\(filename).json")
-        self.optimizedFileURL = documentsPath.appendingPathComponent("\(filename)_compressed.json")
+                                                     in: .userDomainMask).first!
+        standardFileURL = documentsPath.appendingPathComponent("\(filename).json")
+        optimizedFileURL = documentsPath.appendingPathComponent("\(filename)_compressed.json")
         
         loadFromDisk()
         allEventsSubject.send(Array(events.values))
@@ -96,6 +101,7 @@ class EventStorageService: EventStorageServiceProtocol, ObservableObject {
     }
     
     // MARK: - Storage Optimization Observer
+
     private func setupStorageOptimizationObserver() {
         appSettings.$storageOptimizationEnabled
             .sink { [weak self] isEnabled in
@@ -115,6 +121,7 @@ class EventStorageService: EventStorageServiceProtocol, ObservableObject {
     }
     
     // MARK: - Storage Migration
+
     private func migrateStorageFormat(toOptimized: Bool) throws {
         let sourceURL = toOptimized ? standardFileURL : optimizedFileURL
         
@@ -133,6 +140,7 @@ class EventStorageService: EventStorageServiceProtocol, ObservableObject {
     }
     
     // MARK: - Helpers
+
     private func publishEvents() {
         let snapshot = queue.sync { Array(events.values) }
         DispatchQueue.main.async {
@@ -164,7 +172,7 @@ class EventStorageService: EventStorageServiceProtocol, ObservableObject {
     /// Get an event by ID
     func getEvent(id: String) -> Response.Event? {
         return queue.sync {
-            return events[id]
+            events[id]
         }
     }
     
@@ -214,7 +222,7 @@ class EventStorageService: EventStorageServiceProtocol, ObservableObject {
     /// Check if event exists
     func eventExists(id: String) -> Bool {
         return queue.sync {
-            return events[id] != nil
+            events[id] != nil
         }
     }
     
@@ -264,7 +272,7 @@ class EventStorageService: EventStorageServiceProtocol, ObservableObject {
     /// Get multiple events by IDs
     func getEvents(ids: [String]) -> [Response.Event] {
         return queue.sync {
-            return ids.compactMap { events[$0] }
+            ids.compactMap { events[$0] }
         }
     }
     
@@ -300,7 +308,7 @@ class EventStorageService: EventStorageServiceProtocol, ObservableObject {
     /// Get events filtered by predicate
     func getEvents(where predicate: (Response.Event) -> Bool) -> [Response.Event] {
         return queue.sync {
-            return events.values.filter(predicate)
+            events.values.filter(predicate)
         }
     }
     
@@ -312,7 +320,7 @@ class EventStorageService: EventStorageServiceProtocol, ObservableObject {
     /// Get events within a date range
     func getEvents(from startDate: Date, to endDate: Date) -> [Response.Event] {
         return getEvents { event in
-            return event.from >= startDate && event.to <= endDate
+            event.from >= startDate && event.to <= endDate
         }
     }
     
@@ -353,7 +361,7 @@ class EventStorageService: EventStorageServiceProtocol, ObservableObject {
     /// Get all events sorted by start date
     func getAllEventsSorted() -> [Response.Event] {
         return queue.sync {
-            return events.values.sorted { $0.from < $1.from }
+            events.values.sorted { $0.from < $1.from }
         }
     }
     
@@ -363,7 +371,7 @@ class EventStorageService: EventStorageServiceProtocol, ObservableObject {
         formatter.dateFormat = "yyyy-MM-dd"
         
         return queue.sync {
-            return Dictionary(grouping: events.values) { event in
+            Dictionary(grouping: events.values) { event in
                 formatter.string(from: event.from)
             }
         }
@@ -449,6 +457,7 @@ class EventStorageService: EventStorageServiceProtocol, ObservableObject {
     }
     
     // MARK: - Storage Stats
+
     func getStorageStats() -> (standardSize: Int64?, optimizedSize: Int64?, currentFormat: StorageFormat) {
         let standardSize = getFileSize(standardFileURL)
         let optimizedSize = getFileSize(optimizedFileURL)
@@ -467,6 +476,7 @@ class EventStorageService: EventStorageServiceProtocol, ObservableObject {
     }
     
     // MARK: - Storage Info for UI
+
     func getStorageInfo() -> String {
         let stats = getStorageStats()
         let currentSize = stats.currentFormat == .optimized ? stats.optimizedSize : stats.standardSize

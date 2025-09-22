@@ -9,12 +9,10 @@ import Foundation
 import SwiftState
 
 class ApplicationCoordinatorStateMachine {
-    
     enum State: StateType {
         case initial
         case ready
     }
-
 
     enum Event: EventType {
         case start

@@ -5,11 +5,10 @@
 //  Created by Adis Veletanlic on 2025-09-21.
 //
 
-import Foundation
 import Combine
+import Foundation
 
 protocol EventStorageServiceProtocol {
-    
     var changePublisher: AnyPublisher<EventStorageEvent, Never> { get }
     var allEventsPublisher: AnyPublisher<[Response.Event], Never> { get }
     
@@ -33,5 +32,4 @@ protocol EventStorageServiceProtocol {
     func getSpecialEvents() -> [Response.Event]
     func getAllEventsSorted() -> [Response.Event]
     func getEventsGroupedByDate() -> [String: [Response.Event]]
-    
 }

@@ -5,7 +5,6 @@
 //  Created by Adis Veletanlic on 2025-09-17.
 //
 
-
 import Foundation
 
 /// A CoordinatorProtocol wrapper and type erasing component that allows

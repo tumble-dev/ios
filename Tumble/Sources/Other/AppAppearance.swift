@@ -5,7 +5,6 @@
 //  Created by Adis Veletanlic on 2025-09-19.
 //
 
-
 import SwiftUI
 
 /// Used to specify the user's app specific appearance preference

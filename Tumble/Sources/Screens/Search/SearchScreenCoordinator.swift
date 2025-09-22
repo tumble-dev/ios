@@ -1,10 +1,9 @@
 //
-//  SearchScreenCoordinatorParameters.swift
+//  SearchScreenCoordinator.swift
 // Tumble
 //
 //  Created by Adis Veletanlic on 2025-09-18.
 //
-
 
 import Combine
 import SwiftUI
@@ -31,7 +30,7 @@ class SearchScreenCoordinator: CoordinatorProtocol {
     
     init(parameters: SearchScreenCoordinatorParameters) {
         viewModel = SearchScreenViewModel(
-           tumbleApiService: parameters.tumbleApiService
+            tumbleApiService: parameters.tumbleApiService
         )
         
         viewModel.actions
@@ -52,7 +51,5 @@ class SearchScreenCoordinator: CoordinatorProtocol {
         AnyView(SearchScreen(context: viewModel.context))
     }
     
-    func stop() {
-        
-    }
+    func stop() {}
 }

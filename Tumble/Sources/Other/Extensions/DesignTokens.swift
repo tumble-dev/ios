@@ -1,15 +1,15 @@
 //
-//  DesignSystem.swift
+//  DesignTokens.swift
 //  App
 //
 //  Created by Adis Veletanlic on 2025-09-21.
 //
 
-
 import Foundation
 import SwiftUI
 
 // MARK: - Spacing
+
 extension CGFloat {
     /// 4pt spacing
     static let spacingXXS: CGFloat = 4
@@ -34,6 +34,7 @@ extension CGFloat {
 }
 
 // MARK: - Corner Radius
+
 extension CGFloat {
     /// 4pt corner radius
     static let radiusXS: CGFloat = 4
@@ -50,6 +51,7 @@ extension CGFloat {
 }
 
 // MARK: - Typography
+
 extension Font {
     /// 32pt, bold - For main headings
     static let displayLarge: Font = .system(size: 32, weight: .bold)
@@ -81,49 +83,49 @@ extension Font {
 }
 
 // MARK: - Shadow
+
 extension View {
     /// Small drop shadow
     func shadowS() -> some View {
-        self.shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
+        shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
     }
     
     /// Medium drop shadow
     func shadowM() -> some View {
-        self.shadow(color: .black.opacity(0.15), radius: 4, x: 0, y: 2)
+        shadow(color: .black.opacity(0.15), radius: 4, x: 0, y: 2)
     }
     
     /// Large drop shadow
     func shadowL() -> some View {
-        self.shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
+        shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
     }
 }
 
 // MARK: - Common View Modifiers
+
 extension View {
     /// Standard card styling
     func cardStyle() -> some View {
-        self
-            .background(
-                RoundedRectangle(cornerRadius: .radiusL)
-                    .fill(Color.surface)
-                    .background(
-                        RoundedRectangle(cornerRadius: .radiusL)
-                            .stroke(Color.onSurface.opacity(0.3), lineWidth: 0.5)
-                    )
-            )
+        background(
+            RoundedRectangle(cornerRadius: .radiusL)
+                .fill(Color.surface)
+                .background(
+                    RoundedRectangle(cornerRadius: .radiusL)
+                        .stroke(Color.onSurface.opacity(0.3), lineWidth: 0.5)
+                )
+        )
     }
-    
     
     /// Standard input field styling
     func inputFieldStyle() -> some View {
-        self
-            .padding(.spacingM)
+        padding(.spacingM)
             .background(Color.surface)
             .cornerRadius(.radiusM)
     }
 }
 
 // MARK: - Layout Helpers
+
 extension EdgeInsets {
     /// 4pt all around
     static let paddingXXS = EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4)

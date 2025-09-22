@@ -9,6 +9,7 @@ import Foundation
 import KeychainAccess
 
 // MARK: - Authentication Data Models
+
 struct LoginCredentials: Codable {
     let username: String
     let password: String
@@ -55,7 +56,7 @@ final class KeychainController: KeychainControllerProtocol {
     }
     
     /// Remove stored login credentials for a user
-    func removeLoginCredentials(forUsername username: String) -> Result<(), Swift.Error> {
+    func removeLoginCredentials(forUsername username: String) -> Result<Void, Swift.Error> {
         do {
             try mainKeychain.remove("login_\(username)")
             return .success(())
@@ -90,7 +91,7 @@ final class KeychainController: KeychainControllerProtocol {
     }
     
     /// Remove current session (logout)
-    func removeCurrentSession() -> Result<(), Error> {
+    func removeCurrentSession() -> Result<Void, Error> {
         do {
             try mainKeychain.remove("current_session")
             return .success(())
@@ -102,7 +103,8 @@ final class KeychainController: KeychainControllerProtocol {
     /// Check if current session is expired
     func isCurrentSessionExpired() -> Bool {
         guard let session = getCurrentSession(),
-              let expiresAt = session.expiresAt else {
+              let expiresAt = session.expiresAt
+        else {
             return false
         }
         return Date() >= expiresAt
@@ -159,7 +161,7 @@ final class KeychainController: KeychainControllerProtocol {
     // MARK: - Cleanup Operations
     
     /// Remove all stored data for a specific user
-    func removeAllUserData(forUsername username: String) -> Result<(), Error> {
+    func removeAllUserData(forUsername username: String) -> Result<Void, Error> {
         let credentialsResult = removeLoginCredentials(forUsername: username)
         removeRememberedUser(username)
         
@@ -180,7 +182,7 @@ final class KeychainController: KeychainControllerProtocol {
     }
     
     /// Clear all authentication data (complete logout/reset)
-    func clearAllAuthData() -> Result<(), Error> {
+    func clearAllAuthData() -> Result<Void, Error> {
         do {
             // Get all remembered users first
             let rememberedUsers = getRememberedUsernames()

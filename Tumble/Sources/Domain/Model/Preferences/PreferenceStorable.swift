@@ -1,5 +1,5 @@
 //
-//  Preferences.swift
+//  PreferenceStorable.swift
 //  Tumble
 //
 //  Created by Adis Veletanlic on 10/22/24.

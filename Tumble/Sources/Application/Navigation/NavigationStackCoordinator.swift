@@ -135,7 +135,7 @@ private struct NavigationSplitCoordinatorView: View {
     }
     
     /// Fallback NavigationView for iOS 15
-    @ViewBuilder 
+    @ViewBuilder
     var navigationView: some View {
         NavigationView {
             Group {
@@ -434,7 +434,7 @@ class NavigationSplitCoordinator: CoordinatorProtocol, ObservableObject, CustomS
         guard compactLayoutStackModules != modules else { return }
 
         let diffs = modules.difference(from: compactLayoutStackModules)
-        diffs.forEach { change in
+        for change in diffs {
             switch change {
             case .insert:
                 break
@@ -555,7 +555,8 @@ class NavigationSplitCoordinator: CoordinatorProtocol, ObservableObject, CustomS
     func setOverlayCoordinator(_ coordinator: (any CoordinatorProtocol)?,
                                presentationMode: OverlayPresentationMode = .fullScreen,
                                animated: Bool = true,
-                               dismissalCallback: (() -> Void)? = nil) {
+                               dismissalCallback: (() -> Void)? = nil)
+    {
         guard let coordinator else {
             overlayModule = nil
             return
@@ -626,7 +627,7 @@ class NavigationSplitCoordinator: CoordinatorProtocol, ObservableObject, CustomS
         fullScreenCoverModule?.tearDown()
         
         compactLayoutRootModule?.tearDown()
-        compactLayoutStackModules.forEach { module in
+        for module in compactLayoutStackModules {
             module.tearDown()
         }
     }
@@ -768,7 +769,7 @@ class NavigationStackCoordinator: ObservableObject, CoordinatorProtocol, CustomS
     @Published fileprivate var stackModules = [NavigationModule]() {
         didSet {
             let diffs = stackModules.difference(from: oldValue)
-            diffs.forEach { change in
+            for change in diffs {
                 switch change {
                 case .insert(_, let module, _):
                     logPresentationChange("Push", module)
@@ -939,7 +940,7 @@ class NavigationStackCoordinator: ObservableObject, CoordinatorProtocol, CustomS
         sheetModule?.tearDown()
         fullScreenCoverModule?.tearDown()
         
-        stackModules.forEach { module in
+        for module in stackModules {
             module.tearDown()
         }
     }

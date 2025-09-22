@@ -17,6 +17,5 @@ protocol AppHooksProtocol {
 }
 
 extension AppHooksProtocol {
-    func setUp() { }
+    func setUp() {}
 }
-

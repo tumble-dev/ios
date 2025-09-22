@@ -1,5 +1,5 @@
 //
-//  SchoolPill.swift
+//  Pill.swift
 //  Tumble
 //
 //  Created by Adis Veletanlic on 2023-05-24.

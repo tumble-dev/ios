@@ -5,8 +5,8 @@
 //  Created by Adis Veletanlic on 2025-09-18.
 //
 
-
 import Combine
+import FirebaseMessaging
 import Foundation
 import UIKit
 import UserNotifications
@@ -76,9 +76,22 @@ final class NotificationManager: NSObject, NotificationManagerProtocol {
     }
 
     func register(with deviceToken: Data) async -> Bool {
-        // TODO: Implement remote notification registration with backend
-        AppLogger.shared.info("[NotificationManager] device token received: \(deviceToken.map { String(format: "%02.2hhx", $0) }.joined())")
-        return true
+        let tokenString = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
+        AppLogger.shared.info("[NotificationManager] device token received: \(tokenString)")
+        
+        Messaging.messaging().apnsToken = deviceToken
+        
+        return await withCheckedContinuation { continuation in
+            Messaging.messaging().subscribe(toTopic: "updates") { error in
+                if let error = error {
+                    AppLogger.shared.error("[NotificationManager] Failed to subscribe to 'updates' topic: \(error)")
+                    continuation.resume(returning: false)
+                } else {
+                    AppLogger.shared.info("[NotificationManager] Subscribed to 'updates' topic")
+                    continuation.resume(returning: true)
+                }
+            }
+        }
     }
     
     func registrationFailed(with error: Error) {
@@ -110,6 +123,14 @@ final class NotificationManager: NSObject, NotificationManagerProtocol {
             requestAuthorization()
         } else {
             delegate?.unregisterForRemoteNotifications()
+            // Unsubscribe from topic when notifications are disabled
+            Messaging.messaging().unsubscribe(fromTopic: "updates") { error in
+                if let error = error {
+                    AppLogger.shared.error("[NotificationManager] Failed to unsubscribe from 'updates' topic: \(error)")
+                } else {
+                    AppLogger.shared.info("[NotificationManager] Unsubscribed from 'updates' topic")
+                }
+            }
         }
     }
 }

@@ -821,6 +821,7 @@
 		0BDE196C2E7F7FC1004C6A51 /* Widget */ = {
 			isa = PBXGroup;
 			children = (
+				0BDE198A2E816446004C6A51 /* Sources */,
 				D4D779052B8CF9F900D82C94 /* Widget.entitlements */,
 			);
 			path = Widget;
@@ -845,10 +846,18 @@
 			path = Store;
 			sourceTree = "<group>";
 		};
+		0BDE198A2E816446004C6A51 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
 		D472213C292454560063BDB7 = {
 			isa = PBXGroup;
 			children = (
 				0BDE19772E7F858F004C6A51 /* Tumble */,
+				0BDE196C2E7F7FC1004C6A51 /* Widget */,
 				D433F0142CB5B10D0097F561 /* GoogleService-Info.plist */,
 				D4D7B45A29F1505A0032AEEF /* README.md */,
 				D47A451129D74C68008626E6 /* Assets */,
@@ -868,7 +877,6 @@
 		D47221582924548A0063BDB7 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				0BDE196C2E7F7FC1004C6A51 /* Widget */,
 				0BAEDF312E7B3DFA00EA6796 /* Application */,
 				0B19F69C2E7C14440037E29E /* AppHooks */,
 				0BAEDF042E7B176400EA6796 /* Services */,

@@ -10,7 +10,6 @@ import Combine
 typealias EventDetailsScreenViewModelType = StateStoreViewModel<EventDetailsScreenViewState, EventDetailsScreenViewAction>
 
 class EventDetailsScreenViewModel: EventDetailsScreenViewModelType, ObservableObject {
-
     private let eventId: String
     private let appSettings: AppSettings
     private let eventStorageService: EventStorageServiceProtocol
@@ -52,5 +51,4 @@ class EventDetailsScreenViewModel: EventDetailsScreenViewModelType, ObservableOb
             break // TODO: Show color picker
         }
     }
-    
 }

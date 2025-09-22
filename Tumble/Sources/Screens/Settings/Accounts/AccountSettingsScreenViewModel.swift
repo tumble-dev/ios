@@ -60,7 +60,7 @@ class AccountSettingsScreenViewModel: AccountSettingsScreenViewModelType, Accoun
                 let user = try await authenticationService.login(
                     username: state.username,
                     password: state.password,
-                    school: state.selectedSchool,
+                    school: state.selectedSchool
                 )
                 
                 await MainActor.run {

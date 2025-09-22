@@ -28,7 +28,7 @@ struct SearchField: View {
                 .onSubmit(searchAction)
                 .searchBox()
             if searching {
-                HStack (spacing: 5) {
+                HStack(spacing: 5) {
                     Button(action: searchAction) {
                         Image(systemName: "magnifyingglass")
                             .foregroundColor(.onPrimary)
@@ -63,7 +63,7 @@ struct SearchField: View {
         if let clearSearch = clearSearch {
             clearSearch()
         }
-        self.searchBarText = ""
+        searchBarText = ""
         hideKeyboard()
     }
     

@@ -150,7 +150,6 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
             keychainController.setLoginCredentials(credentials, forUsername: username)
             keychainController.addRememberedUser(username)
             
-            
             AppLogger.shared.debug("Successfully logged in user: \(username)")
             await updateAuthState(.authenticated(user: tumbleUser))
             

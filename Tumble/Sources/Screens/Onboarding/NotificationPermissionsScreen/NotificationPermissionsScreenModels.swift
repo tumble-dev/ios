@@ -1,10 +1,9 @@
 //
-//  NotificationPermissionsScreenViewAction.swift
+//  NotificationPermissionsScreenModels.swift
 //  Tumble
 //
 //  Created by Adis Veletanlic on 2025-09-18.
 //
-
 
 import Foundation
 
@@ -17,4 +16,4 @@ enum NotificationPermissionsScreenViewModelAction {
     case done
 }
 
-struct NotificationPermissionsScreenViewState: BindableState { }
+struct NotificationPermissionsScreenViewState: BindableState {}

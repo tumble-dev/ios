@@ -17,5 +17,4 @@ protocol UserDataStorageServiceProtocol {
     func getUsers(forSchool school: String) -> [TumbleUser]
     func getUsersSortedByName() -> [TumbleUser]
     func getUsersGroupedBySchool() -> [String: [TumbleUser]]
-    
 }

@@ -1,13 +1,13 @@
 //
-//  SettingsScreenViewModelAction.swift
+//  SettingsScreenModels.swift
 // Tumble
 //
 //  Created by Adis Veletanlic on 2025-09-19.
 //
 
 import Foundation
-import UIKit
 import SwiftUI
+import UIKit
 
 enum SettingsScreenViewModelAction: Equatable {
     case close
@@ -69,7 +69,7 @@ struct SettingsScreenViewStateBindings {
 protocol SettingsProtocol: AnyObject {
     var openEventFromWidget: Bool { get set }
     var appearance: AppAppearance { get set }
-    var bookmarkedProgrammes: [String : Bool] { get set }
+    var bookmarkedProgrammes: [String: Bool] { get set }
     var activeUsername: String? { get set }
 }
 

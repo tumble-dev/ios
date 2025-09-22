@@ -25,7 +25,7 @@ struct Popup {
     }
     
     var leadingIcon: String {
-        switch self.type {
+        switch type {
         case .error:
             return "xmark.circle"
         case .success:

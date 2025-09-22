@@ -5,8 +5,8 @@
 //  Created by Adis Veletanlic on 2025-09-17.
 //
 
-import Foundation
 import Combine
+import Foundation
 import Network
 
 class NetworkMonitor: NetworkMonitorProtocol {

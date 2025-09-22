@@ -5,12 +5,11 @@
 //  Created by Adis Veletanlic on 2025-09-19.
 //
 
-import SwiftUI
 import Combine
+import SwiftUI
 import SwiftUIIntrospect
 
 struct SettingsScreen: View {
-    
     @ObservedObject var context: SettingsScreenViewModel.Context
     @State private var showingRemoveAccountAlert = false
     
@@ -31,7 +30,7 @@ struct SettingsScreen: View {
             }
         }
         .alert("Remove Account", isPresented: $showingRemoveAccountAlert) {
-            Button("Cancel", role: .cancel) { }
+            Button("Cancel", role: .cancel) {}
             Button("Clear", role: .destructive) {
                 context.send(viewAction: .removeAccount)
             }
@@ -111,7 +110,6 @@ struct SettingsScreen: View {
     @ViewBuilder
     private var generalSection: some View {
         Section {
-            
             Picker("Apperance", selection: context.viewState.bindings.binding(for: \.appearance)) {
                 ForEach(AppAppearance.allCases, id: \.self) { appearance in
                     Text(appearance.displayName).tag(appearance)

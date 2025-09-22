@@ -6,11 +6,10 @@
 //
 
 import Combine
-import UIKit
 import SwiftState
+import UIKit
 
 class OnboardingFlowCoordinator: FlowCoordinatorProtocol {
-    
     private var cancellables = Set<AnyCancellable>()
     private let stateMachine: StateMachine<State, Event>
     
@@ -19,7 +18,6 @@ class OnboardingFlowCoordinator: FlowCoordinatorProtocol {
     private let notificationManager: NotificationManagerProtocol
     private let isFirstOpen: Bool
     
-
     private let rootNavigationStackCoordinator: NavigationStackCoordinator
     
     private var navigationStackCoordinator: NavigationStackCoordinator!
@@ -32,7 +30,7 @@ class OnboardingFlowCoordinator: FlowCoordinatorProtocol {
         rootNavigationStackCoordinator: NavigationStackCoordinator
     ) {
         self.rootNavigationStackCoordinator = rootNavigationStackCoordinator
-        self.navigationStackCoordinator = NavigationStackCoordinator()
+        navigationStackCoordinator = NavigationStackCoordinator()
         self.appSettings = appSettings
         self.analyticsService = analyticsService
         self.notificationManager = notificationManager
@@ -84,9 +82,10 @@ class OnboardingFlowCoordinator: FlowCoordinatorProtocol {
 
 private extension OnboardingFlowCoordinator {
     // MARK: - Setup
+
     private func configureStateMachine() {
         stateMachine.addRoute(.init(fromState: .finished, toState: .initial))
-        stateMachine.addRouteMapping { [weak self] event, fromState, _ in
+        stateMachine.addRouteMapping { [weak self] _, fromState, _ in
             guard let self else {
                 return nil
             }
@@ -103,12 +102,10 @@ private extension OnboardingFlowCoordinator {
             }
         }
 
-        
         stateMachine.addAnyHandler(.any => .any) { [weak self] context in
             guard let self else { return }
             
             switch (context.fromState, context.event, context.toState) {
-            
             case (_, _, .notificationPermissions):
                 presentNotificationPermissionsScreen()
             case (_, _, .finished):
@@ -144,7 +141,6 @@ private extension OnboardingFlowCoordinator {
 // MARK: - Screens
 
 private extension OnboardingFlowCoordinator {
-    
     private func presentNotificationPermissionsScreen() {
         let coordinator = NotificationPermissionsScreenCoordinator(parameters: .init(notificationManager: notificationManager))
         

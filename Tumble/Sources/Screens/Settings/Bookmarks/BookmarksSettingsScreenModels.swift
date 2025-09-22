@@ -6,11 +6,11 @@
 //
 
 import Foundation
-import UIKit
 import SwiftUI
+import UIKit
 
 struct BookmarksSettingsScreenViewState: BindableState {
-    var bookmarkedProgrammes: [String : Bool]
+    var bookmarkedProgrammes: [String: Bool]
     var bindings: BookmarksSettingsScreenViewStateBindings
 }
 

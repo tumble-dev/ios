@@ -46,7 +46,7 @@ class SettingsFlowCoordinator: FlowCoordinatorProtocol {
         switch appRoute {
         case .settings:
             presentSettingsScreen(animated: animated)
-        case .settingsDetails(_):
+        case .settingsDetails:
             break // TODO: Implement routing to specific setting
         default:
             break
@@ -137,7 +137,7 @@ class SettingsFlowCoordinator: FlowCoordinatorProtocol {
     private func presentNotificationSettings() {
         let coordinator = NotificationsSettingsScreenCoordinator(
             parameters: .init(
-                appSettings: parameters.appSettings,
+                appSettings: parameters.appSettings
             )
         )
         navigationStackCoordinator.push(coordinator)
@@ -149,7 +149,6 @@ class SettingsFlowCoordinator: FlowCoordinatorProtocol {
                 appSettings: parameters.appSettings,
                 eventStorageService: parameters.eventStorageService
             )
-            
         )
         
         coordinator.actions
@@ -178,13 +177,10 @@ class SettingsFlowCoordinator: FlowCoordinatorProtocol {
                 
                 switch action {
                 case .accountAdded(let user):
-                    // Update the active username in app settings
                     parameters.appSettings.activeUsername = user.username
                     navigationStackCoordinator.popToRoot()
-                    AppLogger.shared.info("Account added successfully: \(user.username)")
                     
                 case .dismiss:
-                    // User cancelled, just pop back
                     navigationStackCoordinator.pop()
                 }
             }

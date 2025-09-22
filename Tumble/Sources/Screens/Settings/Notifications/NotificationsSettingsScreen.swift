@@ -5,11 +5,10 @@
 //  Created by Adis Veletanlic on 2025-09-20.
 //
 
-import SwiftUI
 import Combine
+import SwiftUI
 
 struct NotificationsSettingsScreen: View {
-    
     @ObservedObject var context: NotificationsSettingsScreenViewModel.Context
     @State private var showingResetAlert = false
     
@@ -24,7 +23,7 @@ struct NotificationsSettingsScreen: View {
         .navigationTitle("Notification Settings")
         .navigationBarTitleDisplayMode(.inline)
         .alert("Reset All Settings", isPresented: $showingResetAlert) {
-            Button("Cancel", role: .cancel) { }
+            Button("Cancel", role: .cancel) {}
             Button("Reset", role: .destructive) {
                 context.send(viewAction: .resetAllSettings)
             }

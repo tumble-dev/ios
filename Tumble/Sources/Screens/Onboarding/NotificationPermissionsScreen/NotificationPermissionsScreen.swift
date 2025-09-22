@@ -5,7 +5,6 @@
 //  Created by Adis Veletanlic on 2025-09-18.
 //
 
-
 import SwiftUI
 
 /// A prompt that asks the user whether they would like to enable Notifications or not.

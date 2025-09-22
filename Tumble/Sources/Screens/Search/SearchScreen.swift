@@ -5,8 +5,8 @@
 //  Created by Adis Veletanlic on 2025-09-18.
 //
 
-import SwiftUI
 import Combine
+import SwiftUI
 
 struct SearchScreen: View {
     @ObservedObject var context: SearchScreenViewModel.Context
@@ -133,7 +133,7 @@ struct SearchInfo: View {
                         .font(.title2)
                         .fontWeight(.medium)
                         .multilineTextAlignment(.leading)
-                        .lineLimit(nil)  // Allow unlimited lines
+                        .lineLimit(nil) // Allow unlimited lines
                         .fixedSize(horizontal: false, vertical: true)
                         .padding(.horizontal, 20)
                 }
@@ -155,7 +155,7 @@ struct SearchResults: View {
     let universityImage: Image?
     
     var body: some View {
-        ScrollView() {
+        ScrollView {
             LazyVStack(spacing: 25) {
                 ForEach(searchResults, id: \.id) { programme in
                     ProgrammeCard(
@@ -200,7 +200,8 @@ struct ProgrammeCard: View {
                     
                     // Show programme ID if it's not blank and not contained in title
                     if !programme.id.isEmpty &&
-                       !programme.title.localizedCaseInsensitiveContains(programme.id) {
+                        !programme.title.localizedCaseInsensitiveContains(programme.id)
+                    {
                         Text(programme.id)
                             .font(.system(size: 12))
                             .foregroundColor(.onSurface.opacity(0.9))

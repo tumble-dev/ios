@@ -102,7 +102,6 @@ class AccountScreenViewModel: AccountScreenViewModelType, AccountScreenViewModel
         authenticationService.authStatePublisher
             .sink { [weak self] authState in
                 guard let self = self else { return }
-                AppLogger.shared.info("Got state: \(authState)")
                 switch authState {
                 case .authenticated(let user):
                     updateUserState(newState: .loaded(user: user))

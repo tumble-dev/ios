@@ -1,5 +1,5 @@
 //
-//  EventDetailScreen.swift
+//  EventDetailsScreen.swift
 // Tumble
 //
 //  Created by Adis Veletanlic on 2025-09-18.
@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct EventDetailsScreen: View {
-    
     @ObservedObject var context: EventDetailsScreenViewModel.Context
     @State private var showColorPicker = false
     @State private var selectedColor = Color.gray

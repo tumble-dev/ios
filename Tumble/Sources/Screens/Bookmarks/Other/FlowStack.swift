@@ -1,10 +1,9 @@
 //
-//  FlowStackOptions.swift
+//  FlowStack.swift
 // Tumble
 //
 //  Created by Adis Veletanlic on 2025-09-18.
 //
-
 
 //
 //  StaticStack.swift
@@ -15,9 +14,7 @@
 
 import SwiftUI
 
-
 struct FlowStackOptions {
-    
     var horizontalPadding: CGFloat = 5
     
     var verticalPadding: CGFloat = 5
@@ -25,12 +22,9 @@ struct FlowStackOptions {
     var minHeight: CGFloat = 200
     
     var minWidth: CGFloat = 200
-    
 }
 
-
 extension FlowStack {
-    
     func stackHorizontalSpacing(_ value: CGFloat) -> FlowStack {
         var view = self
         view.options.horizontalPadding = value
@@ -54,15 +48,12 @@ extension FlowStack {
         view.options.minWidth = value
         return view
     }
-    
 }
 
-
-struct FlowStack<T : Hashable, V : View>: View {
-    
+struct FlowStack<T: Hashable, V: View>: View {
     // MARK: - Types and Properties
     
-    public var options: FlowStackOptions = FlowStackOptions()
+    public var options: FlowStackOptions = .init()
     
     /// Alias for function type generating content
     typealias ContentGenerator = (T) -> V
@@ -99,10 +90,10 @@ struct FlowStack<T : Hashable, V : View>: View {
                     .padding(.horizontal, options.horizontalPadding)
                     .padding(.vertical, options.verticalPadding)
                     .alignmentGuide(.leading, computeValue: { dimension in
-                        return calculateLeadingAlignment(dimension: dimension, item: item)
+                        calculateLeadingAlignment(dimension: dimension, item: item)
                     })
-                    .alignmentGuide(.top, computeValue: { dimension in
-                        return calculateTopAlignment(item: item)
+                    .alignmentGuide(.top, computeValue: { _ in
+                        calculateTopAlignment(item: item)
                     })
             }
         }
@@ -139,7 +130,6 @@ struct FlowStack<T : Hashable, V : View>: View {
             }
             return result
         }
-        
     }
 }
 

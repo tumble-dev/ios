@@ -5,18 +5,17 @@
 //  Created by Adis Veletanlic on 2025-09-21.
 //
 
-
 import Foundation
 
 class ServiceLocator {
     private(set) static var shared = ServiceLocator()
     
-    private init() { }
+    private init() {}
     
     private(set) var tumbleApiService: TumbleApiServiceProtocol!
     
     func register(tumbleApiService: TumbleApiServiceProtocol) {
-        self.tumbleApiService  = tumbleApiService
+        self.tumbleApiService = tumbleApiService
     }
     
     private(set) var settings: AppSettings!
@@ -42,6 +41,4 @@ class ServiceLocator {
     func register(userDataStorageService: UserDataStorageServiceProtocol) {
         self.userDataStorageService = userDataStorageService
     }
-    
-    
 }

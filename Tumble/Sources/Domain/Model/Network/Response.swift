@@ -3,7 +3,6 @@ import Foundation
 // MARK: - Network Namespace
 
 enum Response {
-    
     // MARK: - Models
     
     struct Event: Codable {

@@ -5,8 +5,8 @@
 //  Created by Adis Veletanlic on 2025-09-18.
 //
 
-import Foundation
 import Combine
+import Foundation
 
 typealias QuickViewScreenViewModelType = StateStoreViewModel<QuickViewScreenViewState, QuickViewScreenViewAction>
 
@@ -89,7 +89,6 @@ class QuickViewScreenViewModel: QuickViewScreenViewModelType {
         }
     }
 
-    
     @MainActor
     private func updateSaveButtonState(_ newState: SaveButtonState) {
         state.saveButtonState = newState

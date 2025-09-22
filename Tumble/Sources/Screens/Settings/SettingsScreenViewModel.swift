@@ -49,7 +49,7 @@ class SettingsScreenViewModel: SettingsScreenViewModelType, SettingsScreenViewMo
             appSettings.$appearance.map { _ in () }.eraseToAnyPublisher(),
             appSettings.$bookmarkedProgrammes.map { _ in () }.eraseToAnyPublisher(),
             appSettings.$activeUsername.map { _ in () }.eraseToAnyPublisher(),
-            appSettings.$openEventFromWidget.map { _ in () }.eraseToAnyPublisher(),
+            appSettings.$openEventFromWidget.map { _ in () }.eraseToAnyPublisher()
         ]
         
         Publishers.MergeMany(publishers)

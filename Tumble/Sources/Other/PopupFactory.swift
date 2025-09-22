@@ -8,11 +8,10 @@
 import Foundation
 
 class PopupFactory {
-    
     static let shared: PopupFactory = .init()
     
     func setNotificationsAllEventsSuccess() -> Popup {
-        Popup (
+        Popup(
             type: .success,
             title: NSLocalizedString("Scheduled notifications", comment: ""),
             message: NSLocalizedString("Scheduled notifications for all available events", comment: "")
@@ -122,5 +121,4 @@ class PopupFactory {
     func loginRequiresSchool() -> Popup {
         Popup(type: .error, title: NSLocalizedString("No university selected", comment: ""), message: NSLocalizedString("You must select a university before logging in", comment: ""))
     }
-    
 }

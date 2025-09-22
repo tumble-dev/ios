@@ -1,5 +1,5 @@
 //
-//  Notification.swift
+//  Notifications+Types.swift
 //  Tumble
 //
 //  Created by Adis Veletanlic on 2023-02-04.

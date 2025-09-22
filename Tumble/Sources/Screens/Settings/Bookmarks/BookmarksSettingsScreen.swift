@@ -5,11 +5,10 @@
 //  Created by Adis Veletanlic on 2025-09-20.
 //
 
-import SwiftUI
 import Combine
+import SwiftUI
 
 struct BookmarksSettingsScreen: View {
-    
     @ObservedObject var context: BookmarksSettingsScreenViewModel.Context
     @State private var showingDeleteAlert = false
     
@@ -23,7 +22,7 @@ struct BookmarksSettingsScreen: View {
             removeSection
         }
         .alert("Remove All Bookmarks", isPresented: $showingDeleteAlert) {
-            Button("Cancel", role: .cancel) { }
+            Button("Cancel", role: .cancel) {}
             Button("Remove", role: .destructive) {
                 context.send(viewAction: .removeAllBookmarks)
             }

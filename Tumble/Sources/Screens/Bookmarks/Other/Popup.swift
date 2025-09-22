@@ -1,5 +1,5 @@
 //
-//  PopupType.swift
+//  Popup.swift
 //  Tumble
 //
 //  Created by Adis Veletanlic on 2025-09-18.
@@ -25,7 +25,7 @@ struct Popup {
     }
     
     var leadingIcon: String {
-        switch self.type {
+        switch type {
         case .error:
             return "xmark.circle"
         case .success:

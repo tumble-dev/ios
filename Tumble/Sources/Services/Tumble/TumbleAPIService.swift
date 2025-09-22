@@ -8,6 +8,7 @@
 import Foundation
 
 // MARK: - Network Swift.Error
+
 enum NetworkError: Swift.Error, LocalizedError {
     case invalidURL
     case noData
@@ -50,9 +51,11 @@ enum NetworkError: Swift.Error, LocalizedError {
 }
 
 // MARK: - API Result
+
 typealias APIResult<T> = Result<T, NetworkError>
 
 // MARK: - Request Configuration
+
 struct RequestConfig {
     let timeout: TimeInterval
     let retryCount: Int
@@ -66,6 +69,7 @@ struct RequestConfig {
 }
 
 // MARK: - API Response Wrapper
+
 struct APIResponse<T: Codable>: Codable {
     let data: T?
     let message: String?
@@ -78,19 +82,20 @@ struct APIResponse<T: Codable>: Codable {
 }
 
 // MARK: - Empty Response for endpoints that return no data
+
 struct EmptyResponse: Codable {
     let success: Bool
     let message: String?
     
     init() {
-        self.success = true
-        self.message = nil
+        success = true
+        message = nil
     }
 }
 
 // MARK: - Tumble API Service
-final class TumbleAPIService: TumbleApiServiceProtocol {
 
+final class TumbleAPIService: TumbleApiServiceProtocol {
     private let session: URLSession
     private let decoder: JSONDecoder
     private let encoder: JSONEncoder
@@ -103,15 +108,15 @@ final class TumbleAPIService: TumbleApiServiceProtocol {
         sessionConfig.timeoutIntervalForRequest = config.timeout
         sessionConfig.timeoutIntervalForResource = config.timeout * 2
         sessionConfig.waitsForConnectivity = true
-        self.session = URLSession(configuration: sessionConfig)
+        session = URLSession(configuration: sessionConfig)
         
-        self.decoder = JSONDecoder()
+        decoder = JSONDecoder()
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
         dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
         decoder.dateDecodingStrategy = .formatted(dateFormatter)
 
-        self.encoder = JSONEncoder()
+        encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .formatted(dateFormatter)
     }
     
@@ -271,7 +276,8 @@ final class TumbleAPIService: TumbleApiServiceProtocol {
         } catch {
             // Try to decode as wrapped response first
             if let wrappedResponse = try? decoder.decode(APIResponse<T>.self, from: data),
-               let actualData = wrappedResponse.data {
+               let actualData = wrappedResponse.data
+            {
                 return actualData
             }
             
@@ -279,7 +285,6 @@ final class TumbleAPIService: TumbleApiServiceProtocol {
         }
     }
 
-    
     private func handleRequestError<T: Codable>(
         _ error: Swift.Error,
         endpoint: TumbleEndpoint,
@@ -289,7 +294,7 @@ final class TumbleAPIService: TumbleApiServiceProtocol {
         let networkError = mapError(error)
         
         if shouldRetry(error: networkError) && retryCount < config.retryCount {
-            try await Task.sleep(nanoseconds: UInt64(config.retryDelay * 1_000_000_000))
+            try await Task.sleep(nanoseconds: UInt64(config.retryDelay * 1000000000))
             return try await performRequest(endpoint, responseType: responseType, retryCount: retryCount + 1)
         }
         
@@ -306,7 +311,7 @@ final class TumbleAPIService: TumbleApiServiceProtocol {
         let networkError = mapError(error)
         
         if shouldRetry(error: networkError) && retryCount < config.retryCount {
-            try await Task.sleep(nanoseconds: UInt64(config.retryDelay * 1_000_000_000))
+            try await Task.sleep(nanoseconds: UInt64(config.retryDelay * 1000000000))
             return try await performRequestWithBody(endpoint, body: body, responseType: responseType, retryCount: retryCount + 1)
         }
         
@@ -347,31 +352,34 @@ final class TumbleAPIService: TumbleApiServiceProtocol {
 // MARK: - Convenience Extensions for Common Patterns
 
 extension TumbleAPIService {
-    
     // MARK: - News
+
     func getNews() async throws -> [Response.NewsItem] {
         return try await get(.news, responseType: [Response.NewsItem].self)
     }
     
     // MARK: - Authentication
+
     func login(credentials: Response.LoginRequest, school: String) async throws -> Response.User {
         return try await post(.loginKronox(school: school), body: credentials, responseType: Response.User.self)
     }
     
     // MARK: - Schedule
+
     func getScheduleEvents(school: String, scheduleIds: [String]) async throws -> Response.EventsResponse {
         return try await get(.scheduleEvents(school: school, scheduleIds: scheduleIds), responseType: Response.EventsResponse.self)
     }
     
     // MARK: - Programme Search
+
     func searchProgrammes(query: String, school: String) async throws -> Response.ProgrammeSearchResponse {
         return try await get(.searchProgrammes(query: query, school: school), responseType: Response.ProgrammeSearchResponse.self)
     }
 }
 
 extension TumbleAPIService {
-    
     // MARK: - Authenticated Resources
+
     func getUserBookings(school: String, authToken: String) async throws -> [Response.Booking] {
         let endpoint = TumbleEndpoint.userBookings(school: school)
         let request = endpoint.urlRequest(authToken: authToken)
@@ -400,6 +408,7 @@ extension TumbleAPIService {
     }
     
     // MARK: - Authenticated Events
+
     func getRegisteredEvents(school: String, authToken: String) async throws -> [Response.UserEvent] {
         let endpoint = TumbleEndpoint.registeredEvents(school: school)
         let request = endpoint.urlRequest(authToken: authToken)
@@ -438,15 +447,15 @@ extension TumbleAPIService {
 
 extension TumbleAPIService {
     private func performWithAutoAuth<T>(
-            _ operation: () async throws -> T,
-            autoReLogin: () async throws -> Void
-        ) async throws -> T {
-            do {
-                return try await operation()
-            } catch NetworkError.unauthorized {
-                // Session expired, attempt auto re-login once
-                try await autoReLogin()
-                return try await operation()
-            }
+        _ operation: () async throws -> T,
+        autoReLogin: () async throws -> Void
+    ) async throws -> T {
+        do {
+            return try await operation()
+        } catch NetworkError.unauthorized {
+            // Session expired, attempt auto re-login once
+            try await autoReLogin()
+            return try await operation()
         }
+    }
 }

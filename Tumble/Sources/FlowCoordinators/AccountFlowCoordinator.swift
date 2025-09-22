@@ -1,5 +1,5 @@
 //
-//  AuthFlowCoordinator.swift
+//  AccountFlowCoordinator.swift
 // Tumble
 //
 //  Created by Adis Veletanlic on 2025-09-19.
@@ -67,7 +67,7 @@ class AccountFlowCoordinator: FlowCoordinatorProtocol {
                 analyticsService: parameters.analyticsService,
                 userDataStorageService: parameters.userDataStorageService,
                 authenticationService: parameters.authenticationService,
-                appSettings: parameters.appSettings,
+                appSettings: parameters.appSettings
             )
         )
         
@@ -87,7 +87,6 @@ class AccountFlowCoordinator: FlowCoordinatorProtocol {
                 case .dismiss:
                     parameters.navigationSplitCoordinator.setSheetCoordinator(nil)
                 }
-                
             }
             .store(in: &cancellables)
         
@@ -106,5 +105,4 @@ class AccountFlowCoordinator: FlowCoordinatorProtocol {
     }
     
     // MARK: - Navigation Methods
-    
 }

@@ -118,8 +118,7 @@ enum LoggingLevel: Int, Codable, CaseIterable {
 // MARK: - Protocol Extension
 
 protocol AdvancedSettingsProtocol: AnyObject {
-    
-    func resetAdvancedSettings() -> Void
+    func resetAdvancedSettings()
     
     // Performance & Data
     var cacheSize: String { get }

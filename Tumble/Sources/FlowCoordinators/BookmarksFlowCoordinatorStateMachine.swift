@@ -60,7 +60,6 @@ class BookmarksFlowCoordinatorStateMachine {
         case showSearchScreen
         /// The search screen has been dismissed
         case dismissedSearchScreen
-        
     }
     
     private let stateMachine: StateMachine<State, Event>
@@ -92,6 +91,7 @@ class BookmarksFlowCoordinatorStateMachine {
 
             case (.bookmarks, .showSettingsScreen):
                 return .settingsScreen
+
             case (.settingsScreen, .dismissedSettingsScreen):
                 return .bookmarks
                   
@@ -106,6 +106,7 @@ class BookmarksFlowCoordinatorStateMachine {
             
             case (_, .showAccountScreen):
                 return .accountScreen
+
             case (.accountScreen, .dismissedAccountScreen):
                 return .bookmarks
                 

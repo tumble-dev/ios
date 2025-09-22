@@ -5,10 +5,11 @@
 //  Created by Adis Veletanlic on 2025-09-20.
 //
 
-import Foundation
 import Combine
+import Foundation
 
 // MARK: - User Storage Error Types
+
 enum UserStorageError: Error, LocalizedError {
     case fileOperationFailed
     case userNotFound(username: String)
@@ -39,6 +40,7 @@ enum UserStorageError: Error, LocalizedError {
 }
 
 // MARK: - User Data Storage Change Types
+
 enum UserStorageEvent {
     case userAdded(user: TumbleUser)
     case userUpdated(user: TumbleUser, previousUser: TumbleUser?)
@@ -47,8 +49,8 @@ enum UserStorageEvent {
 }
 
 class UserDataStorageService: UserDataStorageServiceProtocol, ObservableObject {
-    
     // MARK: - Properties
+
     private let standardFileURL: URL
     private let optimizedFileURL: URL
     private let queue = DispatchQueue(label: "user.storage.queue", attributes: .concurrent)
@@ -69,13 +71,14 @@ class UserDataStorageService: UserDataStorageServiceProtocol, ObservableObject {
     }
     
     // MARK: - Initialization
+
     init(filename: String = "users_storage", appSettings: AppSettings) {
         self.appSettings = appSettings
         
         let documentsPath = FileManager.default.urls(for: .documentDirectory,
-                                                   in: .userDomainMask).first!
-        self.standardFileURL = documentsPath.appendingPathComponent("\(filename).json")
-        self.optimizedFileURL = documentsPath.appendingPathComponent("\(filename)_compressed.json")
+                                                     in: .userDomainMask).first!
+        standardFileURL = documentsPath.appendingPathComponent("\(filename).json")
+        optimizedFileURL = documentsPath.appendingPathComponent("\(filename)_compressed.json")
         
         loadFromDisk()
         allUsersSubject.send(Array(users.values))
@@ -84,6 +87,7 @@ class UserDataStorageService: UserDataStorageServiceProtocol, ObservableObject {
     }
     
     // MARK: - Storage Optimization Observer
+
     private func setupStorageOptimizationObserver() {
         appSettings.$storageOptimizationEnabled
             .sink { [weak self] isEnabled in
@@ -103,6 +107,7 @@ class UserDataStorageService: UserDataStorageServiceProtocol, ObservableObject {
     }
     
     // MARK: - Storage Migration
+
     private func migrateStorageFormat(toOptimized: Bool) throws {
         let sourceURL = toOptimized ? standardFileURL : optimizedFileURL
         
@@ -121,6 +126,7 @@ class UserDataStorageService: UserDataStorageServiceProtocol, ObservableObject {
     }
     
     // MARK: - Helpers
+
     private func publishUsers() {
         let snapshot = queue.sync { Array(users.values) }
         DispatchQueue.main.async {
@@ -152,7 +158,7 @@ class UserDataStorageService: UserDataStorageServiceProtocol, ObservableObject {
     /// Retrieve a user profile by username
     func getUserProfile(username: String) -> TumbleUser? {
         return queue.sync {
-            return users[username]
+            users[username]
         }
     }
     
@@ -177,21 +183,21 @@ class UserDataStorageService: UserDataStorageServiceProtocol, ObservableObject {
     /// Check if a user profile exists
     func userExists(username: String) -> Bool {
         return queue.sync {
-            return users[username] != nil
+            users[username] != nil
         }
     }
     
     /// Get all stored user profiles
     func getAllUsers() -> [TumbleUser] {
         return queue.sync {
-            return Array(users.values)
+            Array(users.values)
         }
     }
     
     /// Get all stored usernames
     func getAllUsernames() -> [String] {
         return queue.sync {
-            return Array(users.keys)
+            Array(users.keys)
         }
     }
     
@@ -215,7 +221,7 @@ class UserDataStorageService: UserDataStorageServiceProtocol, ObservableObject {
     /// Get users filtered by predicate
     func getUsers(where predicate: (TumbleUser) -> Bool) -> [TumbleUser] {
         return queue.sync {
-            return users.values.filter(predicate)
+            users.values.filter(predicate)
         }
     }
     
@@ -227,14 +233,14 @@ class UserDataStorageService: UserDataStorageServiceProtocol, ObservableObject {
     /// Get users sorted by name
     func getUsersSortedByName() -> [TumbleUser] {
         return queue.sync {
-            return users.values.sorted { $0.name < $1.name }
+            users.values.sorted { $0.name < $1.name }
         }
     }
     
     /// Get users grouped by school
     func getUsersGroupedBySchool() -> [String: [TumbleUser]] {
         return queue.sync {
-            return Dictionary(grouping: users.values) { $0.school }
+            Dictionary(grouping: users.values) { $0.school }
         }
     }
     
@@ -315,6 +321,7 @@ class UserDataStorageService: UserDataStorageServiceProtocol, ObservableObject {
     }
     
     // MARK: - Storage Stats
+
     func getStorageStats() -> (standardSize: Int64?, optimizedSize: Int64?, currentFormat: StorageFormat) {
         let standardSize = getFileSize(standardFileURL)
         let optimizedSize = getFileSize(optimizedFileURL)
@@ -333,6 +340,7 @@ class UserDataStorageService: UserDataStorageServiceProtocol, ObservableObject {
     }
     
     // MARK: - Storage Info for UI
+
     func getStorageInfo() -> String {
         let stats = getStorageStats()
         let currentSize = stats.currentFormat == .optimized ? stats.optimizedSize : stats.standardSize

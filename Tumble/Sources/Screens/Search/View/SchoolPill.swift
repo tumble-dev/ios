@@ -24,8 +24,7 @@ extension Pill {
 }
 
 struct SchoolPill: View, Pill {
-    
-    var id: UUID = UUID()
+    var id: UUID = .init()
 
     let school: School
     
@@ -35,11 +34,10 @@ struct SchoolPill: View, Pill {
     
     @Binding var selectedSchool: School?
     
-    
     init(school: School, selectedSchool: Binding<School?>) {
-        self._selectedSchool = selectedSchool
-        self.title = school.id.uppercased()
-        self.icon = Image(school.logoPath)
+        _selectedSchool = selectedSchool
+        title = school.id.uppercased()
+        icon = Image(school.logoPath)
         self.school = school
     }
     

@@ -5,11 +5,10 @@
 //  Created by Adis Veletanlic on 2025-09-20.
 //
 
-import SwiftUI
 import Combine
+import SwiftUI
 
 struct AccountScreen: View {
-    
     @ObservedObject var context: AccountScreenViewModel.Context
     
     var body: some View {

@@ -5,10 +5,9 @@
 //  Created by Adis Veletanlic on 2025-09-20.
 //
 
-
 import Foundation
-import UIKit
 import SwiftUI
+import UIKit
 
 struct AccountSettingsScreenViewState: BindableState {
     var username: String = ""

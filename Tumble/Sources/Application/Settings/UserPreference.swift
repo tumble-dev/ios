@@ -5,7 +5,6 @@
 //  Created by Adis Veletanlic on 2025-09-17.
 //
 
-
 import Combine
 import Foundation
 
@@ -30,7 +29,6 @@ final class UserPreference<T: Codable> {
     private let subject: PassthroughSubject<T, Never> = .init()
     private let mode: Mode
 
-    
     /// Initializes the property wrapper with a static default value.
     ///
     /// - Parameters:
@@ -41,8 +39,8 @@ final class UserPreference<T: Codable> {
     init(key: String,
          defaultValue: T,
          keyedStorage: any KeyedStorage<T>,
-         mode: Mode,
-    ) {
+         mode: Mode)
+    {
         self.key = key
         self.defaultValue = defaultValue
         self.keyedStorage = keyedStorage
@@ -194,22 +192,22 @@ extension Optional: Nullable {
     }
 }
 
-extension Dictionary: KeyedStorage where Key == String, Value: Codable { }
+extension Dictionary: KeyedStorage where Key == String, Value: Codable {}
 
 // MARK: - PlistRepresentable
 
 /// A protocol to mark types as being plist compliant.
 /// UserDefaultsStorage uses this protocol to avoid to encode/decode with Codable plist compliant values.
-protocol PlistRepresentable { }
+protocol PlistRepresentable {}
 
-extension Bool: PlistRepresentable { }
-extension String: PlistRepresentable { }
-extension Int: PlistRepresentable { }
-extension Float: PlistRepresentable { }
-extension Double: PlistRepresentable { }
-extension Date: PlistRepresentable { }
-extension Data: PlistRepresentable { }
+extension Bool: PlistRepresentable {}
+extension String: PlistRepresentable {}
+extension Int: PlistRepresentable {}
+extension Float: PlistRepresentable {}
+extension Double: PlistRepresentable {}
+extension Date: PlistRepresentable {}
+extension Data: PlistRepresentable {}
 
-extension Array: PlistRepresentable where Element: PlistRepresentable { }
-extension Dictionary: PlistRepresentable where Key == String, Value: PlistRepresentable { }
-extension Optional: PlistRepresentable where Wrapped: PlistRepresentable { }
+extension Array: PlistRepresentable where Element: PlistRepresentable {}
+extension Dictionary: PlistRepresentable where Key == String, Value: PlistRepresentable {}
+extension Optional: PlistRepresentable where Wrapped: PlistRepresentable {}

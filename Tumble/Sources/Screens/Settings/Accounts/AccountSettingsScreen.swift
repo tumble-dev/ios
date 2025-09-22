@@ -5,8 +5,8 @@
 //  Created by Adis Veletanlic on 2025-09-20.
 //
 
-import SwiftUI
 import Combine
+import SwiftUI
 
 struct AccountSettingsScreen: View {
     @ObservedObject var context: AccountSettingsScreenViewModel.Context

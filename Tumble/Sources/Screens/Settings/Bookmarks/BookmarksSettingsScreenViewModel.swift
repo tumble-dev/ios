@@ -75,7 +75,7 @@ class BookmarksSettingsScreenViewModel: BookmarksSettingsScreenViewModelType, Bo
             do {
                 try eventStorageService.removeEvents(forProgrammeId: programmeId)
                 actionsSubject.send(.popBack)
-            } catch let error {
+            } catch {
                 AppLogger.shared.error("Failed to remove bookmarks related events from local storage for \(programmeId): \(error.localizedDescription)")
             }
         }

@@ -5,9 +5,9 @@
 //  Created by Adis Veletanlic on 2025-09-18.
 //
 
-import SwiftUI
 import Combine
 import Foundation
+import SwiftUI
 
 struct EventDetailsScreenCoordinatorParameters {
     let eventId: String
@@ -48,8 +48,7 @@ final class EventDetailsScreenCoordinator: CoordinatorProtocol {
             .store(in: &cancellables)
     }
     
-    func start() {
-    }
+    func start() {}
         
     func toPresentable() -> AnyView {
         AnyView(EventDetailsScreen(context: viewModel.context))

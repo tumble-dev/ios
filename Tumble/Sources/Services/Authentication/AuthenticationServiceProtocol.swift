@@ -8,7 +8,6 @@
 import SwiftUI
 
 protocol AuthenticationServiceProtocol {
-    
     var authStatePublisher: Published<AuthState>.Publisher { get }
     
     func initialize() async

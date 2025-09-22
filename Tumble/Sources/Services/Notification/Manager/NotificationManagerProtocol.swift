@@ -1,10 +1,9 @@
 //
-//  NotificationManagerDelegate.swift
+//  NotificationManagerProtocol.swift
 //  Tumble
 //
 //  Created by Adis Veletanlic on 2025-09-18.
 //
-
 
 import Foundation
 import UserNotifications

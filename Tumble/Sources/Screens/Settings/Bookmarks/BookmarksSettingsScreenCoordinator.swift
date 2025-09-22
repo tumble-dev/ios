@@ -42,7 +42,6 @@ final class BookmarksSettingsScreenCoordinator: CoordinatorProtocol {
                 }
             }
             .store(in: &cancellables)
-        
     }
             
     func toPresentable() -> AnyView {

@@ -9,6 +9,6 @@ import Foundation
 import Logging
 
 /// Basic logger singleton shared globally
-struct AppLogger {
+enum AppLogger {
     static let shared = Logger(label: Config.baseBundleIdentifier)
 }

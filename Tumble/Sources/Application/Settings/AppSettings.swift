@@ -5,8 +5,8 @@
 //  Created by Adis Veletanlic on 2025-09-17.
 //
 
-import Foundation
 import Combine
+import Foundation
 
 final class AppSettings: ObservableObject {
     private enum UserDefaultsKeys: String {
@@ -97,7 +97,7 @@ final class AppSettings: ObservableObject {
     var onboarded: Bool
     
     @UserPreference(key: UserDefaultsKeys.bookmarkedProgrammes, defaultValue: [:], storageType: .userDefaults(store))
-    var bookmarkedProgrammes: [String : Bool]
+    var bookmarkedProgrammes: [String: Bool]
     
     @UserPreference(key: UserDefaultsKeys.openEventFromWidget, defaultValue: false, storageType: .userDefaults(store))
     var openEventFromWidget: Bool
@@ -152,14 +152,11 @@ final class AppSettings: ObservableObject {
     var betaFeaturesEnabled: Bool
 }
 
-
 // MARK: - Protocol Extensions for Settings
-
 
 // MARK: - AdvancedSettingsProtocol Extension
 
 extension AppSettings: AdvancedSettingsProtocol {
-
     var cacheSize: String {
         // Calculate actual cache size
         let urlCacheSize = URLCache.shared.currentDiskUsage + URLCache.shared.currentMemoryUsage
@@ -171,25 +168,25 @@ extension AppSettings: AdvancedSettingsProtocol {
     
     func resetAdvancedSettings() {
         // Performance & Data
-        self.wifiOnlyMode = false
-        self.backgroundRefreshEnabled = true
-        self.syncFrequency = .daily
+        wifiOnlyMode = false
+        backgroundRefreshEnabled = true
+        syncFrequency = .daily
         
         // Privacy & Security
-        self.analyticsEnabled = true
+        analyticsEnabled = true
         
         // Network & Connectivity
-        self.connectionTimeout = 30.0
-        self.retryAttempts = 3
+        connectionTimeout = 30.0
+        retryAttempts = 3
         
         // Storage & Backup
-        self.storageOptimizationEnabled = true
+        storageOptimizationEnabled = true
         
         // Development
-        self.debugModeEnabled = false
-        self.loggingLevel = .error
-        self.performanceMonitoringEnabled = false
-        self.betaFeaturesEnabled = false
+        debugModeEnabled = false
+        loggingLevel = .error
+        performanceMonitoringEnabled = false
+        betaFeaturesEnabled = false
     }
 }
 
@@ -197,12 +194,12 @@ extension AppSettings: AdvancedSettingsProtocol {
 
 extension AppSettings: NotificationsSettingsProtocol {
     func resetNotificationsSettings() {
-        self.notificationOffset = .hour
-        self.inAppMessagingEnabled = true
-        self.notificationsEnabled = true
+        notificationOffset = .hour
+        inAppMessagingEnabled = true
+        notificationsEnabled = true
     }
 }
 
 // MARK: - SettingsProtocol Extension
 
-extension AppSettings: SettingsProtocol { }
+extension AppSettings: SettingsProtocol {}

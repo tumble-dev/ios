@@ -24,7 +24,7 @@ struct AdvancedSettingsScreen: View {
         .navigationTitle("Advanced Settings")
         .navigationBarTitleDisplayMode(.inline)
         .alert("Clear Cache", isPresented: $showingClearCacheAlert) {
-            Button("Cancel", role: .cancel) { }
+            Button("Cancel", role: .cancel) {}
             Button("Clear", role: .destructive) {
                 context.send(viewAction: .clearCache)
             }
@@ -32,7 +32,7 @@ struct AdvancedSettingsScreen: View {
             Text("This will clear all cached data. The app may need to re-download content.")
         }
         .alert("Reset All Settings", isPresented: $showingResetAlert) {
-            Button("Cancel", role: .cancel) { }
+            Button("Cancel", role: .cancel) {}
             Button("Reset", role: .destructive) {
                 context.send(viewAction: .resetAllSettings)
             }
@@ -104,8 +104,8 @@ struct AdvancedSettingsScreen: View {
             )
             
             Stepper("Retry Attempts: \(context.viewState.bindings.retryAttempts)",
-                   value: context.viewState.bindings.binding(for: \.retryAttempts),
-                   in: 1...10)
+                    value: context.viewState.bindings.binding(for: \.retryAttempts),
+                    in: 1...10)
             
         } header: {
             Text("Network & Connectivity")
@@ -117,7 +117,6 @@ struct AdvancedSettingsScreen: View {
     @ViewBuilder
     private var storageBackupSection: some View {
         Section {
-            
             Toggle("Storage Optimization", isOn: context.viewState.bindings.binding(for: \.storageOptimizationEnabled))
             
             Button("Export Data") {

@@ -6,12 +6,11 @@
 //
 
 import Combine
-import UIKit
 import SwiftUI
+import UIKit
 import UserNotifications
 
 class ApplicationCoordinator: ApplicationCoordinatorProtocol, NotificationManagerDelegate {
-    
     let windowManager: WindowManagerProtocol
     
     private let appSettings: AppSettings
@@ -28,31 +27,32 @@ class ApplicationCoordinator: ApplicationCoordinatorProtocol, NotificationManage
     private var appDelegateObserver: AnyCancellable?
     private var cancellables = Set<AnyCancellable>()
     
-    private var mainFlowCoordinator: BookmarksFlowCoordinator?
+    private var bookmarksFlowCoordinator: BookmarksFlowCoordinator?
     private let navigationRootCoordinator: NavigationRootCoordinator
     private let stateMachine: ApplicationCoordinatorStateMachine
     
-
+    private var storedAppRoute: AppRoute?
+    
     init(appDelegate: AppDelegate) {
         let appHooks = AppHooks()
         appHooks.setUp()
         
         let appSettings = appHooks.appSettingsHook.configure(AppSettings())
         
-        self.windowManager = WindowManager(appDelegate: appDelegate)
+        windowManager = WindowManager(appDelegate: appDelegate)
         let networkMonitor = NetworkMonitor()
         appMediator = AppMediator(windowManager: windowManager, networkMonitor: networkMonitor)
+        Self.setupServiceLocator(appSettings: appSettings, appHooks: appHooks)
         
         // MARK: - Services, Managers & Controllers
-        self.notificationManager = NotificationManager(
+
+        notificationManager = NotificationManager(
             notificationCenter: UNUserNotificationCenter.current(),
             appSettings: appSettings
         )
-        
-        Self.setupServiceLocator(appSettings: appSettings, appHooks: appHooks)
-        self.keychainController = KeychainController(accessGroup: Config.keychainAccessGroupIdentifier)
-        
-        self.authenticationService = AuthenticationService(
+    
+        keychainController = KeychainController(accessGroup: Config.keychainAccessGroupIdentifier)
+        authenticationService = AuthenticationService(
             keychainController: keychainController,
             userDataStorage: ServiceLocator.shared.userDataStorageService,
             tumbleApiService: ServiceLocator.shared.tumbleApiService,
@@ -61,8 +61,8 @@ class ApplicationCoordinator: ApplicationCoordinatorProtocol, NotificationManage
         
         // MARK: - Navigation & State
         
-        self.stateMachine = ApplicationCoordinatorStateMachine()
-        self.navigationRootCoordinator = NavigationRootCoordinator()
+        stateMachine = ApplicationCoordinatorStateMachine()
+        navigationRootCoordinator = NavigationRootCoordinator()
         
         navigationRootCoordinator.setRootCoordinator(SplashScreenCoordinator())
         
@@ -75,8 +75,6 @@ class ApplicationCoordinator: ApplicationCoordinatorProtocol, NotificationManage
         configureNotificationManager()
 
         setupStateMachine()
-        
-        AppLogger.shared.debug("[ApplicationCoordinator] Finished initializing")
     }
     
     func start() {
@@ -88,17 +86,16 @@ class ApplicationCoordinator: ApplicationCoordinatorProtocol, NotificationManage
         stateMachine.processEvent(.start)
     }
 
-    func stop() { }
+    func stop() {}
     
     func toPresentable() -> AnyView {
-        AppLogger.shared.info("[ApplicationCoordinator] Calling .toPresentable()")
         return AnyView(
             navigationRootCoordinator
                 .toPresentable()
                 .onReceive(appSettings.$appearance) { [weak self] appearance in
                     guard let self else { return }
                     
-                    windowManager.windows.forEach { window in
+                    for window in windowManager.windows {
                         window.overrideUserInterfaceStyle = appearance.interfaceStyle
                     }
                 }
@@ -107,8 +104,7 @@ class ApplicationCoordinator: ApplicationCoordinatorProtocol, NotificationManage
     
     /// Initializes and starts the main coordinator flow
     func startMainFlow(isFirstOpen: Bool = false) {
-        AppLogger.shared.info("[ApplicationCoordinator] Starting main application flow")
-        let mainFlowCoordinator = BookmarksFlowCoordinator(
+        let bookmarksFlowCoordinator = BookmarksFlowCoordinator(
             appSettings: appSettings,
             appMediator: appMediator,
             notificationManager: notificationManager,
@@ -121,7 +117,7 @@ class ApplicationCoordinator: ApplicationCoordinatorProtocol, NotificationManage
             isFirstOpen: isFirstOpen
         )
         
-        mainFlowCoordinator.actionsPublisher
+        bookmarksFlowCoordinator.actionsPublisher
             .sink { [weak self] (action: BookmarksFlowCoordinatorAction) in
                 guard let self else { return }
                 
@@ -131,35 +127,49 @@ class ApplicationCoordinator: ApplicationCoordinatorProtocol, NotificationManage
                 }
             }
             .store(in: &cancellables)
-        mainFlowCoordinator.start()
-        self.mainFlowCoordinator = mainFlowCoordinator
+        bookmarksFlowCoordinator.start()
+        self.bookmarksFlowCoordinator = bookmarksFlowCoordinator
     }
     
     func handleDeepLink(_ url: URL, isExternalURL: Bool) -> Bool {
         // TODO: Implement
         return false
     }
+    
+    private func handleAppRoute(_ appRoute: AppRoute) {
+        var handled = false
+        switch appRoute {
+        case .eventDetails(let eventId):
+            if let bookmarksFlowCoordinator {
+                bookmarksFlowCoordinator.handleAppRoute(.eventDetails(eventId: eventId), animated: true)
+                handled = true
+            }
+        default:
+            break
+        }
+        
+        if !handled {
+            storedAppRoute = appRoute
+        }
+    }
 }
-
 
 // MARK: - NotificationManagerDelegate
 
 extension ApplicationCoordinator {
     func shouldDisplayInAppNotification(content: UNNotificationContent) -> Bool {
-        // TODO: Implement logic to determine if notification should be shown
-        // For example, check if the related screen is currently visible
+        // TODO: Check if BookmarksFlowCoordinator is currently displaying the
+        // event details screen with this passed ID
         return true
     }
     
     func notificationTapped(content: UNNotificationContent) async {
-        // TODO: Handle notification tap - navigate to appropriate screen
-        AppLogger.shared.info("[ApplicationCoordinator] Notification tapped: \(content.title)")
-        
-        // Example: Extract event ID and navigate to event details
         if let eventId = content.userInfo[NotificationConstants.EventInfoKey.eventId] as? String {
-            // Navigate to event with eventId
-            AppLogger.shared.info("[ApplicationCoordinator] Navigating to event: \(eventId)")
+            if ServiceLocator.shared.eventStorageService.eventExists(id: eventId) {
+                handleAppRoute(.eventDetails(eventId: eventId))
+            }
         }
+        // TODO: Check for bookmark notification as well
     }
     
     func registerForRemoteNotifications() {
@@ -215,4 +225,3 @@ private extension ApplicationCoordinator {
         ServiceLocator.shared.register(userDataStorageService: UserDataStorageService(appSettings: appSettings))
     }
 }
-

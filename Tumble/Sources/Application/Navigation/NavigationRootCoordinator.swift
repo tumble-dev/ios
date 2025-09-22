@@ -108,7 +108,8 @@ class NavigationRootCoordinator: ObservableObject, CoordinatorProtocol, CustomSt
     ///   - dismissalCallback: called when the overlay has been dismissed, programatically or otherwise
     func setOverlayCoordinator(_ coordinator: (any CoordinatorProtocol)?,
                                animated: Bool = true,
-                               dismissalCallback: (() -> Void)? = nil) {
+                               dismissalCallback: (() -> Void)? = nil)
+    {
         guard let coordinator else {
             overlayModule = nil
             return

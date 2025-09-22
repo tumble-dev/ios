@@ -1,12 +1,12 @@
 //
-//  BookmarksView.swift
+//  BookmarksScreen.swift
 //  Tumble
 //
 //  Created by Adis Veletanlic on 2025-09-18.
 //
 
-import SwiftUI
 import Combine
+import SwiftUI
 
 struct BookmarksScreen: View {
     @ObservedObject var context: BookmarksScreenViewModel.Context
@@ -41,7 +41,7 @@ struct BookmarksScreen: View {
             case .error(let msg):
                 InfoView.error(
                     subtitle: msg,
-                    retry: { }
+                    retry: {}
                 )
                 
             case .loaded(let events):
@@ -134,6 +134,7 @@ struct BookmarksScreen: View {
     }
     
     // MARK: - Private
+
     @ToolbarContentBuilder
     private var toolbar: some ToolbarContent {
         ToolbarItem(placement: .primaryAction) {
@@ -159,7 +160,6 @@ struct BookmarksScreen: View {
                 .textFieldStyle(.automatic)
                 .padding(.horizontal, 10)
         }
-        
         
         ToolbarItem(placement: .bottomBar) {
             circularToolbarButton(

@@ -34,10 +34,10 @@ class QuickViewScreenCoordinator: CoordinatorProtocol {
     init(parameters: QuickViewScreenCoordinatorParameters) {
         viewModel = QuickViewScreenViewModel(
             appSettings: parameters.appSettings,
-           tumbleApiService: parameters.tumbleApiService,
-           eventStorageService: parameters.eventStorageService,
-           programmeId: parameters.programmeId,
-           school: parameters.school
+            tumbleApiService: parameters.tumbleApiService,
+            eventStorageService: parameters.eventStorageService,
+            programmeId: parameters.programmeId,
+            school: parameters.school
         )
         
         viewModel.actions
@@ -57,5 +57,4 @@ class QuickViewScreenCoordinator: CoordinatorProtocol {
     }
     
     func stop() {}
-    
 }

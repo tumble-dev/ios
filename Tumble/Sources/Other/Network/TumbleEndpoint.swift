@@ -8,13 +8,15 @@
 import Foundation
 
 // MARK: - HTTP Method Enum
+
 enum HTTPMethod: String {
-    case GET = "GET"
-    case POST = "POST"
-    case PUT = "PUT"
+    case GET
+    case POST
+    case PUT
 }
 
 // MARK: - API Endpoint Protocol
+
 protocol APIEndpoint {
     var path: String { get }
     var queryItems: [URLQueryItem] { get }
@@ -51,6 +53,7 @@ extension APIEndpoint {
 }
 
 // MARK: - Tumble API Endpoints
+
 enum TumbleEndpoint {
     // News
     case news

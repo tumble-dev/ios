@@ -1,5 +1,5 @@
 //
-//  BookmarksView.ViewModel.swift
+//  BookmarksScreenViewModel.swift
 //  Tumble
 //
 //  Created by Adis Veletanlic on 2025-09-18.
@@ -28,7 +28,6 @@ class BookmarksScreenViewModel: BookmarksScreenViewModelType, ObservableObject {
         
         setupListeners()
     }
-    
     
     override func process(viewAction: BookmarksScreenViewAction) {
         switch viewAction {

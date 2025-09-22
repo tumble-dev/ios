@@ -47,8 +47,7 @@ enum NotificationsSettingsScreenViewAction {
 // MARK: - Protocol Extension
 
 protocol NotificationsSettingsProtocol: AnyObject {
-    
-    func resetNotificationsSettings() -> Void
+    func resetNotificationsSettings()
     
     var notificationOffset: NotificationOffset { get set }
     var notificationsEnabled: Bool { get set }

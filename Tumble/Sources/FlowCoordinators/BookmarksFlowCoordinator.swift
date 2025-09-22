@@ -5,16 +5,15 @@
 //  Created by Adis Veletanlic on 2025-09-17.
 //
 
-import UIKit
 import Combine
 import SwiftUI
+import UIKit
 
 enum BookmarksFlowCoordinatorAction {
     case clearCache
 }
 
 class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
-    
     private let navigationRootCoordinator: NavigationRootCoordinator
     private let navigationSplitCoordinator: NavigationSplitCoordinator
     
@@ -60,7 +59,7 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
         navigationRootCoordinator: NavigationRootCoordinator,
         isFirstOpen: Bool
     ) {
-        self.stateMachine = BookmarksFlowCoordinatorStateMachine()
+        stateMachine = BookmarksFlowCoordinatorStateMachine()
         self.navigationRootCoordinator = navigationRootCoordinator
         self.appSettings = appSettings
         self.eventStorageService = eventStorageService
@@ -70,14 +69,14 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
         self.analyticsService = analyticsService
         self.userDataStorageService = userDataStorageService
         self.notificationManager = notificationManager
-        self.navigationSplitCoordinator = NavigationSplitCoordinator(placeholderCoordinator: PlaceholderScreenCoordinator())
+        navigationSplitCoordinator = NavigationSplitCoordinator(placeholderCoordinator: PlaceholderScreenCoordinator())
         
-        self.sidebarNavigationStackCoordinator = NavigationStackCoordinator(navigationSplitCoordinator: navigationSplitCoordinator)
-        self.detailNavigationStackCoordinator = NavigationStackCoordinator(navigationSplitCoordinator: navigationSplitCoordinator)
+        sidebarNavigationStackCoordinator = NavigationStackCoordinator(navigationSplitCoordinator: navigationSplitCoordinator)
+        detailNavigationStackCoordinator = NavigationStackCoordinator(navigationSplitCoordinator: navigationSplitCoordinator)
         
-        self.navigationSplitCoordinator.setSidebarCoordinator(sidebarNavigationStackCoordinator)
+        navigationSplitCoordinator.setSidebarCoordinator(sidebarNavigationStackCoordinator)
         
-        self.onboardingFlowCoordinator = OnboardingFlowCoordinator(
+        onboardingFlowCoordinator = OnboardingFlowCoordinator(
             appSettings: appSettings,
             analyticsService: analyticsService,
             notificationManager: notificationManager,
@@ -85,7 +84,7 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
             rootNavigationStackCoordinator: detailNavigationStackCoordinator
         )
         
-        self.settingsFlowCoordinator = SettingsFlowCoordinator(
+        settingsFlowCoordinator = SettingsFlowCoordinator(
             parameters: .init(
                 windowManager: appMediator.windowManager,
                 appSettings: appSettings,
@@ -96,7 +95,7 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
             )
         )
         
-        self.searchFlowCoordinator = SearchFlowCoordinator(
+        searchFlowCoordinator = SearchFlowCoordinator(
             parameters: .init(
                 windowManager: appMediator.windowManager,
                 appSettings: appSettings,
@@ -107,7 +106,7 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
             )
         )
         
-        self.accountFlowCoordinator = AccountFlowCoordinator(
+        accountFlowCoordinator = AccountFlowCoordinator(
             parameters: .init(
                 windowManager: appMediator.windowManager,
                 appSettings: appSettings,
@@ -183,7 +182,7 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
         stateMachine.processEvent(.start)
     }
     
-    func stop() { }
+    func stop() {}
     
     func clearRoute(animated: Bool) {
         // TODO: bookmarkEventFlowCoordinator?.clearRoute(animated: animated)
@@ -205,7 +204,7 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
         navigationSplitCoordinator.setSheetCoordinator(nil, animated: animated)
         
         // Prevents system crashes when presenting a sheet if another one was already shown
-        try? await Task.sleep(nanoseconds: 200_000)
+        try? await Task.sleep(nanoseconds: 200000)
     }
     
     func asyncHandleAppRoute(_ appRoute: AppRoute, animated: Bool) async {
@@ -219,7 +218,6 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
 // MARK: - Setup
 
 private extension BookmarksFlowCoordinator {
-    
     private func setupStateMachine() {
         stateMachine.addTransitionHandler { [weak self] context in
             guard let self else { return }
@@ -244,12 +242,8 @@ private extension BookmarksFlowCoordinator {
                 break
             case (.eventDetailsScreen, .dismissedEventDetails, .bookmarks):
                 break
-                
             case (.bookmarks, .showEventDetails(let eventId), .eventDetailsScreen):
                 presentEventDetailsSreen(eventId: eventId)
-                
-            
-                
             default:
                 fatalError("Unknown transition: \(context)")
             }
@@ -277,7 +271,6 @@ private extension BookmarksFlowCoordinator {
 // MARK: - Showing Screens
 
 private extension BookmarksFlowCoordinator {
-    
     /// Single home screen instead of tabs
     private func presentBookmarksScreen() {
         let parameters = BookmarksScreenCoordinatorParameters(
@@ -307,7 +300,6 @@ private extension BookmarksFlowCoordinator {
     }
     
     private func presentEventDetailsSreen(eventId: String) {
-        
         let eventDetailsStackCoordinator = NavigationStackCoordinator()
         
         let parameters = EventDetailsScreenCoordinatorParameters(

@@ -1,5 +1,5 @@
 //
-//  InfoViewType.swift
+//  InfoView.swift
 // Tumble
 //
 //  Created by Adis Veletanlic on 2025-09-18.
@@ -8,6 +8,7 @@
 import SwiftUI
 
 // MARK: - Info View Types
+
 enum InfoViewType {
     case empty(title: String, subtitle: String? = nil)
     case error(title: String, subtitle: String, retry: (() -> Void)? = nil)
@@ -29,6 +30,7 @@ enum InfoViewActionStyle {
 }
 
 // MARK: - Info View Component
+
 struct InfoView: View {
     let type: InfoViewType
     
@@ -50,6 +52,7 @@ struct InfoView: View {
     }
     
     // MARK: - Icon View
+
     @ViewBuilder
     private var iconView: some View {
         ZStack {
@@ -70,6 +73,7 @@ struct InfoView: View {
     }
     
     // MARK: - Text Content
+
     @ViewBuilder
     private var textContent: some View {
         VStack(spacing: 8) {
@@ -89,6 +93,7 @@ struct InfoView: View {
     }
     
     // MARK: - Action Button
+
     @ViewBuilder
     private var actionButton: some View {
         if let action = type.action {
@@ -113,6 +118,7 @@ struct InfoView: View {
     }
     
     // MARK: - Computed Properties
+
     private var iconName: String {
         switch type {
         case .empty:
@@ -154,6 +160,7 @@ struct InfoView: View {
 }
 
 // MARK: - Scale Button Style
+
 struct ScaleButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
@@ -163,6 +170,7 @@ struct ScaleButtonStyle: ButtonStyle {
 }
 
 // MARK: - Type Extensions
+
 extension InfoViewType {
     var title: String? {
         switch self {
@@ -218,6 +226,7 @@ extension InfoViewType {
 }
 
 // MARK: - Convenience Initializers
+
 extension InfoView {
     static func empty(
         title: String,

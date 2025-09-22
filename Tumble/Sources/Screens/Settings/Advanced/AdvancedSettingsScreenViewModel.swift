@@ -27,7 +27,7 @@ class AdvancedSettingsScreenViewModel: AdvancedSettingsScreenViewModelType, Adva
     override func process(viewAction: AdvancedSettingsScreenViewAction) {
         switch viewAction {
         case .clearCache:
-            state.bindings = AdvancedSettingsScreenViewStateBindings(advancedSettings: self.advancedSettings)
+            state.bindings = AdvancedSettingsScreenViewStateBindings(advancedSettings: advancedSettings)
             handleClearCache()
             
         case .exportData:
@@ -40,7 +40,6 @@ class AdvancedSettingsScreenViewModel: AdvancedSettingsScreenViewModelType, Adva
             handleResetAllSettings()
         }
     }
-    
     
     func setupObservers() {
         guard let appSettings = advancedSettings as? AppSettings else { return }
@@ -66,7 +65,6 @@ class AdvancedSettingsScreenViewModel: AdvancedSettingsScreenViewModelType, Adva
             }
             .store(in: &cancellables)
     }
-    
     
     // MARK: - Action Handlers
     
