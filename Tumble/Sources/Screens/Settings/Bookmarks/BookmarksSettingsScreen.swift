@@ -1,10 +1,3 @@
-//
-//  BookmarksSettingsScreen.swift
-// Tumble
-//
-//  Created by Adis Veletanlic on 2025-09-20.
-//
-
 import Combine
 import SwiftUI
 
@@ -13,14 +6,17 @@ struct BookmarksSettingsScreen: View {
     @State private var showingDeleteAlert = false
     
     var body: some View {
-        Form {
-            Section {
-                ForEach(Array(context.viewState.bookmarkedProgrammes), id: \.key) { programme in
-                    Toggle(programme.key, isOn: context.viewState.bindings.programmeBinding(for: programme.key))
-                }
+        ScrollView {
+            VStack(spacing: 24) {
+                bookmarksSection
+                removeSection
             }
-            removeSection
+            .padding(.horizontal, .spacingM)
+            .padding(.vertical, .spacingL)
         }
+        .background(Color.background)
+        .navigationTitle("Bookmarked Programmes")
+        .navigationBarTitleDisplayMode(.inline)
         .alert("Remove All Bookmarks", isPresented: $showingDeleteAlert) {
             Button("Cancel", role: .cancel) {}
             Button("Remove", role: .destructive) {
@@ -32,15 +28,35 @@ struct BookmarksSettingsScreen: View {
     }
     
     @ViewBuilder
+    private var bookmarksSection: some View {
+        SettingsCard(title: "Programmes") {
+            VStack(spacing: 0) {
+                ForEach(Array(context.viewState.bookmarkedProgrammes.enumerated()), id: \.offset) { index, programme in
+                    HStack {
+                        Text(programme.key)
+                            .font(.body)
+                            .foregroundColor(.onSurface)
+                        Spacer()
+                        Toggle("", isOn: context.viewState.bindings.programmeBinding(for: programme.key))
+                            .tint(.primary)
+                    }
+                    .padding(.vertical, .spacingM)
+                    
+                    if index < context.viewState.bookmarkedProgrammes.count - 1 {
+                        Divider()
+                    }
+                }
+            }
+        }
+    }
+    
+    @ViewBuilder
     private var removeSection: some View {
-        Section {
-            Button("Remove All Bookmarks") {
+        SettingsCard(title: "Management") {
+            SettingsButton(title: "Remove All Bookmarks", style: .destructive) {
                 showingDeleteAlert = true
             }
-            .foregroundColor(.red)
-            
-        } footer: {
-            Text("Remove all bookmarked events from your phone.")
+            .padding(.vertical, .spacingM)
         }
     }
 }

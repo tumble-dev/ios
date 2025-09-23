@@ -1,10 +1,3 @@
-//
-//  AdvancedSettingsScreen.swift
-// Tumble
-//
-//  Created by Adis Veletanlic on 2025-09-19.
-//
-
 import SwiftUI
 
 struct AdvancedSettingsScreen: View {
@@ -13,14 +6,19 @@ struct AdvancedSettingsScreen: View {
     @State private var showingResetAlert = false
     
     var body: some View {
-        Form {
-            performanceDataSection
-            privacySecuritySection
-            networkConnectivitySection
-            storageBackupSection
-            developmentSection
-            resetSection
+        ScrollView {
+            VStack(spacing: 24) {
+                performanceDataSection
+                privacySecuritySection
+                networkConnectivitySection
+                storageBackupSection
+                developmentSection
+                resetSection
+            }
+            .padding(.horizontal, .spacingM)
+            .padding(.vertical, .spacingL)
         }
+        .background(Color.background)
         .navigationTitle("Advanced Settings")
         .navigationBarTitleDisplayMode(.inline)
         .alert("Clear Cache", isPresented: $showingClearCacheAlert) {
@@ -43,131 +41,218 @@ struct AdvancedSettingsScreen: View {
     
     @ViewBuilder
     private var performanceDataSection: some View {
-        Section {
-            // Cache Management
-            HStack {
-                Text("Cache Size")
-                Spacer()
-                Text(context.viewState.bindings.cacheSize)
-                    .foregroundColor(.onSurface)
-            }
-            
-            Button("Clear Cache") {
-                showingClearCacheAlert = true
-            }
-            .foregroundColor(.red)
-            
-            // Data Usage Controls
-            Toggle("WiFi Only Mode", isOn: context.viewState.bindings.binding(for: \.wifiOnlyMode))
-            
-            Toggle("Background App Refresh", isOn: context.viewState.bindings.binding(for: \.backgroundRefreshEnabled))
-            
-            Picker("Sync Frequency", selection: context.viewState.bindings.binding(for: \.syncFrequency)) {
-                ForEach(SyncFrequency.allCases, id: \.self) { frequency in
-                    Text(frequency.displayName).tag(frequency)
+        SettingsCard(title: "Performance & Data") {
+            VStack(spacing: 0) {
+                HStack {
+                    Text("Cache Size")
+                        .font(.body)
+                        .foregroundColor(.onSurface)
+                    Spacer()
+                    Text(context.viewState.bindings.cacheSize)
+                        .font(.body)
+                        .foregroundColor(.onSurface)
                 }
+                .padding(.vertical, .spacingM)
+                
+                Divider()
+                
+                SettingsButton(title: "Clear Cache", style: .destructive) {
+                    showingClearCacheAlert = true
+                }
+                .padding(.vertical, .spacingM)
+                
+                Divider()
+                
+                HStack {
+                    Text("WiFi Only Mode")
+                        .font(.body)
+                        .foregroundColor(.onSurface)
+                    Spacer()
+                    Toggle("", isOn: context.viewState.bindings.binding(for: \.wifiOnlyMode))
+                        .tint(.primary)
+                }
+                .padding(.vertical, .spacingM)
+                
+                Divider()
+                
+                HStack {
+                    Text("Background App Refresh")
+                        .font(.body)
+                        .foregroundColor(.onSurface)
+                    Spacer()
+                    Toggle("", isOn: context.viewState.bindings.binding(for: \.backgroundRefreshEnabled))
+                        .tint(.primary)
+                }
+                .padding(.vertical, .spacingM)
+                
+                Divider()
+                
+                HStack {
+                    Text("Sync Frequency")
+                        .font(.body)
+                        .foregroundColor(.onSurface)
+                    Spacer()
+                    Picker("Sync Frequency", selection: context.viewState.bindings.binding(for: \.syncFrequency)) {
+                        ForEach(SyncFrequency.allCases, id: \.self) { frequency in
+                            Text(frequency.displayName).tag(frequency)
+                        }
+                    }
+                    .pickerStyle(MenuPickerStyle())
+                }
+                .padding(.vertical, .spacingM)
             }
-            
-        } header: {
-            Text("Performance & Data")
-        } footer: {
-            Text("Manage app performance and data usage settings.")
         }
     }
     
     @ViewBuilder
     private var privacySecuritySection: some View {
-        Section {
-            Toggle("Analytics & Crash Reports", isOn: context.viewState.bindings.binding(for: \.analyticsEnabled))
-            
-        } header: {
-            Text("Privacy & Security")
-        } footer: {
-            Text("Control privacy and security features to protect your data.")
+        SettingsCard(title: "Privacy & Security") {
+            HStack {
+                Text("Analytics & Crash Reports")
+                    .font(.body)
+                    .foregroundColor(.onSurface)
+                Spacer()
+                Toggle("", isOn: context.viewState.bindings.binding(for: \.analyticsEnabled))
+                    .tint(.primary)
+            }
+            .padding(.vertical, .spacingM)
         }
     }
     
     @ViewBuilder
     private var networkConnectivitySection: some View {
-        Section {
-            HStack {
-                Text("Connection Timeout")
-                Spacer()
-                Text("\(Int(context.viewState.bindings.connectionTimeout))s")
+        SettingsCard(title: "Network & Connectivity") {
+            VStack(spacing: 0) {
+                HStack {
+                    Text("Connection Timeout")
+                        .font(.body)
+                        .foregroundColor(.onSurface)
+                    Spacer()
+                    Text("\(Int(context.viewState.bindings.connectionTimeout))s")
+                        .font(.body)
+                        .foregroundColor(.onSurface)
+                }
+                .padding(.vertical, .spacingM)
+                
+                Slider(
+                    value: context.viewState.bindings.binding(for: \.connectionTimeout),
+                    in: 5...60,
+                    step: 5
+                )
+                .tint(.primary)
+                .padding(.bottom, .spacingM)
+                
+                Divider()
+                
+                HStack {
+                    Stepper("Retry Attempts: \(context.viewState.bindings.retryAttempts)",
+                            value: context.viewState.bindings.binding(for: \.retryAttempts),
+                            in: 1...10)
+                    .font(.body)
                     .foregroundColor(.onSurface)
+                }
+                .padding(.vertical, .spacingM)
             }
-            
-            Slider(
-                value: context.viewState.bindings.binding(for: \.connectionTimeout),
-                in: 5...60,
-                step: 5
-            )
-            
-            Stepper("Retry Attempts: \(context.viewState.bindings.retryAttempts)",
-                    value: context.viewState.bindings.binding(for: \.retryAttempts),
-                    in: 1...10)
-            
-        } header: {
-            Text("Network & Connectivity")
-        } footer: {
-            Text("Configure network settings and connection parameters.")
         }
     }
     
     @ViewBuilder
     private var storageBackupSection: some View {
-        Section {
-            Toggle("Storage Optimization", isOn: context.viewState.bindings.binding(for: \.storageOptimizationEnabled))
-            
-            Button("Export Data") {
-                context.send(viewAction: .exportData)
+        SettingsCard(title: "Storage & Backup") {
+            VStack(spacing: 0) {
+                HStack {
+                    Text("Storage Optimization")
+                        .font(.body)
+                        .foregroundColor(.onSurface)
+                    Spacer()
+                    Toggle("", isOn: context.viewState.bindings.binding(for: \.storageOptimizationEnabled))
+                        .tint(.primary)
+                }
+                .padding(.vertical, .spacingM)
+                
+                Divider()
+                
+                SettingsButton(title: "Export Data", style: .primary) {
+                    context.send(viewAction: .exportData)
+                }
+                .padding(.vertical, .spacingM)
+                
+                Divider()
+                
+                SettingsButton(title: "Import Data", style: .primary) {
+                    context.send(viewAction: .importData)
+                }
+                .padding(.vertical, .spacingM)
             }
-            
-            Button("Import Data") {
-                context.send(viewAction: .importData)
-            }
-            
-        } header: {
-            Text("Storage & Backup")
-        } footer: {
-            Text("Manage data storage, backup, and export options.")
         }
     }
     
     @ViewBuilder
     private var developmentSection: some View {
-        Section {
-            Toggle("Debug Mode", isOn: context.viewState.bindings.binding(for: \.debugModeEnabled))
-            
-            if context.viewState.bindings.debugModeEnabled {
-                Picker("Logging Level", selection: context.viewState.bindings.binding(for: \.loggingLevel)) {
-                    ForEach(LoggingLevel.allCases, id: \.self) { level in
-                        Text(level.displayName).tag(level)
+        SettingsCard(title: "Development") {
+            VStack(spacing: 0) {
+                HStack {
+                    Text("Debug Mode")
+                        .font(.body)
+                        .foregroundColor(.onSurface)
+                    Spacer()
+                    Toggle("", isOn: context.viewState.bindings.binding(for: \.debugModeEnabled))
+                        .tint(.primary)
+                }
+                .padding(.vertical, .spacingM)
+                
+                if context.viewState.bindings.debugModeEnabled {
+                    Divider()
+                    
+                    HStack {
+                        Text("Logging Level")
+                            .font(.body)
+                            .foregroundColor(.onSurface)
+                        Spacer()
+                        Picker("Logging Level", selection: context.viewState.bindings.binding(for: \.loggingLevel)) {
+                            ForEach(LoggingLevel.allCases, id: \.self) { level in
+                                Text(level.displayName).tag(level)
+                            }
+                        }
+                        .pickerStyle(MenuPickerStyle())
                     }
+                    .padding(.vertical, .spacingM)
+                    
+                    Divider()
+                    
+                    HStack {
+                        Text("Performance Monitoring")
+                            .font(.body)
+                            .foregroundColor(.onSurface)
+                        Spacer()
+                        Toggle("", isOn: context.viewState.bindings.binding(for: \.performanceMonitoringEnabled))
+                            .tint(.primary)
+                    }
+                    .padding(.vertical, .spacingM)
                 }
                 
-                Toggle("Performance Monitoring", isOn: context.viewState.bindings.binding(for: \.performanceMonitoringEnabled))
+                Divider()
+                
+                HStack {
+                    Text("Beta Features")
+                        .font(.body)
+                        .foregroundColor(.onSurface)
+                    Spacer()
+                    Toggle("", isOn: context.viewState.bindings.binding(for: \.betaFeaturesEnabled))
+                        .tint(.primary)
+                }
+                .padding(.vertical, .spacingM)
             }
-            
-            Toggle("Beta Features", isOn: context.viewState.bindings.binding(for: \.betaFeaturesEnabled))
-            
-        } header: {
-            Text("Development")
-        } footer: {
-            Text("Advanced settings for developers and beta testing.")
         }
     }
     
     @ViewBuilder
     private var resetSection: some View {
-        Section {
-            Button("Reset All Advanced Settings") {
+        SettingsCard(title: "Reset") {
+            SettingsButton(title: "Reset All Advanced Settings", style: .destructive) {
                 showingResetAlert = true
             }
-            .foregroundColor(.red)
-            
-        } footer: {
-            Text("Reset all advanced settings to their default values.")
+            .padding(.vertical, .spacingM)
         }
     }
 }

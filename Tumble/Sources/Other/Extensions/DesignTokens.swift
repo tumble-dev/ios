@@ -118,9 +118,16 @@ extension View {
     
     /// Standard input field styling
     func inputFieldStyle() -> some View {
-        padding(.spacingM)
-            .background(Color.surface)
-            .cornerRadius(.radiusM)
+        padding(.paddingS)
+        .cornerRadius(.radiusL)
+        .background(
+            RoundedRectangle(cornerRadius: .radiusL)
+                .stroke(Color.onSurface.opacity(0.3), lineWidth: 0.5)
+        )
+    }
+    
+    func shimmer() -> some View {
+        modifier(Shimmer())
     }
 }
 

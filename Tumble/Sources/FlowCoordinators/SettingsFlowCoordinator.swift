@@ -203,7 +203,7 @@ class SettingsFlowCoordinator: FlowCoordinatorProtocol {
         // navigationStackCoordinator.push(coordinator)
         
         // Or open external help URL
-        if let url = URL(string: "https://yourapp.com/help") {
+        if let url = URL(string: "https://tumbleforkronox.com/help") {
             DispatchQueue.main.async {
                 UIApplication.shared.open(url)
             }

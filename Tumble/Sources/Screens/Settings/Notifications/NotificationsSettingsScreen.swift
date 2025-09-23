@@ -1,10 +1,3 @@
-//
-//  NotificationsSettingsScreen.swift
-// Tumble
-//
-//  Created by Adis Veletanlic on 2025-09-20.
-//
-
 import Combine
 import SwiftUI
 
@@ -13,13 +6,18 @@ struct NotificationsSettingsScreen: View {
     @State private var showingResetAlert = false
     
     var body: some View {
-        Form {
-            messagingSection
-            if context.viewState.bindings.notificationsEnabled {
-                notificationOffsetSection
+        ScrollView {
+            VStack(spacing: 24) {
+                messagingSection
+                if context.viewState.bindings.notificationsEnabled {
+                    notificationOffsetSection
+                }
+                resetSection
             }
-            resetSection
+            .padding(.horizontal, .spacingM)
+            .padding(.vertical, .spacingL)
         }
+        .background(Color.background)
         .navigationTitle("Notification Settings")
         .navigationBarTitleDisplayMode(.inline)
         .alert("Reset All Settings", isPresented: $showingResetAlert) {
@@ -34,42 +32,59 @@ struct NotificationsSettingsScreen: View {
     
     @ViewBuilder
     private var messagingSection: some View {
-        Section {
-            Toggle("In-App Messaging", isOn: context.viewState.bindings.binding(for: \.inAppMessagingEnabled))
-            Toggle("Notifications", isOn: context.viewState.bindings.binding(for: \.notificationsEnabled))
-            
-        } header: {
-            Text("Notifications")
-        } footer: {
-            Text("Control what kind of notifications you will be able to receive.")
+        SettingsCard(title: "Notifications") {
+            VStack(spacing: 0) {
+                HStack {
+                    Text("In-App Messaging")
+                        .font(.body)
+                        .foregroundColor(.onSurface)
+                    Spacer()
+                    Toggle("", isOn: context.viewState.bindings.binding(for: \.inAppMessagingEnabled))
+                        .tint(.primary)
+                }
+                .padding(.vertical, .spacingM)
+                
+                Divider()
+                
+                HStack {
+                    Text("Notifications")
+                        .font(.body)
+                        .foregroundColor(.onSurface)
+                    Spacer()
+                    Toggle("", isOn: context.viewState.bindings.binding(for: \.notificationsEnabled))
+                        .tint(.primary)
+                }
+                .padding(.vertical, .spacingM)
+            }
         }
     }
     
     @ViewBuilder
     private var notificationOffsetSection: some View {
-        Section {
-            Picker("Notification Offset", selection: context.viewState.bindings.binding(for: \.notificationOffset)) {
-                ForEach(NotificationOffset.allCases, id: \.self) { offset in
-                    Text(offset.displayName).tag(offset)
+        SettingsCard(title: "Timing") {
+            HStack {
+                Text("Notification Offset")
+                    .font(.body)
+                    .foregroundColor(.onSurface)
+                Spacer()
+                Picker("Notification Offset", selection: context.viewState.bindings.binding(for: \.notificationOffset)) {
+                    ForEach(NotificationOffset.allCases, id: \.self) { offset in
+                        Text(offset.displayName).tag(offset)
+                    }
                 }
+                .pickerStyle(MenuPickerStyle())
             }
-        } header: {
-            Text("Timing")
-        } footer: {
-            Text("Settings for how soon you should receive a notification before a certain event.")
+            .padding(.vertical, .spacingM)
         }
     }
     
     @ViewBuilder
     private var resetSection: some View {
-        Section {
-            Button("Reset All Notification Settings") {
+        SettingsCard(title: "Reset") {
+            SettingsButton(title: "Reset All Notification Settings", style: .destructive) {
                 showingResetAlert = true
             }
-            .foregroundColor(.red)
-            
-        } footer: {
-            Text("Reset all advanced settings to their default values.")
+            .padding(.vertical, .spacingM)
         }
     }
 }

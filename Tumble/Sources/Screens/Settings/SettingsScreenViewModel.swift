@@ -39,7 +39,6 @@ class SettingsScreenViewModel: SettingsScreenViewModelType, SettingsScreenViewMo
         super.init(initialViewState: initialState)
         
         setupObservers()
-        //syncActiveUsername()
     }
     
     func setupObservers() {
@@ -115,11 +114,6 @@ class SettingsScreenViewModel: SettingsScreenViewModelType, SettingsScreenViewMo
         DispatchQueue.main.async {
             UIApplication.shared.open(url)
         }
-    }
-    
-    private func syncActiveUsername() {
-        guard let currentUser = authenticationService.getCurrentUser() else { return }
-        quickSettings.activeUsername = currentUser.username
     }
     
     private func handleRemoveAccount() {

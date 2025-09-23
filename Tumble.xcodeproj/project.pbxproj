@@ -88,6 +88,7 @@
 		0B5DC8242E79C7A0001B668F /* FirebaseInAppMessaging-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = 0B5DC8232E79C7A0001B668F /* FirebaseInAppMessaging-Beta */; };
 		0B5DC8262E79C7CF001B668F /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 0B5DC8252E79C7CF001B668F /* FirebaseMessaging */; };
 		0B6A39EB2E81BBC300977B1A /* WebSocketSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B6A39EA2E81BBC300977B1A /* WebSocketSessionManager.swift */; };
+		0B6A39EE2E832E5B00977B1A /* Shimmer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B6A39ED2E832E5A00977B1A /* Shimmer.swift */; };
 		0BAEDEFF2E7B175900EA6796 /* NetworkSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAEDEFB2E7B175900EA6796 /* NetworkSettings.swift */; };
 		0BAEDF002E7B175900EA6796 /* TumbleEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAEDEFA2E7B175900EA6796 /* TumbleEndpoint.swift */; };
 		0BAEDF052E7B176400EA6796 /* KeychainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAEDF022E7B176400EA6796 /* KeychainController.swift */; };
@@ -254,6 +255,7 @@
 		0B30CA462E7F41930002D799 /* AccountSettingsScreenVIewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSettingsScreenVIewModelProtocol.swift; sourceTree = "<group>"; };
 		0B30CA482E7F419E0002D799 /* AccountSettingsScreenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSettingsScreenCoordinator.swift; sourceTree = "<group>"; };
 		0B6A39EA2E81BBC300977B1A /* WebSocketSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketSessionManager.swift; sourceTree = "<group>"; };
+		0B6A39ED2E832E5A00977B1A /* Shimmer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shimmer.swift; sourceTree = "<group>"; };
 		0BAEDEFA2E7B175900EA6796 /* TumbleEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TumbleEndpoint.swift; sourceTree = "<group>"; };
 		0BAEDEFB2E7B175900EA6796 /* NetworkSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkSettings.swift; sourceTree = "<group>"; };
 		0BAEDF012E7B176400EA6796 /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
@@ -543,6 +545,14 @@
 			path = Accounts;
 			sourceTree = "<group>";
 		};
+		0B6A39EC2E832E4F00977B1A /* Modifier */ = {
+			isa = PBXGroup;
+			children = (
+				0B6A39ED2E832E5A00977B1A /* Shimmer.swift */,
+			);
+			path = Modifier;
+			sourceTree = "<group>";
+		};
 		0BAEDEFD2E7B175900EA6796 /* Network */ = {
 			isa = PBXGroup;
 			children = (
@@ -633,6 +643,7 @@
 		0BAEDF2A2E7B2C0600EA6796 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				0B6A39EC2E832E4F00977B1A /* Modifier */,
 				0B19F6B22E7C1D7B0037E29E /* Layout */,
 				0BAEDF2C2E7B2C1300EA6796 /* ViewModel */,
 			);
@@ -1023,6 +1034,7 @@
 				0B30C9082E7EE9B20002D799 /* AccountScreenViewModelProtocol.swift in Sources */,
 				0B30C9062E7EE6760002D799 /* AccountScreenModels.swift in Sources */,
 				0BAEE2252E7B6CBA00EA6796 /* BookmarksScreenViewModel.swift in Sources */,
+				0B6A39EE2E832E5B00977B1A /* Shimmer.swift in Sources */,
 				0B19F6A12E7C14770037E29E /* AppHooks.swift in Sources */,
 				0B19F6AD2E7C1CE50037E29E /* NotificationPermissionsScreenModels.swift in Sources */,
 				0B19F7F12E7C477A0037E29E /* FlowStack.swift in Sources */,

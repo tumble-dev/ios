@@ -38,9 +38,7 @@ struct AccountSettingsScreen: View {
                 }
                 .padding(.top, 40)
                 
-                // Form section
                 VStack(spacing: 16) {
-                    // Username field
                     HStack {
                         Image(systemName: "person")
                             .font(.system(size: 18, weight: .semibold))
@@ -60,9 +58,7 @@ struct AccountSettingsScreen: View {
                         
                         Spacer()
                     }
-                    .padding(10)
-                    .background(Color.surface)
-                    .cornerRadius(15)
+                    .inputFieldStyle()
                     
                     // Password field
                     HStack {
@@ -82,9 +78,7 @@ struct AccountSettingsScreen: View {
                         
                         Spacer()
                     }
-                    .padding(.paddingS)
-                    .background(Color.surface)
-                    .cornerRadius(.radiusL)
+                    .inputFieldStyle()
                     
                     Picker("School", selection: .init(
                         get: { context.viewState.selectedSchool },

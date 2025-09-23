@@ -288,10 +288,10 @@ struct BookingRowView: View {
                         Text(timeSlot.timeString())
                             .font(.caption)
                             .fontWeight(.medium)
-                            .foregroundColor(.blue)
+                            .foregroundColor(.onPrimary)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 2)
-                            .background(Color.blue.opacity(0.2))
+                            .background(Color.primary.opacity(0.7))
                             .clipShape(Capsule())
                     }
                 }
@@ -514,6 +514,7 @@ struct LoadingDataView: View {
             }
         }
         .redacted(reason: .placeholder)
+        .shimmer()
     }
 }
 

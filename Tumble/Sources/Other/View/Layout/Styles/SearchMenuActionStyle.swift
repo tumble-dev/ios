@@ -11,7 +11,7 @@ import SwiftUI
 struct SearchMenuActionStyle: ButtonStyle {
     func makeBody(configuration: Self.Configuration) -> some View {
         configuration.label
-            .padding(10)
+            .padding(.spacingS)
             .apply {
                 if #available(iOS 26.0, *) {
                     $0.glassEffect(.regular.interactive().tint(Color.primary))
