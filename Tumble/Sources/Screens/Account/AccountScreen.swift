@@ -18,8 +18,8 @@ struct AccountScreen: View {
             switch context.viewState.userState {
             case .loading:
                 InfoView.loading("Loading account...")
-            case .error(let msg):
-                InfoView.error(title: "Could not load your account", subtitle: msg)
+            case .error:
+                InfoView.error(title: "Could not load your account", subtitle: "Try again later")
             case .missing:
                 InfoView.empty(
                     title: "You have no connected accounts",
@@ -91,22 +91,7 @@ struct UserInfoCard: View {
     
     var body: some View {
         VStack(spacing: 16) {
-            ZStack {
-                Circle()
-                    .fill(
-                        LinearGradient(
-                            colors: [.primary.opacity(0.6), .yellow.opacity(0.4)],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                    .frame(width: 72, height: 72)
-                
-                Text(String(user.name.prefix(1)))
-                    .font(.system(size: 28, weight: .semibold))
-                    .foregroundColor(.onSurface)
-            }
-            
+            UserAvatar(username: user.username)
             VStack(spacing: 6) {
                 Text(user.name)
                     .font(.title2)
@@ -144,12 +129,11 @@ struct AccountDataView: View {
     
     var body: some View {
         VStack(spacing: 16) {
-            // Active Bookings Section
             SectionCard(
                 title: "Active Bookings",
                 count: bookings.count,
                 systemImage: "calendar.badge.clock",
-                gradientColors: [.blue, .cyan],
+                color: .primary,
                 onTap: { onAction(.showResources) }
             ) {
                 if bookings.isEmpty {
@@ -180,7 +164,7 @@ struct AccountDataView: View {
                 title: "Registered Events",
                 count: events.count,
                 systemImage: "calendar.badge.checkmark",
-                gradientColors: [.green, .mint],
+                color: .primary,
                 onTap: { onAction(.showEvents) }
             ) {
                 if events.isEmpty {
@@ -213,7 +197,7 @@ struct SectionCard<Content: View>: View {
     let title: String
     let count: Int
     let systemImage: String
-    let gradientColors: [Color]
+    let color: Color
     let onTap: () -> Void
     @ViewBuilder let content: () -> Content
     
@@ -224,17 +208,11 @@ struct SectionCard<Content: View>: View {
                 HStack(spacing: 12) {
                     ZStack {
                         RoundedRectangle(cornerRadius: 8)
-                            .fill(
-                                LinearGradient(
-                                    colors: gradientColors,
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                )
-                            )
+                            .fill(color)
                             .frame(width: 32, height: 32)
                         
                         Image(systemName: systemImage)
-                            .foregroundColor(.white)
+                            .foregroundColor(.onPrimary)
                             .font(.system(size: 16, weight: .semibold))
                     }
                     
@@ -242,12 +220,12 @@ struct SectionCard<Content: View>: View {
                         Text(title)
                             .font(.headline)
                             .fontWeight(.semibold)
-                            .foregroundColor(.white)
+                            .foregroundColor(.onSurface)
                         
                         if count > 0 {
                             Text("\(count) active")
                                 .font(.caption)
-                                .foregroundColor(.gray)
+                                .foregroundColor(.onSurface.opacity(0.7))
                         }
                     }
                 }
@@ -262,7 +240,7 @@ struct SectionCard<Content: View>: View {
                         Image(systemName: "chevron.right")
                             .font(.caption)
                     }
-                    .foregroundColor(.blue)
+                    .foregroundColor(.primary)
                 }
             }
             
@@ -286,12 +264,12 @@ struct BookingRowView: View {
             // Status indicator with glow effect
             ZStack {
                 Circle()
-                    .fill(needsConfirmation ? Color.orange : Color.green)
+                    .fill(needsConfirmation ? Color.red : Color.green)
                     .frame(width: 12, height: 12)
                 
                 if needsConfirmation {
                     Circle()
-                        .fill(Color.orange.opacity(0.3))
+                        .fill(Color.red.opacity(0.3))
                         .frame(width: 20, height: 20)
                         .blur(radius: 2)
                 }
@@ -302,7 +280,7 @@ struct BookingRowView: View {
                     Text("Resource \(booking.resourceId)")
                         .font(.subheadline)
                         .fontWeight(.medium)
-                        .foregroundColor(.white)
+                        .foregroundColor(.onSurface)
                     
                     Spacer()
                     
@@ -320,7 +298,7 @@ struct BookingRowView: View {
                 
                 Text("Location: \(booking.locationId)")
                     .font(.caption)
-                    .foregroundColor(.gray)
+                    .foregroundColor(.onSurface)
                 
                 if needsConfirmation {
                     HStack(spacing: 4) {
@@ -329,15 +307,15 @@ struct BookingRowView: View {
                         Text("Confirmation required")
                             .font(.caption)
                     }
-                    .foregroundColor(.orange)
+                    .foregroundColor(.red)
                 }
             }
             
             Image(systemName: "chevron.right")
                 .font(.caption)
-                .foregroundColor(.gray)
+                .foregroundColor(.onSurface)
         }
-        .padding(16)
+        .padding(.spacingM)
         .cardStyle()
     }
 }
@@ -347,8 +325,21 @@ struct EventRowView: View {
     
     private var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
-        formatter.dateFormat = "MMM d, HH:mm"
+        formatter.dateFormat = "MMM d"
         return formatter
+    }
+    
+    private var timeFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        formatter.timeZone = TimeZone(identifier: "Europe/Stockholm")
+        return formatter
+    }
+    
+    private var timeRangeString: String {
+        let startTime = timeFormatter.string(from: event.start)
+        let endTime = timeFormatter.string(from: event.end)
+        return "\(startTime) - \(endTime)"
     }
     
     private var isUpcoming: Bool {
@@ -392,9 +383,14 @@ struct EventRowView: View {
                 }
                 
                 HStack {
-                    Text(dateFormatter.string(from: event.start))
-                        .font(.caption)
-                        .foregroundColor(.gray)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(dateFormatter.string(from: event.start))
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                        Text(timeRangeString)
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                    }
                     
                     if isUpcoming {
                         Spacer()

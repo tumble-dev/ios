@@ -39,7 +39,7 @@ class SettingsScreenViewModel: SettingsScreenViewModelType, SettingsScreenViewMo
         super.init(initialViewState: initialState)
         
         setupObservers()
-        syncActiveUsername()
+        //syncActiveUsername()
     }
     
     func setupObservers() {
@@ -118,8 +118,8 @@ class SettingsScreenViewModel: SettingsScreenViewModelType, SettingsScreenViewMo
     }
     
     private func syncActiveUsername() {
-        let currentUser = authenticationService.getCurrentUser()
-        quickSettings.activeUsername = currentUser?.username
+        guard let currentUser = authenticationService.getCurrentUser() else { return }
+        quickSettings.activeUsername = currentUser.username
     }
     
     private func handleRemoveAccount() {

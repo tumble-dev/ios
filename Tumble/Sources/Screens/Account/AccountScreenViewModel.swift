@@ -71,9 +71,31 @@ class AccountScreenViewModel: AccountScreenViewModelType, AccountScreenViewModel
             let token = try await authenticationService.getCurrentSessionToken()
             return try await tumbleApiService.getRegisteredEvents(school: school, authToken: token)
         } catch NetworkError.unauthorized {
-            try await authenticationService.autoReLogin()
-            let newToken = try await authenticationService.getCurrentSessionToken()
-            return try await tumbleApiService.getRegisteredEvents(school: school, authToken: newToken)
+            AppLogger.shared.info("Session expired while fetching events - WebSocket should handle re-auth")
+            
+            // If session is expired, the auth state will change to .error or trigger re-auth
+            // The setupListeners() will catch this and update the UI accordingly
+            // Don't try to handle it here - let the WebSocket session management do its job
+            throw AuthError.sessionExpired
+        } catch {
+            AppLogger.shared.error("Failed to fetch user registered events: \(error)")
+            throw error
+        }
+    }
+
+    private func fetchUserBookings(from school: String) async throws -> [Response.Booking] {
+        do {
+            let token = try await authenticationService.getCurrentSessionToken()
+            return try await tumbleApiService.getUserBookings(school: school, authToken: token)
+        } catch NetworkError.unauthorized {
+            AppLogger.shared.info("Session expired while fetching bookings - WebSocket should handle re-auth")
+            
+            // Let the WebSocket session management handle session expiry
+            // The auth state will update and trigger UI refresh through setupListeners()
+            throw AuthError.sessionExpired
+        } catch {
+            AppLogger.shared.error("Failed to fetch user bookings: \(error)")
+            throw error
         }
     }
     
@@ -86,18 +108,7 @@ class AccountScreenViewModel: AccountScreenViewModelType, AccountScreenViewModel
     private func updateUserState(newState: AccountScreenUserState) {
         state.userState = newState
     }
-    
-    private func fetchUserBookings(from school: String) async throws -> [Response.Booking] {
-        do {
-            let token = try await authenticationService.getCurrentSessionToken()
-            return try await tumbleApiService.getUserBookings(school: school, authToken: token)
-        } catch NetworkError.unauthorized {
-            try await authenticationService.autoReLogin()
-            let newToken = try await authenticationService.getCurrentSessionToken()
-            return try await tumbleApiService.getUserBookings(school: school, authToken: newToken)
-        }
-    }
-    
+        
     private func setupListeners() {
         authenticationService.authStatePublisher
             .sink { [weak self] authState in

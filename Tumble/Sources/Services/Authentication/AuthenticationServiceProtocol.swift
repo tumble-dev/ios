@@ -6,10 +6,12 @@
 //
 
 import SwiftUI
+import Combine
 
 protocol AuthenticationServiceProtocol {
     var authStatePublisher: Published<AuthState>.Publisher { get }
     
+    // Core authentication methods (unchanged)
     func initialize() async
     func login(username: String, password: String, school: String) async throws -> TumbleUser
     func getCurrentSessionToken() async throws -> String

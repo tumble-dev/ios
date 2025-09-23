@@ -18,6 +18,7 @@ class ApplicationCoordinator: ApplicationCoordinatorProtocol, NotificationManage
     private let notificationManager: NotificationManagerProtocol
     private let keychainController: KeychainControllerProtocol
     private let authenticationService: AuthenticationServiceProtocol
+    private let websocketSessionManager: WebSocketSessionManagerProtocol
     
     private let appDelegate: AppDelegate
     private let appMediator: AppMediator
@@ -52,11 +53,15 @@ class ApplicationCoordinator: ApplicationCoordinatorProtocol, NotificationManage
         )
     
         keychainController = KeychainController(accessGroup: Config.keychainAccessGroupIdentifier)
+        
+        websocketSessionManager = WebSocketSessionManager(webSocketURL: Config.webSocketURL)
+        
         authenticationService = AuthenticationService(
             keychainController: keychainController,
             userDataStorage: ServiceLocator.shared.userDataStorageService,
             tumbleApiService: ServiceLocator.shared.tumbleApiService,
-            appSettings: appSettings
+            appSettings: appSettings,
+            webSocketSessionManager: websocketSessionManager
         )
         
         // MARK: - Navigation & State
@@ -190,7 +195,11 @@ private extension ApplicationCoordinator {
 
             switch (context.fromState, context.event, context.toState) {
             case (.initial, .start, .ready):
-                Task { @MainActor [weak self] in self?.startMainFlow(isFirstOpen: true) }
+                Task { @MainActor [weak self] in
+                    guard let self else { return }
+                    await self.authenticationService.initialize()
+                    self.startMainFlow(isFirstOpen: true)
+                }
 
             default:
                 fatalError("Unknown transition: \(context)")

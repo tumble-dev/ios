@@ -27,3 +27,17 @@ private extension Bundle {
         return value
     }
 }
+
+extension Config {
+    static var webSocketURL: URL {
+        var components = URLComponents(string: apiUrl)!
+        components.scheme = components.scheme == "https" ? "wss" : "ws"
+        components.path = "/api/v1/ws/session"
+        
+        guard let url = components.url else {
+            fatalError("Invalid WebSocket URL components: \(components)")
+        }
+        
+        return url
+    }
+}

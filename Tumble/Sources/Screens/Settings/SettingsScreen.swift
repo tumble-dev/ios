@@ -44,7 +44,7 @@ struct SettingsScreen: View {
         Section {
             if let currentUser = context.viewState.bindings.currentUser {
                 HStack {
-                    UserAvatar(name: currentUser.name, size: 40)
+                    UserAvatar(username: currentUser.username)
                     
                     VStack(alignment: .leading, spacing: 2) {
                         Text(currentUser.name)

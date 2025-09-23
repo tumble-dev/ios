@@ -7,6 +7,7 @@
 
 import Combine
 import Foundation
+import UIKit
 
 enum AuthState {
     case authenticated(user: TumbleUser)
@@ -60,6 +61,9 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
     private let userDataStorage: UserDataStorageServiceProtocol
     private let tumbleApiService: TumbleApiServiceProtocol
     private let appSettings: AppSettings
+    private let webSocketSessionManager: WebSocketSessionManagerProtocol
+    
+    private var cancellables = Set<AnyCancellable>()
     
     var authStatePublisher: Published<AuthState>.Publisher { $authState }
     
@@ -67,42 +71,166 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
         keychainController: KeychainControllerProtocol,
         userDataStorage: UserDataStorageServiceProtocol,
         tumbleApiService: TumbleApiServiceProtocol,
-        appSettings: AppSettings
+        appSettings: AppSettings,
+        webSocketSessionManager: WebSocketSessionManagerProtocol
     ) {
         self.keychainController = keychainController
         self.userDataStorage = userDataStorage
         self.tumbleApiService = tumbleApiService
         self.appSettings = appSettings
+        self.webSocketSessionManager = webSocketSessionManager
+        
+        setupWebSocketCallbacks()
+        subscribeToAppLifecycle()
+    }
+    
+    // MARK: - WebSocket Setup
+    
+    private func setupWebSocketCallbacks() {
+        if let wsManager = webSocketSessionManager as? WebSocketSessionManager {
+            wsManager.onSessionExpired = { [weak self] in
+                Task { [weak self] in
+                    await self?.handleSessionExpiry()
+                }
+            }
+            
+            wsManager.onAuthenticationSuccess = { [weak self] user in
+                Task { [weak self] in
+                    await self?.updateSessionToken(user)
+                }
+                
+                AppLogger.shared.info("WebSocket session management active for user: \(user.username)")
+            }
+            
+            wsManager.onAuthenticationError = { [weak self] errorMessage in
+                AppLogger.shared.error("WebSocket authentication failed: \(errorMessage)")
+                Task { [weak self] in
+                    await self?.handleWebSocketAuthError(errorMessage)
+                }
+            }
+        }
+    }
+
+    private func updateSessionToken(_ user: Response.User) async {
+        let updatedSession = UserSession(
+            username: user.username,
+            sessionToken: user.sessionId,
+            expiresAt: nil,
+            loginTimestamp: Date()
+        )
+        
+        keychainController.setCurrentSession(updatedSession)
+        
+        AppLogger.shared.info("Updated stored session token")
+    }
+    
+    private func subscribeToAppLifecycle() {
+        NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
+            .sink { [weak self] _ in
+                Task { [weak self] in
+                    await self?.handleAppWillEnterForeground()
+                }
+            }
+            .store(in: &cancellables)
+        
+        NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)
+            .sink { [weak self] _ in
+                self?.handleAppDidEnterBackground()
+            }
+            .store(in: &cancellables)
+    }
+    
+    // MARK: - App Lifecycle Handling
+    
+    private func handleAppWillEnterForeground() async {
+        AppLogger.shared.info("App entering foreground - checking WebSocket connection")
+        
+        await webSocketSessionManager.connect()
+        
+        guard case .authenticated(let currentUser) = authState else {
+            AppLogger.shared.info("Not in authenticated state, skipping WebSocket re-auth")
+            return
+        }
+        
+        guard webSocketSessionManager.connectionState != .authenticated else {
+            AppLogger.shared.info("WebSocket already authenticated, skipping re-authentication")
+            return
+        }
+        
+        guard let credentials = keychainController.getLoginCredentials(forUsername: currentUser.username) else {
+            AppLogger.shared.warning("No stored credentials for WebSocket re-authentication")
+            return
+        }
+        
+        AppLogger.shared.info("Re-authenticating WebSocket for user: \(currentUser.username)")
+        
+        do {
+            _ = try await webSocketSessionManager.authenticate(
+                username: credentials.username,
+                password: credentials.password,
+                schoolCode: currentUser.school
+            )
+            // 🔧 Session token will be updated automatically via onAuthenticationSuccess callback
+            AppLogger.shared.debug("WebSocket re-authentication successful")
+        } catch {
+            AppLogger.shared.error("Failed to authenticate WebSocket session: \(error)")
+            await updateAuthState(.error(msg: "Failed to restore session. Please log in again."))
+        }
+    }
+    
+    private func handleAppDidEnterBackground() {
+        AppLogger.shared.info("App entering background - disconnecting WebSocket")
+        webSocketSessionManager.disconnect()
+    }
+    
+    private func handleSessionExpiry() async {
+        AppLogger.shared.warning("Session expired via WebSocket - attempting auto re-login")
+        
+        await updateAuthState(.loading)
+        
+        do {
+            try await autoReLogin()
+            AppLogger.shared.info("Successfully re-authenticated after session expiry")
+        } catch {
+            AppLogger.shared.error("Failed to re-authenticate after session expiry: \(error)")
+            await updateAuthState(.error(msg: "Session expired. Please log in again."))
+        }
+    }
+    
+    private func handleWebSocketAuthError(_ errorMessage: String) async {
+        AppLogger.shared.error("WebSocket authentication error: \(errorMessage)")
+        await updateAuthState(.error(msg: "WebSocket authentication failed: \(errorMessage)"))
     }
     
     // MARK: - Initialization & Auto-Login
     
-    /// Initialize authentication state and attempt auto-login if session exists
     func initialize() async {
         AppLogger.shared.info("Initializing authentication service")
         
         await updateAuthState(.loading)
         
-        // Check if there's an active session
+        await webSocketSessionManager.connect()
+        
         if let currentSession = keychainController.getCurrentSession() {
-            // Check if session is expired
-            if keychainController.isCurrentSessionExpired() {
-                AppLogger.shared.info("Session expired, attempting auto re-login")
-                await attemptAutoReLogin(for: currentSession.username)
-            } else {
-                // Session is valid, load user data
-                if let user = userDataStorage.getUserProfile(username: currentSession.username) {
-                    AppLogger.shared.info("Restored session for user: \(currentSession.username)")
-                    await updateAuthState(.authenticated(user: user))
-                } else {
-                    AppLogger.shared.info("No user data found for session, logging out")
-                    await logout()
-                }
-            }
+            AppLogger.shared.info("Found stored session, attempting fresh authentication")
+            await attemptAutoReLogin(for: currentSession.username)
         } else {
-            // No active session
-            AppLogger.shared.info("No active session found")
             await updateAuthState(.unauthenticated)
+        }
+    }
+    
+    private func establishWebSocketSession(for user: TumbleUser) async {
+        if let credentials = keychainController.getLoginCredentials(forUsername: user.username) {
+            do {
+                _ = try await webSocketSessionManager.authenticate(
+                    username: credentials.username,
+                    password: credentials.password,
+                    schoolCode: user.school
+                )
+                AppLogger.shared.info("WebSocket session established for user: \(user.username)")
+            } catch {
+                AppLogger.shared.error("Failed to establish WebSocket session: \(error)")
+            }
         }
     }
     
@@ -120,73 +248,70 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
         await updateAuthState(.loading)
         
         do {
-            // Create login request
-            let loginRequest = Response.LoginRequest(username: username, password: password)
+            await webSocketSessionManager.connect()
             
-            // Authenticate with backend using TumbleAPIService
-            AppLogger.shared.info("Using credentials to sign in again manually")
-            let apiUser = try await tumbleApiService.login(credentials: loginRequest, school: school)
+            AppLogger.shared.info("Authenticating via WebSocket with username/password")
+            let user = try await webSocketSessionManager.authenticate(
+                username: username,
+                password: password,
+                schoolCode: school
+            )
             
-            // Create TumbleUser from Response.User
             let tumbleUser = TumbleUser(
-                username: apiUser.username,
-                name: apiUser.name,
+                username: user.username,
+                name: user.name,
                 school: school
             )
             
-            // Store user profile in file system
             try userDataStorage.storeUserProfile(tumbleUser)
-            
-            // Store session in keychain (sessionId comes from Response.User)
-            let session = UserSession(
-                username: username,
-                sessionToken: apiUser.sessionId,
-                expiresAt: nil, // Backend doesn't provide expiry time yet
-                loginTimestamp: Date()
-            )
-            keychainController.setCurrentSession(session)
             
             let credentials = LoginCredentials(username: username, password: password)
             keychainController.setLoginCredentials(credentials, forUsername: username)
             keychainController.addRememberedUser(username)
             
-            AppLogger.shared.debug("Successfully logged in user: \(username)")
+            AppLogger.shared.debug("Successfully logged in user via WebSocket: \(username)")
             await updateAuthState(.authenticated(user: tumbleUser))
             
             return tumbleUser
             
-        } catch let networkError as NetworkError {
-            let authError = mapNetworkError(networkError)
-            AppLogger.shared.error("Login failed for user \(username): \(authError.localizedDescription)")
-            await updateAuthState(.error(msg: authError.localizedDescription))
-            throw authError
         } catch {
-            AppLogger.shared.error("Login failed for user \(username): \(error.localizedDescription)")
+            AppLogger.shared.error("WebSocket login failed for user \(username): \(error.localizedDescription)")
             await updateAuthState(.error(msg: error.localizedDescription))
             throw error
         }
     }
     
     func autoReLogin() async throws {
+        await updateAuthState(.loading)
+        
         guard let currentUser = getCurrentUser() else {
+            await updateAuthState(.error(msg: "No active session found"))
             throw AuthError.noActiveSession
         }
         
         guard let credentials = keychainController.getLoginCredentials(forUsername: currentUser.username) else {
+            await updateAuthState(.error(msg: "No stored credentials found"))
             throw AuthError.noStoredCredentials
         }
         
-        _ = try await login(
-            username: credentials.username,
-            password: credentials.password,
-            school: currentUser.school
-        )
+        do {
+            _ = try await login(
+                username: credentials.username,
+                password: credentials.password,
+                school: currentUser.school
+            )
+            
+            AppLogger.shared.info("Auto re-login successful with WebSocket session")
+        } catch {
+            await updateAuthState(.error(msg: "Failed to re-authenticate: \(error.localizedDescription)"))
+            throw error
+        }
     }
     
     /// Attempt automatic re-login using stored credentials
     private func attemptAutoReLogin(for username: String) async {
         AppLogger.shared.debug("Attempting auto re-login for user: \(username)")
-        
+                
         do {
             guard let credentials = keychainController.getLoginCredentials(forUsername: username) else {
                 AppLogger.shared.debug("No stored credentials for auto re-login")
@@ -194,45 +319,25 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
                 return
             }
             
-            // Get user profile to get school info
             guard let existingUser = userDataStorage.getUserProfile(username: username) else {
                 AppLogger.shared.debug("No user profile found for auto re-login")
                 await updateAuthState(.unauthenticated)
                 return
             }
             
-            // Create login request
-            let loginRequest = Response.LoginRequest(
+            AppLogger.shared.info("Performing fresh authentication for user: \(username)")
+            
+            _ = try await login(
                 username: credentials.username,
-                password: credentials.password
-            )
-            
-            // Authenticate with backend
-            let apiUser = try await tumbleApiService.login(credentials: loginRequest, school: existingUser.school)
-            
-            // Update session with new sessionId (from Response.User)
-            let session = UserSession(
-                username: username,
-                sessionToken: apiUser.sessionId,
-                expiresAt: nil,
-                loginTimestamp: Date()
-            )
-            keychainController.setCurrentSession(session)
-            
-            // Update user profile if needed
-            let updatedUser = TumbleUser(
-                username: apiUser.username,
-                name: apiUser.name,
+                password: credentials.password,
                 school: existingUser.school
             )
-            try userDataStorage.storeUserProfile(updatedUser)
             
-            AppLogger.shared.debug("Auto re-login successful for user: \(username)")
-            await updateAuthState(.authenticated(user: updatedUser))
+            AppLogger.shared.info("Auto re-login successful for user: \(username)")
             
         } catch {
             AppLogger.shared.error("Auto re-login failed for user \(username): \(error.localizedDescription)")
-            await updateAuthState(.error(msg: AuthError.autoLoginError(username: username).localizedDescription))
+            await updateAuthState(.error(msg: "Failed to restore session. Please log in again."))
         }
     }
     
@@ -242,15 +347,16 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
     /// - Returns: Valid session token
     func getCurrentSessionToken() async throws -> String {
         guard let currentSession = keychainController.getCurrentSession() else {
+            await updateAuthState(.error(msg: "No active session found"))
             throw AuthError.noActiveSession
         }
         
         // Since backend doesn't provide refresh tokens, we just return the current token
         // If it's expired, the API will return 401 and the calling code should handle re-authentication
+        // The WebSocket connection will also notify us of session expiry
         return currentSession.sessionToken
     }
     
-    /// Check if user is currently authenticated
     func isAuthenticated() -> Bool {
         switch authState {
         case .authenticated:
@@ -260,7 +366,6 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
         }
     }
     
-    /// Get current authenticated user
     func getCurrentUser() -> TumbleUser? {
         switch authState {
         case .authenticated(let user):
@@ -272,15 +377,19 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
     
     // MARK: - Logout Methods
     
-    /// Log out current user completely
     func logout() async {
         AppLogger.shared.debug("Logging out current user")
+        
+        await updateAuthState(.loading)
+        
+        webSocketSessionManager.disconnect()
         
         switch keychainController.removeCurrentSession() {
         case .success:
             await updateAuthState(.unauthenticated)
         case .failure(let error):
             AppLogger.shared.error("Error removing session during logout: \(error.localizedDescription)")
+            await updateAuthState(.error(msg: "Error during logout: \(error.localizedDescription)"))
         }
     }
     
@@ -290,49 +399,64 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
     func logOutUser(username: String) async throws -> [TumbleUser] {
         AppLogger.shared.debug("Logging out user \(username)")
         
-        // Remove user data from file storage
-        try userDataStorage.removeUserProfile(username: username)
+        if let currentUser = getCurrentUser(), currentUser.username == username {
+            await updateAuthState(.loading)
+        }
         
-        // Remove credentials and session data from keychain
-        switch keychainController.removeAllUserData(forUsername: username) {
-        case .success:
-            break
-        case .failure(let error):
+        do {
+            try userDataStorage.removeUserProfile(username: username)
+            
+            switch keychainController.removeAllUserData(forUsername: username) {
+            case .success:
+                break
+            case .failure(let error):
+                throw error
+            }
+            
+            if let currentUser = getCurrentUser(), currentUser.username == username {
+                webSocketSessionManager.disconnect()
+                await updateAuthState(.unauthenticated)
+            }
+            
+            return userDataStorage.getAllUsers()
+            
+        } catch {
+            if let currentUser = getCurrentUser(), currentUser.username == username {
+                await updateAuthState(.error(msg: "Failed to logout user: \(error.localizedDescription)"))
+            }
             throw error
         }
-        
-        // If this was the current user, update auth state and activeUsername
-        if let currentUser = getCurrentUser(), currentUser.username == username {
-            await updateAuthState(.unauthenticated)
-        }
-        
-        return userDataStorage.getAllUsers()
     }
 
-    /// Remove all users and clear all authentication data
     func logoutAllUsers() async throws {
         AppLogger.shared.debug("Logging out all users")
         
-        try userDataStorage.clearAllUsers()
+        await updateAuthState(.loading)
         
-        switch keychainController.clearAllAuthData() {
-        case .success:
-            break
-        case .failure(let error):
+        webSocketSessionManager.disconnect()
+        
+        do {
+            try userDataStorage.clearAllUsers()
+            
+            switch keychainController.clearAllAuthData() {
+            case .success:
+                await updateAuthState(.unauthenticated)
+            case .failure(let error):
+                await updateAuthState(.error(msg: "Failed to clear auth data: \(error.localizedDescription)"))
+                throw error
+            }
+        } catch {
+            await updateAuthState(.error(msg: "Failed to logout all users: \(error.localizedDescription)"))
             throw error
         }
-        
-        await updateAuthState(.unauthenticated)
     }
     
     // MARK: - User Management
-    
-    /// Get all stored users
+
     func getAllUsers() -> [TumbleUser] {
         return userDataStorage.getAllUsers()
     }
     
-    /// Get all users with "remember me" enabled
     func getRememberedUsers() -> [TumbleUser] {
         let rememberedUsernames = keychainController.getRememberedUsernames()
         return userDataStorage.getAllUsers().filter { user in
@@ -340,28 +464,60 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
         }
     }
     
-    /// Switch to a different stored user (if credentials are available)
     func switchToUser(username: String) async throws -> TumbleUser {
         AppLogger.shared.debug("Switching to user: \(username)")
         
-        guard let credentials = keychainController.getLoginCredentials(forUsername: username) else {
-            throw AuthError.noStoredCredentials
+        await updateAuthState(.loading)
+        
+        do {
+            guard let credentials = keychainController.getLoginCredentials(forUsername: username) else {
+                await updateAuthState(.error(msg: "No stored credentials for user: \(username)"))
+                throw AuthError.noStoredCredentials
+            }
+            
+            guard let existingUser = userDataStorage.getUserProfile(username: username) else {
+                await updateAuthState(.error(msg: "User profile not found: \(username)"))
+                throw AuthError.noStoredCredentials
+            }
+            
+            let user = try await login(
+                username: credentials.username,
+                password: credentials.password,
+                school: existingUser.school
+            )
+            
+            return user
+            
+        } catch {
+            await updateAuthState(.error(msg: "Failed to switch user: \(error.localizedDescription)"))
+            throw error
         }
-        
-        guard let existingUser = userDataStorage.getUserProfile(username: username) else {
-            throw AuthError.noStoredCredentials
-        }
-        
-        let user = try await login(
-            username: credentials.username,
-            password: credentials.password,
-            school: existingUser.school
-        )
-        
-        return user
     }
     
     // MARK: - Private Methods
+    
+    /// Handles WebSocket transition when switching to a new user account
+    private func transitionWebSocketToNewUser(username: String, password: String, school: String) async {
+        AppLogger.shared.info("Transitioning WebSocket to new user: \(username)")
+        
+        // If WebSocket is not connected, connect it first
+        if !webSocketSessionManager.isConnected() {
+            await webSocketSessionManager.connect()
+            
+            try? await Task.sleep(nanoseconds: 500_000_000)
+        }
+        
+        do {
+            _ = try await webSocketSessionManager.authenticate(
+                username: username,
+                password: password,
+                schoolCode: school
+            )
+            AppLogger.shared.info("WebSocket successfully transitioned to user: \(username)")
+        } catch {
+            AppLogger.shared.error("Failed to transition WebSocket to new user \(username): \(error)")
+        }
+    }
     
     private func addUser(_ user: TumbleUser) async throws -> [TumbleUser] {
         let allUsers = userDataStorage.getAllUsers()
@@ -386,7 +542,6 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
         }
     }
     
-    /// Map NetworkError to AuthError
     private func mapNetworkError(_ networkError: NetworkError) -> AuthError {
         switch networkError {
         case .unauthorized:

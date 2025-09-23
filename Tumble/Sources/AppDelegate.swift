@@ -23,7 +23,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     var orientationLock = UIInterfaceOrientationMask.all
     
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-        AppLogger.shared.info("[AppDelegate] Configuring UIScene")
         // Add a SceneDelegate to the SwiftUI scene so that we can connect up the WindowManager.
         let configuration = UISceneConfiguration(name: nil, sessionRole: connectingSceneSession.role)
         configuration.delegateClass = SceneDelegate.self
@@ -32,9 +31,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         callbacks.send(.registeredNotifications(deviceToken: deviceToken))
-        
-        // Optionally set APNs token here as well if some flows bypass NotificationManager.
-        // Messaging.messaging().apnsToken = deviceToken
+        Messaging.messaging().apnsToken = deviceToken
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
