@@ -17,28 +17,9 @@ class SettingsScreenViewModel: SettingsScreenViewModelType, SettingsScreenViewMo
     
     private var actionsSubject: PassthroughSubject<SettingsScreenViewModelAction, Never> = .init()
     
+    
     var actions: AnyPublisher<SettingsScreenViewModelAction, Never> {
         actionsSubject.eraseToAnyPublisher()
-    }
-    
-    init(
-        quickSettings: SettingsProtocol,
-        analyticsService: AnalyticsServiceProtocol,
-        authenticationService: AuthenticationServiceProtocol
-    ) {
-        self.analyticsService = analyticsService
-        self.quickSettings = quickSettings
-        self.authenticationService = authenticationService // Add this
-        
-        let initialState = SettingsScreenViewState(
-            bindings: .init(
-                quickSettings: quickSettings,
-                authenticationService: authenticationService
-            )
-        )
-        super.init(initialViewState: initialState)
-        
-        setupObservers()
     }
     
     func setupObservers() {
@@ -56,10 +37,42 @@ class SettingsScreenViewModel: SettingsScreenViewModelType, SettingsScreenViewMo
                 guard let self = self else { return }
                 self.state.bindings = SettingsScreenViewStateBindings(
                     quickSettings: self.quickSettings,
-                    authenticationService: self.authenticationService
+                    authenticationService: self.authenticationService,
+                    onActiveUsernameChange: { [weak self] newUsername in
+                        self?.handleActiveUserChange(newUsername)
+                    }
                 )
             }
             .store(in: &cancellables)
+        
+        authenticationService.authStatePublisher
+            .sink { [weak self] authState in
+                guard let self else { return }
+                state.authState = authState
+            }
+            .store(in: &cancellables)
+    }
+
+    // Also update initial state
+    init(
+        quickSettings: SettingsProtocol,
+        analyticsService: AnalyticsServiceProtocol,
+        authenticationService: AuthenticationServiceProtocol
+    ) {
+        self.analyticsService = analyticsService
+        self.quickSettings = quickSettings
+        self.authenticationService = authenticationService
+        
+        let initialState = SettingsScreenViewState(
+            bindings: .init(
+                quickSettings: quickSettings,
+                authenticationService: authenticationService,
+                onActiveUsernameChange: nil  // Will be set up in setupObservers
+            )
+        )
+        super.init(initialViewState: initialState)
+        
+        setupObservers()
     }
     
     override func process(viewAction: SettingsScreenViewAction) {
@@ -93,6 +106,19 @@ class SettingsScreenViewModel: SettingsScreenViewModelType, SettingsScreenViewMo
         }
     }
     
+    private func handleActiveUserChange(_ newUsername: String) {
+        // Don't update the setting immediately - let the switch operation handle it
+        Task {
+            do {
+                _ = try await authenticationService.switchToUser(username: newUsername)
+                // The authenticationService will update the activeUsername through its state management
+            } catch {
+                AppLogger.shared.error("Failed to switch to user: \(error)")
+                // Optionally show an error to the user
+            }
+        }
+    }
+    
     private func switchToAccount(_ username: String) {
         Task {
             do {
@@ -120,10 +146,9 @@ class SettingsScreenViewModel: SettingsScreenViewModelType, SettingsScreenViewMo
         Task {
             do {
                 if let currentUser = authenticationService.getCurrentUser() {
-                    _ = try await authenticationService.logOutUser(username: currentUser.username)
+                    _ = try await authenticationService.removeAccount(username: currentUser.username)
                     
                     await MainActor.run {
-                        quickSettings.activeUsername = nil
                         actionsSubject.send(.removeAccount)
                     }
                 }

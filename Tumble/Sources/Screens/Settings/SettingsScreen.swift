@@ -40,18 +40,61 @@ struct SettingsScreen: View {
     private var accountSection: some View {
         SettingsCard(title: "Account") {
             VStack(spacing: 16) {
-                if let currentUser = context.viewState.bindings.currentUser {
+                switch context.viewState.authState {
+                case .loading:
                     HStack {
-                        UserAvatar(username: currentUser.username)
+                        Text("Loading your accounts ...")
+                        Spacer()
+                        ProgressView()
+                    }
+                case .disconnected:
+                    if context.viewState.bindings.allUsers.count == 0 {
+                        HStack {
+                            Image(systemName: "person.crop.circle.badge.exclam")
+                                .foregroundColor(.onSurface)
+                                .font(.title2)
+                            
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("No accounts added")
+                                    .font(.headline)
+                                Text("Sign in to sync your data")
+                                    .font(.caption)
+                                    .foregroundColor(.onSurface)
+                            }
+                            
+                            Spacer()
+                        }
+                        
+                        Divider()
+                        
+                        SettingsButton(title: "Add Account", style: .primary) {
+                            context.send(viewAction: .addAccount)
+                        }
+                    } else {
+                        HStack {
+                            Text("No connection")
+                            Spacer()
+                            Image(systemName: "person.crop.circle.badge.exclamationmark")
+                        }
+                    }
+                case .error:
+                    HStack {
+                        Text("No connection")
+                        Spacer()
+                        Image(systemName: "person.crop.circle.badge.exclamationmark")
+                    }
+                case .connected(let user):
+                    HStack {
+                        UserAvatar(username: user.name)
                         
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(currentUser.name)
+                            Text(user.name)
                                 .font(.headline)
                                 .foregroundColor(.onSurface)
-                            Text(currentUser.username)
+                            Text(user.username)
                                 .font(.caption)
                                 .foregroundColor(.onSurface)
-                            Text(currentUser.school.uppercased())
+                            Text(user.school.uppercased())
                                 .font(.caption2)
                                 .foregroundColor(.onSurface.opacity(0.8))
                         }
@@ -62,17 +105,20 @@ struct SettingsScreen: View {
                     if context.viewState.bindings.allUsers.count > 1 {
                         Divider()
                         
-                        HStack {
+                        HStack(spacing: 16) {
                             Text("Active User")
                                 .font(.body)
                             Spacer()
-                            Picker("User", selection: context.viewState.bindings.binding(for: \.activeUsername)) {
+                            Picker("User", selection: context.viewState.bindings.activeUsernameBinding()) {
                                 ForEach(context.viewState.bindings.allUsers, id: \.username) { user in
-                                    Text(user.name).tag(user.username)
+                                    Text(user.name).tag(Optional(user.username))
                                 }
                             }
                             .pickerStyle(MenuPickerStyle())
+                            .font(.subheadline)
+                            .fixedSize()
                         }
+                        .padding(.vertical, 2)
                     }
                     
                     Divider()
@@ -86,29 +132,6 @@ struct SettingsScreen: View {
                         SettingsButton(title: "Log Out", style: .destructive) {
                             showingRemoveAccountAlert = true
                         }
-                    }
-                    
-                } else {
-                    HStack {
-                        Image(systemName: "person.crop.circle.badge.exclam")
-                            .foregroundColor(.secondary)
-                            .font(.title2)
-                        
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("No accounts added")
-                                .font(.headline)
-                            Text("Sign in to sync your data")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
-                        
-                        Spacer()
-                    }
-                    
-                    Divider()
-                    
-                    SettingsButton(title: "Add Account", style: .primary) {
-                        context.send(viewAction: .addAccount)
                     }
                 }
             }

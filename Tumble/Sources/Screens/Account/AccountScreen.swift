@@ -91,7 +91,7 @@ struct UserInfoCard: View {
     
     var body: some View {
         VStack(spacing: 16) {
-            UserAvatar(username: user.username)
+            UserAvatar(username: user.name)
             VStack(spacing: 6) {
                 Text(user.name)
                     .font(.title2)

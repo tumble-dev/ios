@@ -176,12 +176,8 @@ class SettingsFlowCoordinator: FlowCoordinatorProtocol {
                 guard let self else { return }
                 
                 switch action {
-                case .accountAdded(let user):
-                    parameters.appSettings.activeUsername = user.username
+                default:
                     navigationStackCoordinator.popToRoot()
-                    
-                case .dismiss:
-                    navigationStackCoordinator.pop()
                 }
             }
             .store(in: &cancellables)

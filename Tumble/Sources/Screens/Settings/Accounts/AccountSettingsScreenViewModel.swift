@@ -44,20 +44,20 @@ class AccountSettingsScreenViewModel: AccountSettingsScreenViewModelType, Accoun
             state.showingSchoolPicker.toggle()
             
         case .login:
-            performLogin()
+            addAccount()
             
         case .dismissError:
             state.error = nil
         }
     }
     
-    private func performLogin() {
+    private func addAccount() {
         state.isLoading = true
         state.error = nil
         
         Task {
             do {
-                let user = try await authenticationService.login(
+                let user = try await authenticationService.addAccount(
                     username: state.username,
                     password: state.password,
                     school: state.selectedSchool

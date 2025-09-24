@@ -13,15 +13,16 @@ protocol AuthenticationServiceProtocol {
     
     // Core authentication methods (unchanged)
     func initialize() async
-    func login(username: String, password: String, school: String) async throws -> TumbleUser
     func getCurrentSessionToken() async throws -> String
-    func isAuthenticated() -> Bool
+    func isConnected() -> Bool
     func getCurrentUser() -> TumbleUser?
-    func logout() async
-    func logOutUser(username: String) async throws -> [TumbleUser]
-    func logoutAllUsers() async throws
     func getAllUsers() -> [TumbleUser]
     func getRememberedUsers() -> [TumbleUser]
     func switchToUser(username: String) async throws -> TumbleUser
-    func autoReLogin() async throws
+    func autoReconnect() async throws
+    
+    
+    // MARK: - Account actions
+    func addAccount(username: String, password: String, school: String) async throws -> TumbleUser
+    func removeAccount(username: String) async throws -> [TumbleUser]
 }

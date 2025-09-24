@@ -114,10 +114,10 @@ class AccountScreenViewModel: AccountScreenViewModelType, AccountScreenViewModel
             .sink { [weak self] authState in
                 guard let self = self else { return }
                 switch authState {
-                case .authenticated(let user):
+                case .connected(let user):
                     updateUserState(newState: .loaded(user: user))
                     Task { await self.loadUserData(from: user.school) }
-                case .unauthenticated:
+                case .disconnected:
                     updateUserState(newState: .missing)
                 case .error(let message):
                     updateUserState(newState: .error(message))

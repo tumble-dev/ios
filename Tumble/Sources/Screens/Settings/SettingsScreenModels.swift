@@ -26,10 +26,14 @@ enum SettingsScreenViewModelAction: Equatable {
 struct SettingsScreenViewStateBindings {
     private let quickSettings: SettingsProtocol
     private let authenticationService: AuthenticationServiceProtocol
-
-    init(quickSettings: SettingsProtocol, authenticationService: AuthenticationServiceProtocol) {
+    
+    // Add a closure to handle active username changes
+    var onActiveUsernameChange: ((String) -> Void)?
+    
+    init(quickSettings: SettingsProtocol, authenticationService: AuthenticationServiceProtocol, onActiveUsernameChange: ((String) -> Void)? = nil) {
         self.quickSettings = quickSettings
         self.authenticationService = authenticationService
+        self.onActiveUsernameChange = onActiveUsernameChange
     }
 
     // For get-only properties (like cacheSize)
@@ -62,10 +66,24 @@ struct SettingsScreenViewStateBindings {
             set: { self.quickSettings[keyPath: keyPath] = $0 }
         )
     }
+    
+    // Special binding for activeUsername that triggers the change handler
+    func activeUsernameBinding() -> Binding<String?> {
+        Binding(
+            get: { self.quickSettings.activeUsername },
+            set: { newValue in
+                if let newUsername = newValue, newUsername != self.quickSettings.activeUsername {
+                    self.onActiveUsernameChange?(newUsername)
+                }
+            }
+        )
+    }
 }
 
 // MARK: - Protocol Extension
 
+/// We can only add properties here that tie
+/// directly to AppSettings
 protocol SettingsProtocol: AnyObject {
     var openEventFromWidget: Bool { get set }
     var appearance: AppAppearance { get set }
@@ -75,6 +93,7 @@ protocol SettingsProtocol: AnyObject {
 
 struct SettingsScreenViewState: BindableState {
     var bindings: SettingsScreenViewStateBindings
+    var authState: AuthState = .loading
     var showingAccountPicker: Bool = false
 }
 

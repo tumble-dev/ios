@@ -197,7 +197,6 @@ private extension ApplicationCoordinator {
             case (.initial, .start, .ready):
                 Task { @MainActor [weak self] in
                     guard let self else { return }
-                    await self.authenticationService.initialize()
                     self.startMainFlow(isFirstOpen: true)
                 }
 
