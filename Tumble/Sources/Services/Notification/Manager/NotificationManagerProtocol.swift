@@ -8,6 +8,11 @@
 import Foundation
 import UserNotifications
 
+enum BookingAction {
+    case confirm
+    case cancel
+}
+
 protocol NotificationManagerDelegate: AnyObject {
     func shouldDisplayInAppNotification(content: UNNotificationContent) -> Bool
     func notificationTapped(content: UNNotificationContent) async

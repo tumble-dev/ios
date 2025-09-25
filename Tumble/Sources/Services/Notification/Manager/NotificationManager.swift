@@ -32,20 +32,34 @@ final class NotificationManager: NSObject, NotificationManagerProtocol {
     weak var delegate: NotificationManagerDelegate?
 
     func start() {
-        let messageCategory = UNNotificationCategory(
+
+        // Booking reminder category with confirmation actions
+        let bookingReminderCategory = UNNotificationCategory(
             identifier: NotificationConstants.Category.booking,
-            actions: [],
+            actions: [
+                UNNotificationAction(
+                    identifier: "confirm_booking",
+                    title: "Confirm Booking",
+                    options: [.foreground]
+                ),
+                UNNotificationAction(
+                    identifier: "cancel_booking",
+                    title: "Cancel Booking",
+                    options: [.destructive]
+                )
+            ],
             intentIdentifiers: [],
             options: []
         )
-
-        let inviteCategory = UNNotificationCategory(
+        
+        let eventReminderCategory = UNNotificationCategory(
             identifier: NotificationConstants.Category.event,
             actions: [],
             intentIdentifiers: [],
             options: []
         )
-        notificationCenter.setNotificationCategories([messageCategory, inviteCategory])
+
+        notificationCenter.setNotificationCategories([bookingReminderCategory, eventReminderCategory])
         notificationCenter.delegate = self
 
         // Observe future changes
@@ -225,9 +239,32 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         switch response.actionIdentifier {
         case UNNotificationDefaultActionIdentifier:
             await delegate?.notificationTapped(content: response.notification.request.content)
+        case "confirm_booking":
+            AppLogger.shared.info("[NotificationManager] User confirmed booking")
+            await handleBookingAction(response: response, action: .confirm)
+        case "cancel_booking":
+            AppLogger.shared.info("[NotificationManager] User cancelled booking")
+            await handleBookingAction(response: response, action: .cancel)
         default:
             break
         }
+    }
+
+    private func handleBookingAction(response: UNNotificationResponse, action: BookingAction) async {
+        guard let bookingId = response.notification.request.content.userInfo["bookingId"] as? String else {
+            AppLogger.shared.error("[NotificationManager] No booking ID found in notification")
+            return
+        }
+
+        AppLogger.shared.info("[NotificationManager] Handling booking action: \(action) for booking: \(bookingId)")
+
+        // TODO: Implement booking confirmaetion/cancellation logic
+        // This could involve:
+        // 1. Making API call to your backend
+        // 2. Updating local storage
+        // 3. Showing success/failure feedback to user
+
+        // await delegate?.bookingActionTapped(bookingId: bookingId, action: action)
     }
 }
 
