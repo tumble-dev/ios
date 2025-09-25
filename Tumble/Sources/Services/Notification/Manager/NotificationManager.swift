@@ -79,40 +79,37 @@ final class NotificationManager: NSObject, NotificationManagerProtocol {
         Task {
             do {
                 let permissionGranted = try await notificationCenter.requestAuthorization(options: [.alert, .sound, .badge])
-                AppLogger.shared.info("[NotificationManager] permission granted: \(permissionGranted)")
+                AppLogger.shared.info("Permission granted: \(permissionGranted)", source: "NotificationManager")
                 await MainActor.run {
                     if permissionGranted {
-                        AppLogger.shared.info("[NotificationManager] Permission granted, calling delegate registerForRemoteNotifications...")
+                        AppLogger.shared.info("Permission granted, calling delegate registerForRemoteNotifications...", source: "NotificationManager")
                         if let delegate = self.delegate {
-                            AppLogger.shared.info("[NotificationManager] Delegate exists, calling registerForRemoteNotifications")
+                            AppLogger.shared.info("Delegate exists, calling registerForRemoteNotifications", source: "NotificationManager")
                             delegate.registerForRemoteNotifications()
                         } else {
-                            AppLogger.shared.error("[NotificationManager] Delegate is nil! Cannot register for remote notifications")
+                            AppLogger.shared.error("Delegate is nil! Cannot register for remote notifications", source: "NotificationManager")
                         }
                     } else {
-                        AppLogger.shared.info("[NotificationManager] Permission denied, not registering for remote notifications")
+                        AppLogger.shared.info("Permission denied, not registering for remote notifications", source: "NotificationManager")
                     }
                 }
             } catch {
-                AppLogger.shared.error("[NotificationManager] request authorization failed: \(error)")
+                AppLogger.shared.error("Request authorization failed: \(error)", source: "NotificationManager")
             }
         }
     }
 
     func register(with deviceToken: Data) async -> Bool {
         let tokenString = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
-        AppLogger.shared.info("[NotificationManager] device token received: \(tokenString)")
-
+        AppLogger.shared.info("Device token received: \(tokenString)", source: "NotificationManager")
         Messaging.messaging().apnsToken = deviceToken
-        AppLogger.shared.info("FCM Token: \(String(describing: Messaging.messaging().fcmToken))")
-
         return await withCheckedContinuation { continuation in
             Messaging.messaging().subscribe(toTopic: "updates") { error in
                 if let error = error {
-                    AppLogger.shared.error("[NotificationManager] Failed to subscribe to 'updates' topic: \(error)")
+                    AppLogger.shared.error("Failed to subscribe to 'updates' topic: \(error)", source: "NotificationManager")
                     continuation.resume(returning: false)
                 } else {
-                    AppLogger.shared.info("[NotificationManager] Subscribed to 'updates' topic")
+                    AppLogger.shared.info("Subscribed to 'updates' topic", source: "NotificationManager")
                     continuation.resume(returning: true)
                 }
             }
@@ -120,15 +117,13 @@ final class NotificationManager: NSObject, NotificationManagerProtocol {
     }
 
     func registerWithFCMToken(_ token: String) async -> Bool {
-        AppLogger.shared.info("[NotificationManager] FCM token received for registration: \(token)")
-
         return await withCheckedContinuation { continuation in
             Messaging.messaging().subscribe(toTopic: "updates") { error in
                 if let error = error {
-                    AppLogger.shared.error("[NotificationManager] Failed to subscribe to 'updates' topic with FCM token: \(error)")
+                    AppLogger.shared.error("Failed to subscribe to 'updates' topic with FCM token: \(error)", source: "NotificationManager")
                     continuation.resume(returning: false)
                 } else {
-                    AppLogger.shared.info("[NotificationManager] Successfully subscribed to 'updates' topic with FCM token")
+                    AppLogger.shared.info("Successfully subscribed to 'updates' topic with FCM token", source: "NotificationManager")
                     continuation.resume(returning: true)
                 }
             }
@@ -136,7 +131,7 @@ final class NotificationManager: NSObject, NotificationManagerProtocol {
     }
 
     func registrationFailed(with error: Error) {
-        AppLogger.shared.error("[NotificationManager] device token registration failed with error: \(error)")
+        AppLogger.shared.error("Device token registration failed with error: \(error)", source: "NotificationManager")
     }
 
     func showLocalNotification(with title: String, subtitle: String?) async {
@@ -150,9 +145,9 @@ final class NotificationManager: NSObject, NotificationManagerProtocol {
                                             trigger: nil)
         do {
             try await notificationCenter.add(request)
-            AppLogger.shared.info("[NotificationManager] show local notification succeeded")
+            AppLogger.shared.info("Show local notification succeeded", source: "NotificationManager")
         } catch {
-            AppLogger.shared.error("[NotificationManager] show local notification failed: \(error)")
+            AppLogger.shared.error("Show local notification failed: \(error)", source: "NotificationManager")
         }
     }
 
@@ -161,13 +156,13 @@ final class NotificationManager: NSObject, NotificationManagerProtocol {
         if !enable {
             guard notificationsEnabled != enable else { return }
             notificationsEnabled = false
-            AppLogger.shared.info("[NotificationManager] app setting 'enableNotifications' changed to '\(enable)'")
+            AppLogger.shared.info("App setting 'enableNotifications' changed to '\(enable)'", source: "NotificationManager")
             delegate?.unregisterForRemoteNotifications()
             Messaging.messaging().unsubscribe(fromTopic: "updates") { error in
                 if let error = error {
-                    AppLogger.shared.error("[NotificationManager] Failed to unsubscribe from 'updates' topic: \(error)")
+                    AppLogger.shared.error("Failed to unsubscribe from 'updates' topic: \(error)", source: "NotificationManager")
                 } else {
-                    AppLogger.shared.info("[NotificationManager] Unsubscribed from 'updates' topic")
+                    AppLogger.shared.info("Unsubscribed from 'updates' topic", source: "NotificationManager")
                 }
             }
             return
@@ -179,32 +174,29 @@ final class NotificationManager: NSObject, NotificationManagerProtocol {
             return
         }
         notificationsEnabled = true
-        AppLogger.shared.info("[NotificationManager] app setting 'enableNotifications' changed to '\(enable)'")
+        AppLogger.shared.info("App setting 'enableNotifications' changed to '\(enable)'", source: "NotificationManager")
 
         Task {
             let status = await notificationCenter.authorizationStatus()
             switch status {
             case .notDetermined:
-                AppLogger.shared.info("[NotificationManager] Authorization not determined. Requesting...")
+                AppLogger.shared.info("Authorization not determined. Requesting...", source: "NotificationManager")
                 requestAuthorization()
             case .authorized, .provisional, .ephemeral:
-                AppLogger.shared.info("[NotificationManager] Already authorized. Registering for remote notifications...")
+                AppLogger.shared.info("Already authorized. Registering for remote notifications...", source: "NotificationManager")
                 await MainActor.run { [weak self] in
-                    guard let self = self else {
-                        AppLogger.shared.error("[NotificationManager] Self is nil in MainActor.run")
-                        return
-                    }
+                    guard let self = self else { return }
                     if let delegate = self.delegate {
-                        AppLogger.shared.info("[NotificationManager] Delegate exists, calling registerForRemoteNotifications (already authorized case)")
+                        AppLogger.shared.info("Delegate exists, calling registerForRemoteNotifications (already authorized case)", source: "NotificationManager")
                         delegate.registerForRemoteNotifications()
                     } else {
-                        AppLogger.shared.error("[NotificationManager] Delegate is nil in already authorized case! Cannot register for remote notifications")
+                        AppLogger.shared.error("Delegate is nil in already authorized case! Cannot register for remote notifications", source: "NotificationManager")
                     }
                 }
             case .denied:
-                AppLogger.shared.info("[NotificationManager] Authorization denied. Skipping registration.")
+                AppLogger.shared.info("Authorization denied. Skipping registration.", source: "NotificationManager")
             @unknown default:
-                AppLogger.shared.info("[NotificationManager] Unknown authorization status. Skipping registration.")
+                AppLogger.shared.info("Unknown authorization status. Skipping registration.", source: "NotificationManager")
             }
         }
     }
@@ -240,10 +232,10 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         case UNNotificationDefaultActionIdentifier:
             await delegate?.notificationTapped(content: response.notification.request.content)
         case "confirm_booking":
-            AppLogger.shared.info("[NotificationManager] User confirmed booking")
+            AppLogger.shared.info("User confirmed booking", source: "NotificationManager")
             await handleBookingAction(response: response, action: .confirm)
         case "cancel_booking":
-            AppLogger.shared.info("[NotificationManager] User cancelled booking")
+            AppLogger.shared.info("User cancelled booking", source: "NotificationManager")
             await handleBookingAction(response: response, action: .cancel)
         default:
             break
@@ -252,17 +244,11 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
 
     private func handleBookingAction(response: UNNotificationResponse, action: BookingAction) async {
         guard let bookingId = response.notification.request.content.userInfo["bookingId"] as? String else {
-            AppLogger.shared.error("[NotificationManager] No booking ID found in notification")
+            AppLogger.shared.error("No booking ID found in notification", source: "NotificationManager")
             return
         }
 
-        AppLogger.shared.info("[NotificationManager] Handling booking action: \(action) for booking: \(bookingId)")
-
-        // TODO: Implement booking confirmaetion/cancellation logic
-        // This could involve:
-        // 1. Making API call to your backend
-        // 2. Updating local storage
-        // 3. Showing success/failure feedback to user
+        AppLogger.shared.info("Handling booking action: \(action) for booking: \(bookingId)", source: "NotificationManager")
 
         // await delegate?.bookingActionTapped(bookingId: bookingId, action: action)
     }

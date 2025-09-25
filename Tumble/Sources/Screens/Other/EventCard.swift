@@ -70,6 +70,7 @@ struct EventCard: View {
                 // Right side - Time chip
                 TimeRangeChip(
                     startTime: startTime,
+                    color: event.color,
                     endTime: endTime,
                     isSpecial: event.isSpecial
                 )
@@ -126,6 +127,7 @@ struct EventCard: View {
 
 struct TimeRangeChip: View {
     let startTime: String
+    let color: Color
     let endTime: String
     let isSpecial: Bool
     
@@ -145,7 +147,7 @@ struct TimeRangeChip: View {
         if isSpecial {
             return Color.red.opacity(0.12)
         } else {
-            return Color.blue.opacity(0.12) // You can replace with event.course.color
+            return textColor.opacity(0.12)
         }
     }
     
@@ -153,7 +155,7 @@ struct TimeRangeChip: View {
         if isSpecial {
             return Color.red
         } else {
-            return Color.onSurface
+            return color
         }
     }
 }

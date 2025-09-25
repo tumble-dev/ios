@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 // MARK: - Network Namespace
 
@@ -29,6 +30,11 @@ enum Response {
         let locations: [Location]
         let lastModified: Date
         let isSpecial: Bool
+        let colorHex: String
+        
+        var color: Color {
+            Color(hex: colorHex)
+        }
         
         private enum CodingKeys: String, CodingKey {
             case id
@@ -42,6 +48,7 @@ enum Response {
             case locations
             case lastModified = "last_modified"
             case isSpecial = "is_special"
+            case colorHex = "color"
         }
     }
     

@@ -324,6 +324,17 @@ class EventStorageService: EventStorageServiceProtocol, ObservableObject {
         }
     }
     
+    func updateColor(forCourse courseId: String, withColor colorHex: String) {
+        do {
+            let updatedEvents = getEvents(forCourse: courseId).map { event in
+                event.withUpdatedColor(colorHex)
+            }
+            try saveEvents(updatedEvents)
+        } catch {
+            AppLogger.shared.error("Colors for events with course ID \(courseId) not updated. Will keep old color", source: "EventStorageService")
+        }
+    }
+    
     /// Get events for today
     func getTodaysEvents() -> [Response.Event] {
         let calendar = Calendar.current

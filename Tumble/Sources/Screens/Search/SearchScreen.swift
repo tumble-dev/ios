@@ -93,10 +93,10 @@ struct SearchScreen: View {
                     Spacer()
                     Text("Search failed")
                         .font(.title3)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.onBackground)
                     Text(message)
                         .font(.body)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.onBackground)
                         .multilineTextAlignment(.center)
                     Button("Try again") {
                         performSearch()

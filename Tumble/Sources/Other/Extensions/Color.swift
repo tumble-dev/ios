@@ -24,36 +24,44 @@ extension Color {
     static let dark = Color("Dark")
     static let bright = Color("Bright")
     
-    // Source
-    // https://stackoverflow.com/questions/64071466/detect-color-type-dark-or-light
-    func isDarkBackground(color: Color) -> Bool {
-        var r, g, b, a: CGFloat
-        (r, g, b, a) = (0, 0, 0, 0)
-        UIColor(color).getRed(&r, green: &g, blue: &b, alpha: &a)
-        let luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b
-        return luminance < 0.50
+    func toHexString() -> String {
+        let uiColor = UIColor(self)
+        var r: CGFloat = 0
+        var g: CGFloat = 0
+        var b: CGFloat = 0
+        var a: CGFloat = 0
+        guard uiColor.getRed(&r, green: &g, blue: &b, alpha: &a) else {
+            // Fallback to white if conversion fails
+            return "FFFFFF"
+        }
+        let rInt = Int(round(r * 255))
+        let gInt = Int(round(g * 255))
+        let bInt = Int(round(b * 255))
+        return String(format: "%02X%02X%02X", rInt, gInt, bInt)
     }
     
-    // Source
-    // https://blog.eidinger.info/from-hex-to-color-and-back-in-swiftui
-    func toHex() -> String? {
-        let uic = UIColor(self)
-        guard let components = uic.cgColor.components, components.count >= 3 else {
-            return nil
+    init(hex: String) {
+        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int: UInt64 = 0
+        Scanner(string: hex).scanHexInt64(&int)
+        let a, r, g, b: UInt64
+        switch hex.count {
+        case 3: // RGB (12-bit)
+            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+        case 6: // RGB (24-bit)
+            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+        case 8: // ARGB (32-bit)
+            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        default:
+            (a, r, g, b) = (1, 1, 1, 0)
         }
-        let r = Float(components[0])
-        let g = Float(components[1])
-        let b = Float(components[2])
-        var a = Float(1.0)
 
-        if components.count >= 4 {
-            a = Float(components[3])
-        }
-
-        if a != Float(1.0) {
-            return String(format: "%02lX%02lX%02lX%02lX", lroundf(r * 255), lroundf(g * 255), lroundf(b * 255), lroundf(a * 255))
-        } else {
-            return String(format: "%02lX%02lX%02lX", lroundf(r * 255), lroundf(g * 255), lroundf(b * 255))
-        }
+        self.init(
+            .sRGB,
+            red: Double(r) / 255,
+            green: Double(g) / 255,
+            blue:  Double(b) / 255,
+            opacity: Double(a) / 255
+        )
     }
 }

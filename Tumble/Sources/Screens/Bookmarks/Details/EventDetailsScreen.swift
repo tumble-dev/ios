@@ -9,8 +9,6 @@ import SwiftUI
 
 struct EventDetailsScreen: View {
     @ObservedObject var context: EventDetailsScreenViewModel.Context
-    @State private var showColorPicker = false
-    @State private var selectedColor = Color.gray
     
     var body: some View {
         ScrollView {
@@ -19,19 +17,8 @@ struct EventDetailsScreen: View {
                 case .loading:
                     ProgressView()
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    
                 case .loaded(let event):
-                    EventInfo(
-                        event: event,
-                        courseColor: selectedColor,
-                        showColorPicker: $showColorPicker,
-                        selectedColor: $selectedColor,
-                        onColorSelected: { color in
-                            selectedColor = color
-                            showColorPicker = false
-                        }
-                    )
-                    
+                    EventInfo(event: event)
                 case .error(let message):
                     VStack(spacing: 8) {
                         Image(systemName: "exclamationmark.triangle")
@@ -62,28 +49,21 @@ struct EventDetailsScreen: View {
             }
         }
         ToolbarItem(placement: .topBarLeading) {
-            Button {
-                context.send(viewAction: .showColorPicker)
-            } label: {
-                Image(systemName: "paintpalette")
+            Button { } label: {
+                ColorPicker("Course Color", selection: context.colorPickerSelection)
             }
-            .accessibilityLabel("Change Color")
+            .accessibilityLabel("Course Color")
         }
     }
 }
 
 struct EventInfo: View {
     let event: Response.Event
-    let courseColor: Color
-    @Binding var showColorPicker: Bool
-    @Binding var selectedColor: Color
-    let onColorSelected: (Color) -> Void
     
     var body: some View {
         VStack(spacing: 16) {
             EventHeaderCard(
                 event: event,
-                eventColor: courseColor
             )
             
             VStack(alignment: .leading, spacing: 16) {
@@ -207,7 +187,6 @@ struct EventInfo: View {
 
 struct EventHeaderCard: View {
     let event: Response.Event
-    let eventColor: Color
     
     var body: some View {
         VStack {
@@ -220,7 +199,7 @@ struct EventHeaderCard: View {
                     
                     HStack(spacing: 8) {
                         Circle()
-                            .fill(eventColor)
+                            .fill(event.color)
                             .frame(width: 8, height: 8)
                         
                         Text(event.courseName)
@@ -277,3 +256,4 @@ struct DetailCard<Content: View>: View {
         .cardStyle()
     }
 }
+
