@@ -7,6 +7,8 @@
 
 import FirebaseAnalytics
 import Foundation
+import Combine
+import FirebaseCrashlytics
 
 protocol AnalyticsServiceProtocol {
     func logEvent(_ event: String, parameters: [String: Any]?)
@@ -16,9 +18,18 @@ protocol AnalyticsServiceProtocol {
 
 final class AnalyticsService: AnalyticsServiceProtocol {
     private let appSettings: AppSettings
+    private var cancellables = Set<AnyCancellable>()
     
     init(appSettings: AppSettings) {
         self.appSettings = appSettings
+        
+        updateFirebaseCollectionState(appSettings.analyticsEnabled)
+        
+        appSettings.$analyticsEnabled
+            .sink { [weak self] enabled in
+                self?.updateFirebaseCollectionState(enabled)
+            }
+            .store(in: &cancellables)
     }
     
     func logEvent(_ event: String, parameters: [String: Any]? = nil) {
@@ -31,6 +42,12 @@ final class AnalyticsService: AnalyticsServiceProtocol {
         AppLogger.shared.info("Analytics event logged: \(event)")
     }
     
+    private func updateFirebaseCollectionState(_ enabled: Bool) {
+        Analytics.setAnalyticsCollectionEnabled(enabled)
+        Crashlytics.crashlytics().setCrashlyticsCollectionEnabled(enabled)
+        
+        AppLogger.shared.info("Firebase Analytics collection set to: \(enabled)")
+    }
     func setUserProperty(_ value: String?, forName name: String) {
         guard appSettings.analyticsEnabled else {
             AppLogger.shared.info("Analytics disabled - skipping user property: \(name)")

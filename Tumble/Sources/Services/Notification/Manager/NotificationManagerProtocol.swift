@@ -23,6 +23,7 @@ protocol NotificationManagerProtocol: AnyObject {
     func start()
     func requestAuthorization()
     func register(with deviceToken: Data) async -> Bool
+    func registerWithFCMToken(_ token: String) async -> Bool
     func registrationFailed(with error: Error)
     func showLocalNotification(with title: String, subtitle: String?) async
 }

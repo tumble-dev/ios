@@ -13,7 +13,7 @@ enum NotificationPermissionsScreenViewAction {
 }
 
 enum NotificationPermissionsScreenViewModelAction {
-    case done
+    case next
 }
 
 struct NotificationPermissionsScreenViewState: BindableState {}

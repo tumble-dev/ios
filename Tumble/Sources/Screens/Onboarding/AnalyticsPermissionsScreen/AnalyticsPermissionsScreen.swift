@@ -1,20 +1,19 @@
 //
-//  NotificationPermissionsScreen.swift
-//  Tumble
+//  AnalyticsPermissionsScreen.swift
+//  Tumble iOS
 //
-//  Created by Adis Veletanlic on 2025-09-18.
+//  Created by Adis Veletanlic on 2025-09-25.
 //
 
 import SwiftUI
+import Combine
 
-/// A prompt that asks the user whether they would like to enable Notifications or not.
-struct NotificationPermissionsScreen: View {
-    @ObservedObject var context: NotificationPermissionsScreenViewModel.Context
+struct AnalyticsPermissionsScreen: View {
+    @ObservedObject var context: AnalyticsPermissionsScreenViewModel.Context
     @State private var isAnimated = false
     
     var body: some View {
         VStack(spacing: 0) {
-            // Main content area with proper spacing
             VStack(spacing: 40) {
                 Spacer()
                 
@@ -44,19 +43,18 @@ struct NotificationPermissionsScreen: View {
     
     private var heroSection: some View {
         VStack(spacing: 28) {
-            // Animated notification icon
-            notificationIcon
+            // Animated analytics icon
+            analyticsIcon
                 .scaleEffect(isAnimated ? 1.0 : 0.8)
             
             // Main title and subtitle
             VStack(spacing: 16) {
-                Text("Stay in the Loop")
+                Text("Help Us Improve")
                     .font(.system(.largeTitle))
-                    .bold()
                     .foregroundColor(.onBackground)
                     .multilineTextAlignment(.center)
                 
-                Text("Get notified about important updates, deadlines, and events so you never miss what matters most.")
+                Text("Share anonymous usage data to help us build better features and fix issues faster.")
                     .font(.system(.body, design: .rounded))
                     .foregroundColor(.onBackground)
                     .multilineTextAlignment(.center)
@@ -66,7 +64,7 @@ struct NotificationPermissionsScreen: View {
         }
     }
     
-    private var notificationIcon: some View {
+    private var analyticsIcon: some View {
         ZStack {
             // Outer glow ring
             Circle()
@@ -98,16 +96,34 @@ struct NotificationPermissionsScreen: View {
                 .frame(width: 100, height: 100)
                 .shadow(color: Color.primary.opacity(0.4), radius: 20, x: 0, y: 10)
             
-            Image(systemName: "bell.fill")
+            // Chart icon with subtle animation
+            Image(systemName: "chart.line.uptrend.xyaxis")
                 .font(.system(size: 36, weight: .medium))
                 .foregroundColor(.onPrimary)
-                .rotationEffect(.degrees(isAnimated ? 15 : -15))
+                .scaleEffect(isAnimated ? 1.0 : 0.9)
                 .animation(
-                    Animation.easeInOut(duration: 2.0)
+                    Animation.easeInOut(duration: 1.5)
                         .repeatForever(autoreverses: true)
-                        .delay(0.8),
+                        .delay(1.0),
                     value: isAnimated
                 )
+            
+            // Animated data points
+            ForEach(0..<3, id: \.self) { index in
+                Circle()
+                    .fill(Color.onPrimary.opacity(0.8))
+                    .frame(width: 4, height: 4)
+                    .offset(
+                        x: CGFloat([15, -10, 20][index]),
+                        y: CGFloat([-15, 10, -25][index])
+                    )
+                    .scaleEffect(isAnimated ? 1.0 : 0.0)
+                    .animation(
+                        Animation.easeOut(duration: 0.8)
+                            .delay(Double(index) * 0.2 + 1.2),
+                        value: isAnimated
+                    )
+            }
         }
     }
     
@@ -161,10 +177,10 @@ struct NotificationPermissionsScreen: View {
             // Primary action button
             Button(action: { context.send(viewAction: .enable) }) {
                 HStack(spacing: 8) {
-                    Image(systemName: "bell.fill")
+                    Image(systemName: "heart.fill")
                         .font(.system(size: 16, weight: .medium))
                     
-                    Text("Enable Notifications")
+                    Text("Help Improve Tumble")
                         .font(.system(.headline))
                 }
                 .foregroundColor(.onPrimary)
@@ -177,7 +193,7 @@ struct NotificationPermissionsScreen: View {
             
             // Secondary action button
             Button(action: { context.send(viewAction: .notNow) }) {
-                Text("Maybe Later")
+                Text("No Thanks")
                     .font(.system(.body))
                     .foregroundColor(.onBackground.opacity(0.7))
                     .frame(height: 48)
@@ -185,10 +201,16 @@ struct NotificationPermissionsScreen: View {
             .buttonStyle(SecondaryButtonStyle())
             
             // Privacy note
-            Text("You can change this in Settings at any time")
-                .font(.system(.caption))
-                .foregroundColor(.onBackground.opacity(0.6))
-                .multilineTextAlignment(.center)
+            VStack(spacing: 8) {
+                Text("All data is anonymous and secure")
+                    .font(.system(.caption))
+                    .foregroundColor(.onBackground.opacity(0.8))
+                
+                Text("You can change this in Settings at any time")
+                    .font(.system(.caption))
+                    .foregroundColor(.onBackground.opacity(0.6))
+            }
+            .multilineTextAlignment(.center)
         }
         .padding(.horizontal, 24)
         .padding(.bottom, 40)
@@ -198,19 +220,19 @@ struct NotificationPermissionsScreen: View {
     
     private let benefits = [
         (
-            icon: "calendar.badge.clock",
-            title: "Never Miss Deadlines",
-            description: "Get timely reminders for assignments and important dates"
+            icon: "wrench.and.screwdriver.fill",
+            title: "Better Bug Fixes",
+            description: "Help us identify and fix issues you encounter"
         ),
         (
-            icon: "megaphone.fill",
-            title: "Important Announcements",
-            description: "Stay updated with critical information and updates"
+            icon: "sparkles",
+            title: "Improved Features",
+            description: "Guide development of features you actually use"
         ),
         (
-            icon: "person.2.fill",
-            title: "Event Reminders",
-            description: "Get notified about upcoming events and activities"
+            icon: "gauge.high",
+            title: "Enhanced Performance",
+            description: "Optimize the app based on real usage patterns"
         )
     ]
 }

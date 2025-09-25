@@ -43,6 +43,7 @@ class OnboardingFlowCoordinator: FlowCoordinatorProtocol {
     enum State: StateType {
         case initial
         case notificationPermissions
+        case analyticsPermissions
         case finished
     }
     
@@ -74,7 +75,7 @@ class OnboardingFlowCoordinator: FlowCoordinatorProtocol {
     // MARK: - Private
     
     private var requiresNotificationsSetup: Bool {
-        !appSettings.hasRunNotificationPermissionsOnboarding
+        !appSettings.onboarded
     }
 }
 
@@ -96,6 +97,8 @@ private extension OnboardingFlowCoordinator {
             case (.initial, false):
                 return .finished
             case (.notificationPermissions, _):
+                return .analyticsPermissions
+            case (.analyticsPermissions, _):
                 return .finished
             default:
                 return nil
@@ -108,6 +111,8 @@ private extension OnboardingFlowCoordinator {
             switch (context.fromState, context.event, context.toState) {
             case (_, _, .notificationPermissions):
                 presentNotificationPermissionsScreen()
+            case (_, _, .analyticsPermissions):
+                presentAnalyticsPermissionsScreen()
             case (_, _, .finished):
                 rootNavigationStackCoordinator.setFullScreenCoverCoordinator(nil)
                 stateMachine.tryState(.initial)
@@ -142,14 +147,17 @@ private extension OnboardingFlowCoordinator {
 
 private extension OnboardingFlowCoordinator {
     private func presentNotificationPermissionsScreen() {
-        let coordinator = NotificationPermissionsScreenCoordinator(parameters: .init(notificationManager: notificationManager))
+        let coordinator = NotificationPermissionsScreenCoordinator(
+            parameters: .init(
+                notificationManager: notificationManager,
+                appSettings: appSettings)
+        )
         
         coordinator.actions
             .sink { [weak self] action in
                 guard let self else { return }
                 switch action {
-                case .done:
-                    appSettings.hasRunNotificationPermissionsOnboarding = true
+                case .next:
                     stateMachine.tryEvent(.next)
                 }
             }
@@ -157,4 +165,26 @@ private extension OnboardingFlowCoordinator {
         
         presentCoordinator(coordinator)
     }
+    
+    private func presentAnalyticsPermissionsScreen() {
+        let coordinator =  AnalyticsPermissionsScreenCoordinator(
+            parameters: .init(
+                appSettings: appSettings
+            )
+        )
+        
+        coordinator.actions
+            .sink { [weak self] action in
+                guard let self else { return }
+                switch action {
+                case .next:
+                    appSettings.onboarded = true
+                    stateMachine.tryEvent(.next)
+                }
+            }
+            .store(in: &cancellables)
+        
+        presentCoordinator(coordinator)
+    }
+    
 }

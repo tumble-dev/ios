@@ -18,7 +18,6 @@ final class AppSettings: ObservableObject {
         case hasRunNotificationPermissionsOnboarding
         
         // Notification Settings - Messaging
-        case notificationsEnabled
         case inAppMessagingEnabled
         case notificationOffset
         
@@ -72,10 +71,7 @@ final class AppSettings: ObservableObject {
     
     // MARK: - Existing Settings
     
-    @UserPreference(key: UserDefaultsKeys.notificationsEnabled, defaultValue: true, storageType: .userDefaults(store))
-    var notificationsEnabled: Bool
-    
-    @UserPreference(key: UserDefaultsKeys.inAppMessagingEnabled, defaultValue: true, storageType: .userDefaults(store))
+    @UserPreference(key: UserDefaultsKeys.inAppMessagingEnabled, defaultValue: false, storageType: .userDefaults(store))
     var inAppMessagingEnabled: Bool
     
     @UserPreference(key: UserDefaultsKeys.lastVersionLaunched, storageType: .userDefaults(store))
@@ -104,9 +100,6 @@ final class AppSettings: ObservableObject {
     
     @UserPreference(key: UserDefaultsKeys.bookmarkViewType, defaultValue: 0, storageType: .userDefaults(store))
     var bookmarkViewType: Int
-    
-    @UserPreference(key: UserDefaultsKeys.hasRunNotificationPermissionsOnboarding, defaultValue: false, storageType: .userDefaults(store))
-    var hasRunNotificationPermissionsOnboarding: Bool
     
     // MARK: - Advanced Settings - Performance & Data
     
@@ -196,7 +189,6 @@ extension AppSettings: NotificationsSettingsProtocol {
     func resetNotificationsSettings() {
         notificationOffset = .hour
         inAppMessagingEnabled = true
-        notificationsEnabled = true
     }
 }
 

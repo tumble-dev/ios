@@ -34,7 +34,6 @@ class NotificationsSettingsScreenViewModel: NotificationsSettingsScreenViewModel
         let publishers = [
             appSettings.$notificationOffset.map { _ in () }.eraseToAnyPublisher(),
             appSettings.$inAppMessagingEnabled.map { _ in () }.eraseToAnyPublisher(),
-            appSettings.$notificationsEnabled.map { _ in () }.eraseToAnyPublisher()
         ]
         
         Publishers.MergeMany(publishers)

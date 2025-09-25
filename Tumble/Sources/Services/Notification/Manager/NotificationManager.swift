@@ -14,10 +14,10 @@ import UserNotifications
 final class NotificationManager: NSObject, NotificationManagerProtocol {
     private let notificationCenter: UserNotificationCenterProtocol
     private let appSettings: AppSettings
-    
+
     private var cancellables = Set<AnyCancellable>()
     private var notificationsEnabled = false
-    
+
     init(
         notificationCenter: UserNotificationCenterProtocol,
         appSettings: AppSettings
@@ -30,7 +30,7 @@ final class NotificationManager: NSObject, NotificationManagerProtocol {
     // MARK: NotificationManagerProtocol
 
     weak var delegate: NotificationManagerDelegate?
-    
+
     func start() {
         let messageCategory = UNNotificationCategory(
             identifier: NotificationConstants.Category.booking,
@@ -38,7 +38,7 @@ final class NotificationManager: NSObject, NotificationManagerProtocol {
             intentIdentifiers: [],
             options: []
         )
-        
+
         let inviteCategory = UNNotificationCategory(
             identifier: NotificationConstants.Category.event,
             actions: [],
@@ -47,26 +47,36 @@ final class NotificationManager: NSObject, NotificationManagerProtocol {
         )
         notificationCenter.setNotificationCategories([messageCategory, inviteCategory])
         notificationCenter.delegate = self
-        
-        notificationsEnabled = appSettings.notificationsEnabled
-        AppLogger.shared.info("[NotificationManager] app setting 'enableNotifications' is '\(notificationsEnabled)'")
-        
-        appSettings.$notificationsEnabled
+
+        // Observe future changes
+        appSettings.$inAppMessagingEnabled
+            .removeDuplicates()
             .sink { [weak self] newValue in
+                AppLogger.shared.info("[NotificationManager] inAppMessagingEnabled changed to \(newValue)")
                 self?.enableNotifications(newValue)
             }
             .store(in: &cancellables)
+
+        // Bootstrap current state on launch
+        enableNotifications(appSettings.inAppMessagingEnabled)
     }
-        
+
     func requestAuthorization() {
-        guard appSettings.notificationsEnabled else { return }
         Task {
             do {
                 let permissionGranted = try await notificationCenter.requestAuthorization(options: [.alert, .sound, .badge])
                 AppLogger.shared.info("[NotificationManager] permission granted: \(permissionGranted)")
                 await MainActor.run {
                     if permissionGranted {
-                        self.delegate?.registerForRemoteNotifications()
+                        AppLogger.shared.info("[NotificationManager] Permission granted, calling delegate registerForRemoteNotifications...")
+                        if let delegate = self.delegate {
+                            AppLogger.shared.info("[NotificationManager] Delegate exists, calling registerForRemoteNotifications")
+                            delegate.registerForRemoteNotifications()
+                        } else {
+                            AppLogger.shared.error("[NotificationManager] Delegate is nil! Cannot register for remote notifications")
+                        }
+                    } else {
+                        AppLogger.shared.info("[NotificationManager] Permission denied, not registering for remote notifications")
                     }
                 }
             } catch {
@@ -78,9 +88,10 @@ final class NotificationManager: NSObject, NotificationManagerProtocol {
     func register(with deviceToken: Data) async -> Bool {
         let tokenString = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
         AppLogger.shared.info("[NotificationManager] device token received: \(tokenString)")
-        
+
         Messaging.messaging().apnsToken = deviceToken
-        
+        AppLogger.shared.info("FCM Token: \(String(describing: Messaging.messaging().fcmToken))")
+
         return await withCheckedContinuation { continuation in
             Messaging.messaging().subscribe(toTopic: "updates") { error in
                 if let error = error {
@@ -93,7 +104,23 @@ final class NotificationManager: NSObject, NotificationManagerProtocol {
             }
         }
     }
-    
+
+    func registerWithFCMToken(_ token: String) async -> Bool {
+        AppLogger.shared.info("[NotificationManager] FCM token received for registration: \(token)")
+
+        return await withCheckedContinuation { continuation in
+            Messaging.messaging().subscribe(toTopic: "updates") { error in
+                if let error = error {
+                    AppLogger.shared.error("[NotificationManager] Failed to subscribe to 'updates' topic with FCM token: \(error)")
+                    continuation.resume(returning: false)
+                } else {
+                    AppLogger.shared.info("[NotificationManager] Successfully subscribed to 'updates' topic with FCM token")
+                    continuation.resume(returning: true)
+                }
+            }
+        }
+    }
+
     func registrationFailed(with error: Error) {
         AppLogger.shared.error("[NotificationManager] device token registration failed with error: \(error)")
     }
@@ -114,22 +141,56 @@ final class NotificationManager: NSObject, NotificationManagerProtocol {
             AppLogger.shared.error("[NotificationManager] show local notification failed: \(error)")
         }
     }
-    
+
     private func enableNotifications(_ enable: Bool) {
-        guard notificationsEnabled != enable else { return }
-        notificationsEnabled = enable
-        AppLogger.shared.info("[NotificationManager] app setting 'enableNotifications' changed to '\(enable)'")
-        if enable {
-            requestAuthorization()
-        } else {
+        // If disabling, do it immediately
+        if !enable {
+            guard notificationsEnabled != enable else { return }
+            notificationsEnabled = false
+            AppLogger.shared.info("[NotificationManager] app setting 'enableNotifications' changed to '\(enable)'")
             delegate?.unregisterForRemoteNotifications()
-            // Unsubscribe from topic when notifications are disabled
             Messaging.messaging().unsubscribe(fromTopic: "updates") { error in
                 if let error = error {
                     AppLogger.shared.error("[NotificationManager] Failed to unsubscribe from 'updates' topic: \(error)")
                 } else {
                     AppLogger.shared.info("[NotificationManager] Unsubscribed from 'updates' topic")
                 }
+            }
+            return
+        }
+
+        // Enabling
+        guard notificationsEnabled != enable else {
+            // Already enabled for this app run; nothing to do
+            return
+        }
+        notificationsEnabled = true
+        AppLogger.shared.info("[NotificationManager] app setting 'enableNotifications' changed to '\(enable)'")
+
+        Task {
+            let status = await notificationCenter.authorizationStatus()
+            switch status {
+            case .notDetermined:
+                AppLogger.shared.info("[NotificationManager] Authorization not determined. Requesting...")
+                requestAuthorization()
+            case .authorized, .provisional, .ephemeral:
+                AppLogger.shared.info("[NotificationManager] Already authorized. Registering for remote notifications...")
+                await MainActor.run { [weak self] in
+                    guard let self = self else {
+                        AppLogger.shared.error("[NotificationManager] Self is nil in MainActor.run")
+                        return
+                    }
+                    if let delegate = self.delegate {
+                        AppLogger.shared.info("[NotificationManager] Delegate exists, calling registerForRemoteNotifications (already authorized case)")
+                        delegate.registerForRemoteNotifications()
+                    } else {
+                        AppLogger.shared.error("[NotificationManager] Delegate is nil in already authorized case! Cannot register for remote notifications")
+                    }
+                }
+            case .denied:
+                AppLogger.shared.info("[NotificationManager] Authorization denied. Skipping registration.")
+            @unknown default:
+                AppLogger.shared.info("[NotificationManager] Unknown authorization status. Skipping registration.")
             }
         }
     }

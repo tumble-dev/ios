@@ -240,7 +240,14 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
     ///   - school: School identifier for the API
     /// - Returns: The authenticated user
     func addAccount(username: String, password: String, school: String) async throws -> TumbleUser {
+        let startTime = Date()
         AppLogger.shared.debug("Attempting to add account for user: \(username)")
+        
+        // Log login attempt
+        ServiceLocator.shared.analytics.logEvent("login_attempt", parameters: [
+            "method": "manual",
+            "school": school
+        ])
         
         do {
             let user = try await tumbleApiService.login(credentials: Response.LoginRequest(username: username, password: password), school: school)
@@ -266,10 +273,28 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
             // Establish WebSocket session for the new active user
             await establishWebSocketSession(for: tumbleUser)
             
+            // Log successful login
+            let duration = Date().timeIntervalSince(startTime)
+            ServiceLocator.shared.analytics.logEvent("login_success", parameters: [
+                "method": "manual",
+                "school": school,
+                "duration_seconds": duration
+            ])
+            
             return tumbleUser
             
         } catch {
             AppLogger.shared.error("Failed to add account for user \(username): \(error.localizedDescription)")
+            
+            // Log login failure
+            let duration = Date().timeIntervalSince(startTime)
+            ServiceLocator.shared.analytics.logEvent("login_failed", parameters: [
+                "method": "manual",
+                "school": school,
+                "error_type": mapErrorForAnalytics(error),
+                "duration_seconds": duration
+            ])
+            
             throw error
         }
     }
@@ -277,10 +302,18 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
     /// Manually log in again to get a fresh session token that the
     /// websocket can use to keep the session alive
     func autoReconnect() async throws {
+        let startTime = Date()
         await updateAuthState(.loading)
+        
+        ServiceLocator.shared.analytics.logEvent("auto_reconnect_attempt", parameters: nil)
         
         guard let currentUser = getCurrentUser() else {
             await updateAuthState(.error(msg: "No active session found"))
+            
+            ServiceLocator.shared.analytics.logEvent("auto_reconnect_failed", parameters: [
+                "error_type": "no_active_session"
+            ])
+            
             throw AuthError.noActiveSession
         }
                 
@@ -290,6 +323,11 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
         
         guard let credentials = keychainController.getLoginCredentials(forUsername: currentUser.username) else {
             await updateAuthState(.error(msg: "No stored credentials found"))
+            
+            ServiceLocator.shared.analytics.logEvent("auto_reconnect_failed", parameters: [
+                "error_type": "no_stored_credentials"
+            ])
+            
             throw AuthError.noStoredCredentials
         }
         
@@ -300,9 +338,21 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
                 schoolCode: currentUser.school
             )
             
+            let duration = Date().timeIntervalSince(startTime)
+            ServiceLocator.shared.analytics.logEvent("auto_reconnect_success", parameters: [
+                "duration_seconds": duration
+            ])
+            
             AppLogger.shared.info("Auto re-login successful with WebSocket session")
         } catch {
             await updateAuthState(.error(msg: "Failed to re-authenticate: \(error.localizedDescription)"))
+            
+            let duration = Date().timeIntervalSince(startTime)
+            ServiceLocator.shared.analytics.logEvent("auto_reconnect_failed", parameters: [
+                "error_type": mapErrorForAnalytics(error),
+                "duration_seconds": duration
+            ])
+            
             throw error
         }
     }
@@ -311,18 +361,29 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
     /// session token that the websocket will poll with to keep alive during the app
     /// lifecycle.
     private func attemptAutoReLogin(for username: String) async {
+        let startTime = Date()
         AppLogger.shared.debug("Attempting auto re-login for user: \(username)")
+        
+        ServiceLocator.shared.analytics.logEvent("auto_login_attempt", parameters: nil)
                 
         do {
             guard let credentials = keychainController.getLoginCredentials(forUsername: username) else {
                 AppLogger.shared.debug("No stored credentials for auto re-login")
                 await updateAuthState(.disconnected)
+                
+                ServiceLocator.shared.analytics.logEvent("auto_login_failed", parameters: [
+                    "error_type": "no_credentials"
+                ])
                 return
             }
             
             guard let existingUser = userDataStorage.getUserProfile(username: username) else {
                 AppLogger.shared.debug("No user profile found for auto re-login")
                 await updateAuthState(.disconnected)
+                
+                ServiceLocator.shared.analytics.logEvent("auto_login_failed", parameters: [
+                    "error_type": "no_user_profile"
+                ])
                 return
             }
             
@@ -337,9 +398,21 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
             AppLogger.shared.info("Auto re-login successful for user: \(username)")
             await updateAuthState(.connected(user: existingUser))
             
+            let duration = Date().timeIntervalSince(startTime)
+            ServiceLocator.shared.analytics.logEvent("auto_login_success", parameters: [
+                "school": existingUser.school,
+                "duration_seconds": duration
+            ])
+            
         } catch {
             AppLogger.shared.error("Auto re-login failed for user \(username): \(error.localizedDescription)")
             await updateAuthState(.error(msg: "Failed to restore session. Please log in again."))
+            
+            let duration = Date().timeIntervalSince(startTime)
+            ServiceLocator.shared.analytics.logEvent("auto_login_failed", parameters: [
+                "error_type": mapErrorForAnalytics(error),
+                "duration_seconds": duration
+            ])
         }
     }
     
@@ -388,6 +461,8 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
     func removeAccount(username: String) async throws -> [TumbleUser] {
         AppLogger.shared.debug("Logging out user \(username)")
         
+        ServiceLocator.shared.analytics.logEvent("account_removed", parameters: nil)
+        
         /// if the account we are removing is the one currently set as default,
         /// we must manage the published state
         if isActiveUser(username: username) {
@@ -402,6 +477,9 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
             case .success:
                 break
             case .failure(let error):
+                ServiceLocator.shared.analytics.logEvent("account_removal_failed", parameters: [
+                    "error_type": "keychain_error"
+                ])
                 throw error
             }
             
@@ -412,7 +490,13 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
                 await updateAuthState(.disconnected)
             }
             
-            return userDataStorage.getAllUsers()
+            let remainingUsers = userDataStorage.getAllUsers()
+            
+            ServiceLocator.shared.analytics.logEvent("account_removal_success", parameters: [
+                "remaining_accounts": remainingUsers.count
+            ])
+            
+            return remainingUsers
             
         } catch {
             if isActiveUser(username: username) {
@@ -432,9 +516,12 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
     }
     
     func switchToUser(username: String) async throws -> TumbleUser {
+        let startTime = Date()
         AppLogger.shared.debug("Switching to user: \(username)")
         
         await updateAuthState(.loading)
+        
+        ServiceLocator.shared.analytics.logEvent("user_switch_attempt", parameters: nil)
         
         if !webSocketSessionManager.isConnected() {
             await webSocketSessionManager.connect()
@@ -444,11 +531,21 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
                         
             guard let credentials = keychainController.getLoginCredentials(forUsername: username) else {
                 await updateAuthState(.error(msg: "No stored credentials for user: \(username)"))
+                
+                ServiceLocator.shared.analytics.logEvent("user_switch_failed", parameters: [
+                    "error_type": "no_credentials"
+                ])
+                
                 throw AuthError.noStoredCredentials
             }
             
             guard let existingUser = userDataStorage.getUserProfile(username: username) else {
                 await updateAuthState(.error(msg: "User profile not found: \(username)"))
+                
+                ServiceLocator.shared.analytics.logEvent("user_switch_failed", parameters: [
+                    "error_type": "no_user_profile"
+                ])
+                
                 throw AuthError.noStoredCredentials
             }
             
@@ -461,12 +558,48 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
             
             await updateAuthState(.connected(user: tumbleUser))
             
+            let duration = Date().timeIntervalSince(startTime)
+            ServiceLocator.shared.analytics.logEvent("user_switch_success", parameters: [
+                "school": existingUser.school,
+                "duration_seconds": duration
+            ])
+            
             return tumbleUser
             
         } catch {
             // TODO: Should really just return some Result and switch back to the previous user
             await updateAuthState(.error(msg: "Failed to switch user: \(error.localizedDescription)"))
+            
+            let duration = Date().timeIntervalSince(startTime)
+            ServiceLocator.shared.analytics.logEvent("user_switch_failed", parameters: [
+                "error_type": mapErrorForAnalytics(error),
+                "duration_seconds": duration
+            ])
+            
             throw error
+        }
+    }
+    
+    private func mapErrorForAnalytics(_ error: Error) -> String {
+        switch error {
+        case is AuthError:
+            return "auth_error"
+        case is NetworkError:
+            let networkError = error as! NetworkError
+            switch networkError {
+            case .unauthorized:
+                return "unauthorized"
+            case .noInternetConnection:
+                return "no_internet"
+            case .timeout:
+                return "timeout"
+            case .serverError(let code, _):
+                return "server_error_\(code)"
+            default:
+                return "network_error"
+            }
+        default:
+            return "unknown_error"
         }
     }
     

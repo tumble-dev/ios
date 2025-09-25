@@ -50,7 +50,6 @@ protocol NotificationsSettingsProtocol: AnyObject {
     func resetNotificationsSettings()
     
     var notificationOffset: NotificationOffset { get set }
-    var notificationsEnabled: Bool { get set }
     var inAppMessagingEnabled: Bool { get set }
 }
 

@@ -9,7 +9,7 @@ struct NotificationsSettingsScreen: View {
         ScrollView {
             VStack(spacing: 24) {
                 messagingSection
-                if context.viewState.bindings.notificationsEnabled {
+                if context.viewState.bindings.inAppMessagingEnabled {
                     notificationOffsetSection
                 }
                 resetSection
@@ -34,24 +34,13 @@ struct NotificationsSettingsScreen: View {
     private var messagingSection: some View {
         SettingsCard(title: "Notifications") {
             VStack(spacing: 0) {
-                HStack {
-                    Text("In-App Messaging")
-                        .font(.body)
-                        .foregroundColor(.onSurface)
-                    Spacer()
-                    Toggle("", isOn: context.viewState.bindings.binding(for: \.inAppMessagingEnabled))
-                        .tint(.primary)
-                }
-                .padding(.vertical, .spacingM)
-                
-                Divider()
                 
                 HStack {
                     Text("Notifications")
                         .font(.body)
                         .foregroundColor(.onSurface)
                     Spacer()
-                    Toggle("", isOn: context.viewState.bindings.binding(for: \.notificationsEnabled))
+                    Toggle("", isOn: context.viewState.bindings.binding(for: \.inAppMessagingEnabled))
                         .tint(.primary)
                 }
                 .padding(.vertical, .spacingM)

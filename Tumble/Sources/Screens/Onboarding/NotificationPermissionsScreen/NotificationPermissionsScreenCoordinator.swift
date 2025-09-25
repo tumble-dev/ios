@@ -10,10 +10,11 @@ import SwiftUI
 
 struct NotificationPermissionsScreenCoordinatorParameters {
     let notificationManager: NotificationManagerProtocol
+    let appSettings: AppSettings
 }
 
 enum NotificationPermissionsScreenCoordinatorAction {
-    case done
+    case next
 }
 
 final class NotificationPermissionsScreenCoordinator: CoordinatorProtocol {
@@ -26,7 +27,9 @@ final class NotificationPermissionsScreenCoordinator: CoordinatorProtocol {
     }
     
     init(parameters: NotificationPermissionsScreenCoordinatorParameters) {
-        viewModel = NotificationPermissionsScreenViewModel(notificationManager: parameters.notificationManager)
+        viewModel = NotificationPermissionsScreenViewModel(
+            appSettings: parameters.appSettings, notificationManager: parameters.notificationManager
+        )
     }
     
     // MARK: - Public
@@ -37,8 +40,8 @@ final class NotificationPermissionsScreenCoordinator: CoordinatorProtocol {
                 guard let self else { return }
                 
                 switch action {
-                case .done:
-                    actionsSubject.send(.done)
+                case .next:
+                    actionsSubject.send(.next)
                 }
             }
             .store(in: &cancellables)

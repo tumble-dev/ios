@@ -176,9 +176,19 @@ final class TumbleAPIService: TumbleApiServiceProtocol {
         responseType: T.Type,
         retryCount: Int = 0
     ) async throws -> T {
+        let startTime = Date()
+        let endpointName = getEndpointName(endpoint)
+        
         do {
             let request = endpoint.urlRequest()
             AppLogger.shared.info("API Request: \(request.httpMethod ?? "GET") \(request.url?.absoluteString ?? "unknown")")
+            
+            // Log API request
+            ServiceLocator.shared.analytics.logEvent("api_request", parameters: [
+                "endpoint": endpointName,
+                "method": request.httpMethod ?? "GET",
+                "retry_count": retryCount
+            ])
             
             // Log headers for debugging
             AppLogger.shared.info("Request Headers: \(request.allHTTPHeaderFields ?? [:])")
@@ -189,11 +199,37 @@ final class TumbleAPIService: TumbleApiServiceProtocol {
             if let httpResponse = response as? HTTPURLResponse {
                 AppLogger.shared.info("Response: HTTP \(httpResponse.statusCode)")
                 AppLogger.shared.info("Response Headers: \(httpResponse.allHeaderFields)")
+                
+                let duration = Date().timeIntervalSince(startTime)
+                let responseSize = data.count
+                
+                // Log successful API response
+                ServiceLocator.shared.analytics.logEvent("api_response", parameters: [
+                    "endpoint": endpointName,
+                    "method": request.httpMethod ?? "GET",
+                    "status_code": httpResponse.statusCode,
+                    "duration_ms": Int(duration * 1000),
+                    "response_size_bytes": responseSize,
+                    "retry_count": retryCount
+                ])
             }
             
             return try handleResponse(data: data, response: response, responseType: responseType)
         } catch {
             AppLogger.shared.error("Request failed: \(error)")
+            
+            let duration = Date().timeIntervalSince(startTime)
+            
+            // Log API error
+            ServiceLocator.shared.analytics.logEvent("api_error", parameters: [
+                "endpoint": endpointName,
+                "method": endpoint.httpMethod.rawValue,
+                "error_type": mapNetworkErrorForAnalytics(error),
+                "duration_ms": Int(duration * 1000),
+                "retry_count": retryCount,
+                "will_retry": shouldRetry(error: mapError(error)) && retryCount < config.retryCount
+            ])
+            
             return try await handleRequestError(error, endpoint: endpoint, responseType: responseType, retryCount: retryCount)
         }
     }
@@ -204,20 +240,142 @@ final class TumbleAPIService: TumbleApiServiceProtocol {
         responseType: T.Type,
         retryCount: Int = 0
     ) async throws -> T {
+        let startTime = Date()
+        let endpointName = getEndpointName(endpoint)
+        
         do {
             var request = endpoint.urlRequest()
             
             do {
-                request.httpBody = try encoder.encode(body)
+                let bodyData = try encoder.encode(body)
+                request.httpBody = bodyData
+                
+                // Log request with body info
+                ServiceLocator.shared.analytics.logEvent("api_request", parameters: [
+                    "endpoint": endpointName,
+                    "method": request.httpMethod ?? "POST",
+                    "has_body": true,
+                    "body_size_bytes": bodyData.count,
+                    "retry_count": retryCount
+                ])
+                
             } catch {
+                ServiceLocator.shared.analytics.logEvent("api_encoding_error", parameters: [
+                    "endpoint": endpointName,
+                    "error_type": "request_encoding"
+                ])
                 throw NetworkError.encodingError(error)
             }
             
             let (data, response) = try await session.data(for: request)
+            
+            // Log response
+            if let httpResponse = response as? HTTPURLResponse {
+                let duration = Date().timeIntervalSince(startTime)
+                
+                ServiceLocator.shared.analytics.logEvent("api_response", parameters: [
+                    "endpoint": endpointName,
+                    "method": request.httpMethod ?? "POST",
+                    "status_code": httpResponse.statusCode,
+                    "duration_ms": Int(duration * 1000),
+                    "response_size_bytes": data.count,
+                    "retry_count": retryCount
+                ])
+            }
+            
             return try handleResponse(data: data, response: response, responseType: responseType)
         } catch {
+            let duration = Date().timeIntervalSince(startTime)
+            
+            ServiceLocator.shared.analytics.logEvent("api_error", parameters: [
+                "endpoint": endpointName,
+                "method": endpoint.httpMethod.rawValue,
+                "error_type": mapNetworkErrorForAnalytics(error),
+                "duration_ms": Int(duration * 1000),
+                "retry_count": retryCount,
+                "will_retry": shouldRetry(error: mapError(error)) && retryCount < config.retryCount
+            ])
+            
             return try await handleRequestErrorWithBody(error, endpoint: endpoint, body: body, responseType: responseType, retryCount: retryCount)
         }
+    }
+    
+    private func getEndpointName(_ endpoint: TumbleEndpoint) -> String {
+        // Extract a clean endpoint name for analytics
+        switch endpoint {
+        case .news:
+            return "news"
+        case .loginKronox:
+            return "login"
+        case .scheduleEvents:
+            return "schedule_events"
+        case .searchProgrammes:
+            return "search_programmes"
+        case .userBookings:
+            return "user_bookings"
+        case .bookResource:
+            return "book_resource"
+        case .unbookResource:
+            return "unbook_resource"
+        case .registeredEvents:
+            return "registered_events"
+        case .registerEvent:
+            return "register_event"
+        case .unregisterEvent:
+            return "unregister_event"
+        case .allResources:
+            return "all_resources"
+        case .availableEvents:
+            return "available_events"
+        }
+    }
+
+    private func mapNetworkErrorForAnalytics(_ error: Error) -> String {
+        if let networkError = error as? NetworkError {
+            switch networkError {
+            case .invalidURL:
+                return "invalid_url"
+            case .noData:
+                return "no_data"
+            case .decodingError:
+                return "decoding_error"
+            case .encodingError:
+                return "encoding_error"
+            case .serverError(let code, _):
+                return "server_error_\(code)"
+            case .unauthorized:
+                return "unauthorized"
+            case .forbidden:
+                return "forbidden"
+            case .notFound:
+                return "not_found"
+            case .timeout:
+                return "timeout"
+            case .noInternetConnection:
+                return "no_internet"
+            case .unknown:
+                return "unknown_network_error"
+            }
+        }
+        
+        if let urlError = error as? URLError {
+            switch urlError.code {
+            case .notConnectedToInternet:
+                return "no_internet"
+            case .timedOut:
+                return "timeout"
+            case .cannotFindHost:
+                return "cannot_find_host"
+            case .cannotConnectToHost:
+                return "cannot_connect_to_host"
+            case .networkConnectionLost:
+                return "connection_lost"
+            default:
+                return "url_error_\(urlError.code.rawValue)"
+            }
+        }
+        
+        return "unknown_error"
     }
     
     private struct APIErrorResponse: Codable {
@@ -442,20 +600,5 @@ extension TumbleAPIService {
         let request = endpoint.urlRequest(authToken: authToken)
         let (data, response) = try await session.data(for: request)
         return try handleResponse(data: data, response: response, responseType: [Response.UserEvent].self)
-    }
-}
-
-extension TumbleAPIService {
-    private func performWithAutoAuth<T>(
-        _ operation: () async throws -> T,
-        autoReLogin: () async throws -> Void
-    ) async throws -> T {
-        do {
-            return try await operation()
-        } catch NetworkError.unauthorized {
-            // Session expired, attempt auto re-login once
-            try await autoReLogin()
-            return try await operation()
-        }
     }
 }

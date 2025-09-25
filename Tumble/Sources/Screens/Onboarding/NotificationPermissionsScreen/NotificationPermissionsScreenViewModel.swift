@@ -12,15 +12,16 @@ typealias NotificationPermissionsScreenViewModelType = StateStoreViewModel<Notif
 
 class NotificationPermissionsScreenViewModel: NotificationPermissionsScreenViewModelType, NotificationPermissionsScreenViewModelProtocol {
     private let notificationManager: NotificationManagerProtocol
+    private let appSettings: AppSettings
     
     private var actionsSubject: PassthroughSubject<NotificationPermissionsScreenViewModelAction, Never> = .init()
     var actionsPublisher: AnyPublisher<NotificationPermissionsScreenViewModelAction, Never> {
         actionsSubject.eraseToAnyPublisher()
     }
     
-    init(notificationManager: NotificationManagerProtocol) {
+    init(appSettings: AppSettings, notificationManager: NotificationManagerProtocol) {
         self.notificationManager = notificationManager
-        
+        self.appSettings = appSettings
         super.init(initialViewState: .init())
     }
 
@@ -29,11 +30,11 @@ class NotificationPermissionsScreenViewModel: NotificationPermissionsScreenViewM
     override func process(viewAction: NotificationPermissionsScreenViewAction) {
         switch viewAction {
         case .enable:
+            appSettings.inAppMessagingEnabled = true
             notificationManager.requestAuthorization()
-            
-            actionsSubject.send(.done)
+            actionsSubject.send(.next)
         case .notNow:
-            actionsSubject.send(.done)
+            actionsSubject.send(.next)
         }
     }
 }

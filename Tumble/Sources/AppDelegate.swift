@@ -15,26 +15,29 @@ import UIKit
 enum AppDelegateCallback {
     case registeredNotifications(deviceToken: Data)
     case failedToRegisteredNotifications(error: Error)
+    case receivedFCMToken(token: String)
 }
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     let gcmMessageIDKey = "gcm.message_id"
     let callbacks = PassthroughSubject<AppDelegateCallback, Never>()
     var orientationLock = UIInterfaceOrientationMask.all
-    
+
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-        // Add a SceneDelegate to the SwiftUI scene so that we can connect up the WindowManager.
         let configuration = UISceneConfiguration(name: nil, sessionRole: connectingSceneSession.role)
         configuration.delegateClass = SceneDelegate.self
         return configuration
     }
-    
+
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        let tokenString = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
+        AppLogger.shared.info("didRegisterForRemoteNotificationsWithDeviceToken: \(tokenString)", source: "AppDelegate")
         callbacks.send(.registeredNotifications(deviceToken: deviceToken))
         Messaging.messaging().apnsToken = deviceToken
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        AppLogger.shared.error("[AppDelegate] didFailToRegisterForRemoteNotificationsWithError: \(error)")
         callbacks.send(.failedToRegisteredNotifications(error: error))
     }
 
@@ -56,8 +59,10 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         didReceiveRemoteNotification userInfo: [AnyHashable: Any],
         fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
     ) {
+        AppLogger.shared.info("Received remote notification: \(userInfo)", source: "AppDelegate")
+
         if let messageID = userInfo[gcmMessageIDKey] {
-            AppLogger.shared.debug("Message ID: \(messageID)")
+            AppLogger.shared.info("FCM Message ID: \(messageID)", source: "AppDelegate")
         }
 
         completionHandler(UIBackgroundFetchResult.newData)
@@ -66,11 +71,11 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
 extension AppDelegate: MessagingDelegate {
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-        // We no longer subscribe to topics here; NotificationManager handles it after APNs token registration.
         if let fcmToken, !fcmToken.isEmpty {
-            AppLogger.shared.debug("FCM registration token refreshed: \(fcmToken)", source: "AppDelegate")
+            AppLogger.shared.info("FCM registration token received: \(fcmToken)", source: "AppDelegate")
+            callbacks.send(.receivedFCMToken(token: fcmToken))
         } else {
-            AppLogger.shared.debug("FCM registration token is nil/empty", source: "AppDelegate")
+            AppLogger.shared.debug("[AppDelegate] FCM registration token is nil/empty")
         }
     }
 }

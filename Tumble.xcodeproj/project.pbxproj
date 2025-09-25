@@ -89,6 +89,12 @@
 		0B5DC8262E79C7CF001B668F /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 0B5DC8252E79C7CF001B668F /* FirebaseMessaging */; };
 		0B6A39EB2E81BBC300977B1A /* WebSocketSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B6A39EA2E81BBC300977B1A /* WebSocketSessionManager.swift */; };
 		0B6A39EE2E832E5B00977B1A /* Shimmer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B6A39ED2E832E5A00977B1A /* Shimmer.swift */; };
+		0B878AE12E85B8F600E69FF5 /* AnalyticsPermissionsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B878AE02E85B8F000E69FF5 /* AnalyticsPermissionsScreen.swift */; };
+		0B878AE32E85B8FE00E69FF5 /* AnalyticsPermissionsScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B878AE22E85B8FA00E69FF5 /* AnalyticsPermissionsScreenViewModel.swift */; };
+		0B878AE52E85B90900E69FF5 /* AnayticsPermissionsScreenModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B878AE42E85B90200E69FF5 /* AnayticsPermissionsScreenModels.swift */; };
+		0B878AE72E85B91500E69FF5 /* AnalyticsPermissionsScreenCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B878AE62E85B90E00E69FF5 /* AnalyticsPermissionsScreenCoordinator.swift */; };
+		0B878AE92E85B92800E69FF5 /* AnalyticsPermissionsScreenViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B878AE82E85B92000E69FF5 /* AnalyticsPermissionsScreenViewModelProtocol.swift */; };
+		0B878AED2E85BD1900E69FF5 /* ButtonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B878AEC2E85BD1900E69FF5 /* ButtonStyles.swift */; };
 		0BAEDEFF2E7B175900EA6796 /* NetworkSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAEDEFB2E7B175900EA6796 /* NetworkSettings.swift */; };
 		0BAEDF002E7B175900EA6796 /* TumbleEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAEDEFA2E7B175900EA6796 /* TumbleEndpoint.swift */; };
 		0BAEDF052E7B176400EA6796 /* KeychainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAEDF022E7B176400EA6796 /* KeychainController.swift */; };
@@ -256,6 +262,12 @@
 		0B30CA482E7F419E0002D799 /* AccountSettingsScreenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSettingsScreenCoordinator.swift; sourceTree = "<group>"; };
 		0B6A39EA2E81BBC300977B1A /* WebSocketSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketSessionManager.swift; sourceTree = "<group>"; };
 		0B6A39ED2E832E5A00977B1A /* Shimmer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shimmer.swift; sourceTree = "<group>"; };
+		0B878AE02E85B8F000E69FF5 /* AnalyticsPermissionsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsPermissionsScreen.swift; sourceTree = "<group>"; };
+		0B878AE22E85B8FA00E69FF5 /* AnalyticsPermissionsScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsPermissionsScreenViewModel.swift; sourceTree = "<group>"; };
+		0B878AE42E85B90200E69FF5 /* AnayticsPermissionsScreenModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnayticsPermissionsScreenModels.swift; sourceTree = "<group>"; };
+		0B878AE62E85B90E00E69FF5 /* AnalyticsPermissionsScreenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsPermissionsScreenCoordinator.swift; sourceTree = "<group>"; };
+		0B878AE82E85B92000E69FF5 /* AnalyticsPermissionsScreenViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsPermissionsScreenViewModelProtocol.swift; sourceTree = "<group>"; };
+		0B878AEC2E85BD1900E69FF5 /* ButtonStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonStyles.swift; sourceTree = "<group>"; };
 		0BAEDEFA2E7B175900EA6796 /* TumbleEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TumbleEndpoint.swift; sourceTree = "<group>"; };
 		0BAEDEFB2E7B175900EA6796 /* NetworkSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkSettings.swift; sourceTree = "<group>"; };
 		0BAEDF012E7B176400EA6796 /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
@@ -553,6 +565,34 @@
 			path = Modifier;
 			sourceTree = "<group>";
 		};
+		0B878ADF2E85B8E400E69FF5 /* AnalyticsPermissionsScreen */ = {
+			isa = PBXGroup;
+			children = (
+				0B878AE82E85B92000E69FF5 /* AnalyticsPermissionsScreenViewModelProtocol.swift */,
+				0B878AE62E85B90E00E69FF5 /* AnalyticsPermissionsScreenCoordinator.swift */,
+				0B878AE42E85B90200E69FF5 /* AnayticsPermissionsScreenModels.swift */,
+				0B878AE22E85B8FA00E69FF5 /* AnalyticsPermissionsScreenViewModel.swift */,
+				0B878AE02E85B8F000E69FF5 /* AnalyticsPermissionsScreen.swift */,
+			);
+			path = AnalyticsPermissionsScreen;
+			sourceTree = "<group>";
+		};
+		0B878AEA2E85BCFC00E69FF5 /* Other */ = {
+			isa = PBXGroup;
+			children = (
+				0B878AEB2E85BD0100E69FF5 /* Style */,
+			);
+			path = Other;
+			sourceTree = "<group>";
+		};
+		0B878AEB2E85BD0100E69FF5 /* Style */ = {
+			isa = PBXGroup;
+			children = (
+				0B878AEC2E85BD1900E69FF5 /* ButtonStyles.swift */,
+			);
+			path = Style;
+			sourceTree = "<group>";
+		};
 		0BAEDEFD2E7B175900EA6796 /* Network */ = {
 			isa = PBXGroup;
 			children = (
@@ -695,6 +735,8 @@
 		0BAEE1DE2E7B434700EA6796 /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
+				0B878AEA2E85BCFC00E69FF5 /* Other */,
+				0B878ADF2E85B8E400E69FF5 /* AnalyticsPermissionsScreen */,
 				0B19F6A42E7C1B750037E29E /* NotificationPermissionsScreen */,
 			);
 			path = Onboarding;
@@ -1052,6 +1094,7 @@
 				0BDE196B2E7F7AEE004C6A51 /* DesignTokens.swift in Sources */,
 				0BAEE2002E7B5BDB00EA6796 /* NavigationModule.swift in Sources */,
 				0B30C8F22E7E11330002D799 /* NotificationsSettingsScreenViewModelProtocol.swift in Sources */,
+				0B878AE32E85B8FE00E69FF5 /* AnalyticsPermissionsScreenViewModel.swift in Sources */,
 				0B19F7F72E7C47E40037E29E /* Color.swift in Sources */,
 				0B19F92B2E7C68140037E29E /* QuickViewScreenCoordinator.swift in Sources */,
 				D4722149292454560063BDB7 /* Application.swift in Sources */,
@@ -1093,6 +1136,7 @@
 				0B30C8FA2E7E2BBC0002D799 /* BookmarksSettingsScreenViewModelProtocol.swift in Sources */,
 				0B19F6A92E7C1CC40037E29E /* NotificationPermissionsScreenCoordinator.swift in Sources */,
 				0B19F92F2E7C6AB10037E29E /* QuickViewScreenViewModel.swift in Sources */,
+				0B878AE52E85B90900E69FF5 /* AnayticsPermissionsScreenModels.swift in Sources */,
 				0B30CA412E7F41640002D799 /* AccountSettingsScreen.swift in Sources */,
 				0BAEE2322E7BF90700EA6796 /* NotificationManagerProtocol.swift in Sources */,
 				0B19F7EB2E7C422E0037E29E /* AppMediatorProtocol.swift in Sources */,
@@ -1100,6 +1144,7 @@
 				0BAEDF1A2E7B196100EA6796 /* School.swift in Sources */,
 				0B19F6972E7C106E0037E29E /* UserNotificationCenterProtocol.swift in Sources */,
 				0B19F6A32E7C16A60037E29E /* Popup.swift in Sources */,
+				0B878AE72E85B91500E69FF5 /* AnalyticsPermissionsScreenCoordinator.swift in Sources */,
 				0BDE197D2E8003FA004C6A51 /* AuthenticationServiceProtocol.swift in Sources */,
 				0BDE19822E8005F1004C6A51 /* UserDataStorageServiceProtocol.swift in Sources */,
 				0B19F7E32E7C38700037E29E /* SearchScreenCoordinator.swift in Sources */,
@@ -1110,6 +1155,7 @@
 				0BAEE1F82E7B497F00EA6796 /* WindowManagerDelegate.swift in Sources */,
 				0B19F94F2E7CB3B20037E29E /* EventDetailsScreenViewModel.swift in Sources */,
 				0BAEE2292E7B6E1800EA6796 /* SplashScreenCoordinator.swift in Sources */,
+				0B878AE12E85B8F600E69FF5 /* AnalyticsPermissionsScreen.swift in Sources */,
 				0B19F7F42E7C47A20037E29E /* SchoolPill.swift in Sources */,
 				0B19F95A2E7D78790037E29E /* SettingsScreenViewModelProtocol.swift in Sources */,
 				0B30CA492E7F41A30002D799 /* AccountSettingsScreenCoordinator.swift in Sources */,
@@ -1138,6 +1184,7 @@
 				0BAEE1FE2E7B5B9B00EA6796 /* NavigationRootCoordinator.swift in Sources */,
 				0BAEE2022E7B5C0A00EA6796 /* NavigationStackCoordinator.swift in Sources */,
 				0BAEE1FC2E7B4AFF00EA6796 /* CancellableTask.swift in Sources */,
+				0B878AE92E85B92800E69FF5 /* AnalyticsPermissionsScreenViewModelProtocol.swift in Sources */,
 				0BAEDF1F2E7B1D4900EA6796 /* AppSettings.swift in Sources */,
 				0B30CA432E7F41890002D799 /* AccountSettingsScreenModels.swift in Sources */,
 				0B30C8FE2E7E2BCB0002D799 /* BookmarksSettingsScreenCoordinator.swift in Sources */,
@@ -1151,6 +1198,7 @@
 				0BAEE1F32E7B47F300EA6796 /* AppRoute.swift in Sources */,
 				0BDE19842E8006B7004C6A51 /* EventStorageServiceProtocol.swift in Sources */,
 				0B19F9512E7D76130037E29E /* SettingsFlowCoordinator.swift in Sources */,
+				0B878AED2E85BD1900E69FF5 /* ButtonStyles.swift in Sources */,
 				0B30C9042E7EE6430002D799 /* AccountScreenCoordinator.swift in Sources */,
 				0BDE19672E7F771D004C6A51 /* UserAvatar.swift in Sources */,
 				0BAEE2172E7B689D00EA6796 /* BookmarksScreenCoordinator.swift in Sources */,
