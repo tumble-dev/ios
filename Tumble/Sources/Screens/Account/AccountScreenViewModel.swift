@@ -45,7 +45,7 @@ class AccountScreenViewModel: AccountScreenViewModelType, AccountScreenViewModel
         case .close:
             actionsSubject.send(.dismiss)
         case .showResources:
-            break
+            actionsSubject.send(.resourceSelectionScreen)
         case .showEvents:
             break
         case .showResourceBookingDetails:

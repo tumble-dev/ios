@@ -14,13 +14,13 @@ enum AccountScreenViewAction: Equatable {
     case showResources
     case showEvents
     
-    // Nested sheets
+    // Sheets
     case showResourceBookingDetails
     case showEventDetails
 }
 
 enum AccountScreenViewModelAction: Equatable {
-    case resourcesScreen
+    case resourceSelectionScreen
     case eventsScreen
     case resourceBookingDetails
     case eventDetails
@@ -49,20 +49,5 @@ enum AccountScreenDataState {
     var isLoading: Bool {
         if case .loading = self { return true }
         return false
-    }
-    
-    var resources: [Response.Booking] {
-        if case .loaded(_, let bookings) = self { return bookings }
-        return []
-    }
-    
-    var registeredEvents: [Response.UserEvent] {
-        if case .loaded(let events, _) = self { return events }
-        return []
-    }
-    
-    var errorMessage: String? {
-        if case .error(let msg) = self { return msg }
-        return nil
     }
 }

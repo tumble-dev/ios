@@ -149,6 +149,11 @@
 		0BDE197F2E8004E8004C6A51 /* TumbleAPIServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BDE197E2E8004E1004C6A51 /* TumbleAPIServiceProtocol.swift */; };
 		0BDE19822E8005F1004C6A51 /* UserDataStorageServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BDE19812E8005F0004C6A51 /* UserDataStorageServiceProtocol.swift */; };
 		0BDE19842E8006B7004C6A51 /* EventStorageServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BDE19832E8006B6004C6A51 /* EventStorageServiceProtocol.swift */; };
+		0BE9F4672EB3D6A400CC3E5D /* ResourceScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BE9F4662EB3D6A400CC3E5D /* ResourceScreen.swift */; };
+		0BE9F4692EB3D6BC00CC3E5D /* ResourceScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BE9F4682EB3D6B700CC3E5D /* ResourceScreenViewModel.swift */; };
+		0BE9F46B2EB3D6C700CC3E5D /* ResourceScreenViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BE9F46A2EB3D6C200CC3E5D /* ResourceScreenViewModelProtocol.swift */; };
+		0BE9F46D2EB3D6CE00CC3E5D /* ResourceScreenModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BE9F46C2EB3D6CB00CC3E5D /* ResourceScreenModels.swift */; };
+		0BE9F46F2EB3D6D600CC3E5D /* ResourceScreenCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BE9F46E2EB3D6D100CC3E5D /* ResourceScreenCoordinator.swift */; };
 		D42BAC1C298D3D590025EAA9 /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = D42BAC1B298D3D590025EAA9 /* Logging */; };
 		D42BAC1E298D3D6A0025EAA9 /* AppLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = D42BAC1D298D3D6A0025EAA9 /* AppLogger.swift */; };
 		D430F74329C615DC00E30E48 /* FSCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = D430F74229C615DC00E30E48 /* FSCalendar */; };
@@ -319,6 +324,11 @@
 		0BDE197E2E8004E1004C6A51 /* TumbleAPIServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TumbleAPIServiceProtocol.swift; sourceTree = "<group>"; };
 		0BDE19812E8005F0004C6A51 /* UserDataStorageServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDataStorageServiceProtocol.swift; sourceTree = "<group>"; };
 		0BDE19832E8006B6004C6A51 /* EventStorageServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStorageServiceProtocol.swift; sourceTree = "<group>"; };
+		0BE9F4662EB3D6A400CC3E5D /* ResourceScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceScreen.swift; sourceTree = "<group>"; };
+		0BE9F4682EB3D6B700CC3E5D /* ResourceScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceScreenViewModel.swift; sourceTree = "<group>"; };
+		0BE9F46A2EB3D6C200CC3E5D /* ResourceScreenViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceScreenViewModelProtocol.swift; sourceTree = "<group>"; };
+		0BE9F46C2EB3D6CB00CC3E5D /* ResourceScreenModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceScreenModels.swift; sourceTree = "<group>"; };
+		0BE9F46E2EB3D6D100CC3E5D /* ResourceScreenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceScreenCoordinator.swift; sourceTree = "<group>"; };
 		1CB1962C2CA598A300B747BF /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D42554332A2C9A4700256550 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D42BAC1D298D3D6A0025EAA9 /* AppLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLogger.swift; sourceTree = "<group>"; };
@@ -536,6 +546,7 @@
 		0B30C9022E7EE6380002D799 /* Account */ = {
 			isa = PBXGroup;
 			children = (
+				0BE9F4652EB3D68F00CC3E5D /* Resources */,
 				0B30C90B2E7EF0E70002D799 /* AccountScreen.swift */,
 				0B30C9092E7EE9CA0002D799 /* AccountScreenViewModel.swift */,
 				0B30C9072E7EE9AE0002D799 /* AccountScreenViewModelProtocol.swift */,
@@ -767,7 +778,6 @@
 			isa = PBXGroup;
 			children = (
 				0B19F9452E7CB1530037E29E /* Details */,
-				0BAEE21E2E7B6C8600EA6796 /* ViewTypes */,
 				0BAEE2242E7B6CB600EA6796 /* BookmarksScreenViewModel.swift */,
 				0BAEE2262E7B6CFA00EA6796 /* BookmarksScreenModels.swift */,
 				0BAEE2222E7B6CAE00EA6796 /* BookmarksScreen.swift */,
@@ -790,37 +800,6 @@
 				0BAEE20C2E7B638C00EA6796 /* PlaceholderScreenCoordinator.swift */,
 			);
 			path = Other;
-			sourceTree = "<group>";
-		};
-		0BAEE21E2E7B6C8600EA6796 /* ViewTypes */ = {
-			isa = PBXGroup;
-			children = (
-				0BAEE2212E7B6CA200EA6796 /* Calendar */,
-				0BAEE2202E7B6C9D00EA6796 /* List */,
-				0BAEE21F2E7B6C9800EA6796 /* Week */,
-			);
-			path = ViewTypes;
-			sourceTree = "<group>";
-		};
-		0BAEE21F2E7B6C9800EA6796 /* Week */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Week;
-			sourceTree = "<group>";
-		};
-		0BAEE2202E7B6C9D00EA6796 /* List */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = List;
-			sourceTree = "<group>";
-		};
-		0BAEE2212E7B6CA200EA6796 /* Calendar */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Calendar;
 			sourceTree = "<group>";
 		};
 		0BAEE22B2E7BEF1B00EA6796 /* FlowCoordinators */ = {
@@ -907,6 +886,18 @@
 			children = (
 			);
 			path = Sources;
+			sourceTree = "<group>";
+		};
+		0BE9F4652EB3D68F00CC3E5D /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				0BE9F46E2EB3D6D100CC3E5D /* ResourceScreenCoordinator.swift */,
+				0BE9F46C2EB3D6CB00CC3E5D /* ResourceScreenModels.swift */,
+				0BE9F46A2EB3D6C200CC3E5D /* ResourceScreenViewModelProtocol.swift */,
+				0BE9F4682EB3D6B700CC3E5D /* ResourceScreenViewModel.swift */,
+				0BE9F4662EB3D6A400CC3E5D /* ResourceScreen.swift */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		D472213C292454560063BDB7 = {
@@ -1095,6 +1086,7 @@
 				0BAEE2002E7B5BDB00EA6796 /* NavigationModule.swift in Sources */,
 				0B30C8F22E7E11330002D799 /* NotificationsSettingsScreenViewModelProtocol.swift in Sources */,
 				0B878AE32E85B8FE00E69FF5 /* AnalyticsPermissionsScreenViewModel.swift in Sources */,
+				0BE9F4672EB3D6A400CC3E5D /* ResourceScreen.swift in Sources */,
 				0B19F7F72E7C47E40037E29E /* Color.swift in Sources */,
 				0B19F92B2E7C68140037E29E /* QuickViewScreenCoordinator.swift in Sources */,
 				D4722149292454560063BDB7 /* Application.swift in Sources */,
@@ -1105,7 +1097,9 @@
 				0B19F7E52E7C3A490037E29E /* SearchScreenViewModel.swift in Sources */,
 				0B19F69B2E7C10C60037E29E /* NotificationConstants.swift in Sources */,
 				0B30CA472E7F419B0002D799 /* AccountSettingsScreenVIewModelProtocol.swift in Sources */,
+				0BE9F46F2EB3D6D600CC3E5D /* ResourceScreenCoordinator.swift in Sources */,
 				0B19F7FA2E7C480D0037E29E /* PillStyle.swift in Sources */,
+				0BE9F46D2EB3D6CE00CC3E5D /* ResourceScreenModels.swift in Sources */,
 				0B19F93E2E7C91E20037E29E /* ViewExtensions.swift in Sources */,
 				0B19F9632E7DA5BC0037E29E /* AdvancedSettingsScreenViewModelProtocol.swift in Sources */,
 				D42BAC1E298D3D6A0025EAA9 /* AppLogger.swift in Sources */,
@@ -1114,12 +1108,14 @@
 				0B30C8EC2E7E10F40002D799 /* NotificationsSettingsScreenModels.swift in Sources */,
 				0B19F95E2E7D799A0037E29E /* SettingsScreen.swift in Sources */,
 				0B30C8E42E7DAC4E0002D799 /* AdvancedSettingsScreen.swift in Sources */,
+				0BE9F4692EB3D6BC00CC3E5D /* ResourceScreenViewModel.swift in Sources */,
 				0BAEDF272E7B238000EA6796 /* NetworkMonitorProtocol.swift in Sources */,
 				0B30C90C2E7EF0EA0002D799 /* AccountScreen.swift in Sources */,
 				0B19F9672E7DAB680037E29E /* AdvancedSettingsScreenModels.swift in Sources */,
 				0B19F9562E7D77F00037E29E /* SettingsScreenCoordinator.swift in Sources */,
 				0B30C8E72E7E04F50002D799 /* AnalyticsService.swift in Sources */,
 				0BAEE1F62E7B491700EA6796 /* SceneDelegate.swift in Sources */,
+				0BE9F46B2EB3D6C700CC3E5D /* ResourceScreenViewModelProtocol.swift in Sources */,
 				0BAEDF0B2E7B177800EA6796 /* Config.swift in Sources */,
 				0BAEDF292E7B23B200EA6796 /* CurrentValuePublisher.swift in Sources */,
 				0BAEDF052E7B176400EA6796 /* KeychainController.swift in Sources */,

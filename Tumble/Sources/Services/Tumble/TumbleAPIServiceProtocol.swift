@@ -44,7 +44,7 @@ protocol TumbleApiServiceProtocol {
     
     // MARK: - Authenticated Endpoints
 
-    func getAllResources(school: String, date: String?, authToken: String) async throws -> [Response.Resource]
+    func getAllResources(school: String, date: String, authToken: String) async throws -> [Response.Resource]
     func bookResource(resourceId: String, school: String, booking: Response.BookingRequest, authToken: String) async throws -> Response.Booking
     func getUserBookings(school: String, authToken: String) async throws -> [Response.Booking]
     func unbookResource(bookingId: String, school: String, authToken: String) async throws

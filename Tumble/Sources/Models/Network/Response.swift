@@ -124,11 +124,11 @@ enum Response {
         }
     }
 
-    struct AvailabilitySlot: Codable {
+    struct AvailabilitySlot: Codable, Equatable {
         let availability: Availability
         let locationId: String?
         let resourceType: String?
-        let timeSlotId: String?
+        let timeSlotId: Int?
         
         private enum CodingKeys: String, CodingKey {
             case availability
@@ -167,7 +167,7 @@ enum Response {
         let resourceId: String
     }
 
-    struct Resource: Codable {
+    struct Resource: Codable, Equatable {
         let id: String
         let name: String
         let timeSlots: [TimeSlot]?

@@ -17,7 +17,7 @@ struct AccountScreenCoordinatorParameters {
 }
 
 enum AccountScreenCoordinatorAction {
-    case resourcesScreen
+    case resourceSelectionScreen
     case eventsScreen
     case resourceBookingDetails
     case eventDetails
@@ -48,10 +48,9 @@ final class AccountScreenCoordinator: CoordinatorProtocol {
         viewModel.actions
             .sink { [weak self] action in
                 guard let self else { return }
-                
                 switch action {
-                case .resourcesScreen:
-                    actionsSubject.send(.resourcesScreen)
+                case .resourceSelectionScreen:
+                    actionsSubject.send(.resourceSelectionScreen)
                 case .eventsScreen:
                     actionsSubject.send(.eventsScreen)
                 case .resourceBookingDetails:

@@ -68,7 +68,7 @@ enum TumbleEndpoint {
     case searchProgrammes(query: String, school: String)
     
     // Resources
-    case allResources(school: String, date: String? = nil)
+    case allResources(school: String, date: String)
     case bookResource(resourceId: String, school: String)
     case userBookings(school: String)
     case unbookResource(bookingId: String, school: String)
@@ -129,11 +129,10 @@ extension TumbleEndpoint: APIEndpoint {
                 URLQueryItem(name: "school", value: school)
             ]
         case .allResources(let school, let date):
-            var items = [URLQueryItem(name: "school", value: school)]
-            if let date = date {
-                items.append(URLQueryItem(name: "date", value: date))
-            }
-            return items
+            return [
+                URLQueryItem(name: "school", value: school),
+                URLQueryItem(name: "date", value: date)
+            ]
         case .bookResource(_, let school):
             return [URLQueryItem(name: "school", value: school)]
         case .userBookings(let school):

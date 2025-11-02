@@ -76,8 +76,8 @@ class AccountFlowCoordinator: FlowCoordinatorProtocol {
                 guard let self else { return }
                 
                 switch action {
-                case .resourcesScreen:
-                    break
+                case .resourceSelectionScreen:
+                    presentResourceSelectionScreen(animated: true)
                 case .eventsScreen:
                     break
                 case .resourceBookingDetails:
@@ -104,5 +104,17 @@ class AccountFlowCoordinator: FlowCoordinatorProtocol {
         actionsSubject.send(.presentedAccount)
     }
     
-    // MARK: - Navigation Methods
+    func presentResourceSelectionScreen(animated: Bool) {
+        let coordinator = ResourceSelectionScreenCoordinator(
+            parameters: .init(
+                tumbleApiService: parameters.tumbleApiService,
+                analyticsService: parameters.analyticsService,
+                authenticationService: parameters.authenticationService,
+                appSettings: parameters.appSettings
+            )
+        )
+        
+        navigationStackCoordinator.push(coordinator)
+    }
+    
 }

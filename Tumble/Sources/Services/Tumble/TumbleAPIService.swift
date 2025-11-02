@@ -588,9 +588,10 @@ extension TumbleAPIService {
         let _: EmptyResponse = try handleResponse(data: data, response: response, responseType: EmptyResponse.self)
     }
     
-    func getAllResources(school: String, date: String?, authToken: String) async throws -> [Response.Resource] {
+    func getAllResources(school: String, date: String, authToken: String) async throws -> [Response.Resource] {
         let endpoint = TumbleEndpoint.allResources(school: school, date: date)
         let request = endpoint.urlRequest(authToken: authToken)
+        AppLogger.shared.info("Request: \(request)")
         let (data, response) = try await session.data(for: request)
         return try handleResponse(data: data, response: response, responseType: [Response.Resource].self)
     }
