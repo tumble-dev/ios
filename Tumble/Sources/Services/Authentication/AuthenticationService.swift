@@ -448,10 +448,11 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
     }
     
     private func isActiveUser(username: String) -> Bool {
-        if let currentUser = getCurrentUser(), currentUser.username == username {
-            return true
-        }
-        return false
+        // Check against the stored activeUsername instead of the current auth state
+        // because the auth state might not be .connected when this is called
+        let isActive = appSettings.activeUsername == username
+        AppLogger.shared.debug("AuthenticationService: isActiveUser(\(username)) = \(isActive), activeUsername = \(appSettings.activeUsername ?? "nil")")
+        return isActive
     }
     
     /// Removes the specified user from storage. we return a list of
@@ -475,7 +476,9 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
             
             switch keychainController.removeAllUserData(forUsername: username) {
             case .success:
-                break
+                ServiceLocator.shared.analytics.logEvent("account_removal_success", parameters: [
+                    "username": username
+                ])
             case .failure(let error):
                 ServiceLocator.shared.analytics.logEvent("account_removal_failed", parameters: [
                     "error_type": "keychain_error"
@@ -484,20 +487,21 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
             }
             
             if isActiveUser(username: username) {
+                AppLogger.shared.debug("AuthenticationService: User \(username) IS the active user, will update auth state")
                 webSocketSessionManager.disconnect()
                 
                 // TODO: Switch user, if there are any
+                let remainingUsersBeforeUpdate = userDataStorage.getAllUsers()
+                AppLogger.shared.debug("Before state update - remaining users: \(remainingUsersBeforeUpdate.count)")
                 await updateAuthState(.disconnected)
+                let remainingUsersAfterUpdate = userDataStorage.getAllUsers()
+                AppLogger.shared.debug("After state update - remaining users: \(remainingUsersAfterUpdate.count)")
+            } else {
+                AppLogger.shared.debug("AuthenticationService: User \(username) is NOT the active user, skipping auth state update")
             }
             
             let remainingUsers = userDataStorage.getAllUsers()
-            
-            ServiceLocator.shared.analytics.logEvent("account_removal_success", parameters: [
-                "remaining_accounts": remainingUsers.count
-            ])
-            
             return remainingUsers
-            
         } catch {
             if isActiveUser(username: username) {
                 await updateAuthState(.error(msg: "Failed to logout user: \(error.localizedDescription)"))
@@ -606,18 +610,46 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
     // MARK: - Private Methods
     
     private func updateAuthState(_ newState: AuthState) async {
+        AppLogger.shared.debug("AuthenticationService: updateAuthState called with: \(newState)")
+        AppLogger.shared.debug("AuthenticationService: Current thread: \(Thread.current)")
+        AppLogger.shared.debug("AuthenticationService: getAllUsers count before update: \(getAllUsers().count)")
+        AppLogger.shared.debug("AuthenticationService: activeUsername before update: \(appSettings.activeUsername ?? "nil")")
+        
         await MainActor.run {
+            AppLogger.shared.debug("AuthenticationService: On MainActor, updating authState from \(authState) to \(newState)")
             authState = newState
+            
             switch newState {
             case .connected(let user):
                 /// we should never set the activeUsername to `nil`
                 /// this has adverse side effects which could cause
                 /// the websocket to break
                 appSettings.activeUsername = user.username
+                AppLogger.shared.debug("AuthenticationService: Set activeUsername to: \(user.username)")
+            case .disconnected:
+                // Only clear activeUsername if there are no users left
+                let usersCount = getAllUsers().count
+                AppLogger.shared.debug("AuthenticationService: Disconnected state - users count: \(usersCount)")
+                if usersCount == 0 {
+                    AppLogger.shared.debug("AuthenticationService: Clearing activeUsername - no users remaining")
+                    appSettings.activeUsername = nil
+                } else {
+                    AppLogger.shared.debug("AuthenticationService: Keeping activeUsername - users still remain: \(usersCount)")
+                }
             default:
+                AppLogger.shared.debug("AuthenticationService: No special handling for state: \(newState)")
                 break
             }
+            
+            AppLogger.shared.debug("AuthenticationService: Final authState: \(authState)")
+            AppLogger.shared.debug("AuthenticationService: Final activeUsername: \(appSettings.activeUsername ?? "nil")")
         }
+        
+        AppLogger.shared.debug("AuthenticationService: updateAuthState completed")
+    }
+    
+    func getCurrentAuthState() -> AuthState {
+        return authState
     }
     
     func getAllUsers() -> [TumbleUser] {

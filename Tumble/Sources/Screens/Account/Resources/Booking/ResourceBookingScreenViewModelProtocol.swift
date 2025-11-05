@@ -1,0 +1,15 @@
+//
+//  ResourceBookingScreenViewModelProtocol.swift
+//  Tumble iOS
+//
+//  Created by Adis Veletanlic on 2025-11-02.
+//
+
+import Foundation
+import Combine
+
+@MainActor
+protocol ResourceBookingScreenViewModelProtocol {
+    var actions: AnyPublisher<ResourceBookingScreenViewModelAction, Never> { get }
+    var context: ResourceBookingScreenViewModelType.Context { get }
+}

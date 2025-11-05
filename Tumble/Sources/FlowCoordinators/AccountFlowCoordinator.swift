@@ -60,6 +60,15 @@ class AccountFlowCoordinator: FlowCoordinatorProtocol {
     
     private func presentAccountScreen(animated: Bool) {
         navigationStackCoordinator = NavigationStackCoordinator()
+        
+        // Configure presentation detents to make the sheet initially smaller
+        if #available(iOS 16.0, *) {
+            navigationStackCoordinator.setPresentationDetents([
+                .fraction(0.4),
+                .medium,
+                .large
+            ])
+        }
 
         let accountScreenCoordinator = AccountScreenCoordinator(
             parameters: .init(
@@ -74,7 +83,6 @@ class AccountFlowCoordinator: FlowCoordinatorProtocol {
         accountScreenCoordinator.actions
             .sink { [weak self] action in
                 guard let self else { return }
-                
                 switch action {
                 case .resourceSelectionScreen:
                     presentResourceSelectionScreen(animated: true)
@@ -111,6 +119,33 @@ class AccountFlowCoordinator: FlowCoordinatorProtocol {
                 analyticsService: parameters.analyticsService,
                 authenticationService: parameters.authenticationService,
                 appSettings: parameters.appSettings
+            )
+        )
+        
+        coordinator.actions.sink { [weak self] action in
+            guard let self else { return }
+            switch action {
+            case .pop:
+                navigationStackCoordinator.pop()
+            case .pushResourceTimeslotSelectionScreen(let resource, let date):
+                presentResourceTimeSlotSelectionScreen(resource: resource, selectedPickerDate: date)
+                break
+            }
+        }
+        .store(in: &cancellables)
+        
+        navigationStackCoordinator.push(coordinator)
+    }
+    
+    private func presentResourceTimeSlotSelectionScreen(resource: Response.Resource, selectedPickerDate: Date) {
+        let coordinator = ResourceBookingScreenCoordinator(
+            parameters: .init(
+                tumbleApiService: parameters.tumbleApiService,
+                analyticsService: parameters.analyticsService,
+                authenticationService: parameters.authenticationService,
+                appSettings: parameters.appSettings,
+                resource: resource,
+                selectedPickerDate: selectedPickerDate
             )
         )
         

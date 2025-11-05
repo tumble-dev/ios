@@ -11,12 +11,13 @@ import UIKit
 enum ResourceSelectionScreenViewAction: Equatable {
     // Navigation
     case pop
-    case selectResource(Response.Resource)
+    case selectResource(Response.Resource, Date)
     case loadResources(Date)
 }
 
 enum ResourceSelectionScreenViewModelAction: Equatable {
-    case resourceScreen(resource: Response.Resource)
+    case pushResourceTimeslotSelectionScreen(resource: Response.Resource, date: Date)
+    case pop
 }
 
 struct ResourceSelectionScreenViewState: BindableState {

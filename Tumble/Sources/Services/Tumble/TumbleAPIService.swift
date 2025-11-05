@@ -452,7 +452,7 @@ final class TumbleAPIService: TumbleApiServiceProtocol {
         let networkError = mapError(error)
         
         if shouldRetry(error: networkError) && retryCount < config.retryCount {
-            try await Task.sleep(nanoseconds: UInt64(config.retryDelay * 1000000000))
+            try await Task.sleep(nanoseconds: UInt64(config.retryDelay * 1_000_000_000))
             return try await performRequest(endpoint, responseType: responseType, retryCount: retryCount + 1)
         }
         
@@ -550,12 +550,12 @@ extension TumbleAPIService {
         school: String,
         booking: Response.BookingRequest,
         authToken: String
-    ) async throws -> Response.Booking {
+    ) async throws -> Response.GenericResponse {
         let endpoint = TumbleEndpoint.bookResource(resourceId: resourceId, school: school)
         var request = endpoint.urlRequest(authToken: authToken)
         request.httpBody = try encoder.encode(booking)
         let (data, response) = try await session.data(for: request)
-        return try handleResponse(data: data, response: response, responseType: Response.Booking.self)
+        return try handleResponse(data: data, response: response, responseType: Response.GenericResponse.self)
     }
     
     func unbookResource(bookingId: String, school: String, authToken: String) async throws {

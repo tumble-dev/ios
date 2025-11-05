@@ -16,4 +16,8 @@ enum AppRoute: Hashable {
     case account
     case settings
     case settingsDetails(category: String)
+    
+    // authenticated
+    case resourceSelection
+    case resourceTimeSlotSelection(Date, String)
 }

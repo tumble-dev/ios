@@ -45,7 +45,7 @@ struct ResourceSelectionScreen: View {
                     resources: resources,
                     selectedPickerDate: selectedPickerDate,
                     onSelectResource: { resource in
-                        context.send(viewAction: .selectResource(resource))
+                        context.send(viewAction: .selectResource(resource, selectedPickerDate))
                     }
                 )
                 

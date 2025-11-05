@@ -158,37 +158,6 @@ struct AccountDataView: View {
                     }
                 }
             }
-            
-            // Registered Events Section
-            SectionCard(
-                title: "Registered Events",
-                count: events.count,
-                systemImage: "calendar.badge.checkmark",
-                color: .primary,
-                onTap: { onAction(.showEvents) }
-            ) {
-                if events.isEmpty {
-                    EmptyStateView(
-                        icon: "calendar.badge.checkmark",
-                        title: "No Registered Events",
-                        subtitle: "Your registered events will appear here"
-                    )
-                } else {
-                    VStack(spacing: 12) {
-                        ForEach(Array(events.prefix(3).enumerated()), id: \.offset) { _, event in
-                            EventRowView(event: event)
-                        }
-                        
-                        if events.count > 3 {
-                            ShowMoreButton(
-                                text: "View \(events.count - 3) more",
-                                gradientColors: [.green, .mint],
-                                action: { onAction(.showEvents) }
-                            )
-                        }
-                    }
-                }
-            }
         }
     }
 }
@@ -488,31 +457,27 @@ struct EmptyStateView: View {
 
 struct LoadingDataView: View {
     var body: some View {
-        VStack(spacing: 16) {
-            ForEach(0..<2, id: \.self) { _ in
-                VStack(spacing: 20) {
-                    HStack {
-                        RoundedRectangle(cornerRadius: 8)
-                            .fill(Color.gray.opacity(0.3))
-                            .frame(width: 140, height: 20)
-                        Spacer()
-                    }
-                    
-                    VStack(spacing: 12) {
-                        ForEach(0..<2, id: \.self) { _ in
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(Color.gray.opacity(0.2))
-                                .frame(height: 72)
-                        }
-                    }
+        VStack(spacing: 20) {
+            HStack {
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(Color.gray.opacity(0.3))
+                    .frame(width: 140, height: 20)
+                Spacer()
+            }
+            
+            VStack(spacing: 12) {
+                ForEach(0..<2, id: \.self) { _ in
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color.gray.opacity(0.2))
+                        .frame(height: 72)
                 }
-                .padding(24)
-                .background(
-                    RoundedRectangle(cornerRadius: 20)
-                        .fill(Color.gray.opacity(0.1))
-                )
             }
         }
+        .padding(24)
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(Color.gray.opacity(0.1))
+        )
         .redacted(reason: .placeholder)
         .shimmer()
     }

@@ -6,6 +6,10 @@ import SwiftUI
 enum Response {
     // MARK: - Models
     
+    struct GenericResponse: Codable, Equatable {
+        let message: String
+    }
+    
     struct User: Codable, Equatable {
         let name: String
         let sessionId: String

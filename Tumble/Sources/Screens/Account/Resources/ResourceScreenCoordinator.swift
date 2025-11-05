@@ -17,6 +17,7 @@ struct ResourceSelectionScreenCoordinatorParameters {
 
 enum ResourceSelectionScreenCoordinatorAction {
     case pop
+    case pushResourceTimeslotSelectionScreen(Response.Resource, Date)
 }
 
 final class ResourceSelectionScreenCoordinator: CoordinatorProtocol {
@@ -43,8 +44,9 @@ final class ResourceSelectionScreenCoordinator: CoordinatorProtocol {
             .sink { [weak self] action in
                 guard let self else { return }
                 switch action {
-                case .resourceScreen(let resource):
-                    AppLogger.shared.info("Selected resource: \(resource.id)")
+                case .pushResourceTimeslotSelectionScreen(let resource, let date):
+                    actionsSubject.send(.pushResourceTimeslotSelectionScreen(resource, date))
+                case .pop:
                     break
                 }
             }

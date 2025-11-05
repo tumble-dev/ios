@@ -20,6 +20,7 @@ protocol AuthenticationServiceProtocol {
     func getRememberedUsers() -> [TumbleUser]
     func switchToUser(username: String) async throws -> TumbleUser
     func autoReconnect() async throws
+    func getCurrentAuthState() -> AuthState
     
     
     // MARK: - Account actions

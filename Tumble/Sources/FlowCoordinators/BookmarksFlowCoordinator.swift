@@ -185,7 +185,7 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
     func stop() {}
     
     func clearRoute(animated: Bool) {
-        // TODO: bookmarkEventFlowCoordinator?.clearRoute(animated: animated)
+        
     }
     
     func handleAppRoute(_ appRoute: AppRoute, animated: Bool) {

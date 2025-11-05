@@ -17,6 +17,9 @@ struct AccountSettingsScreen: View {
     }
     
     var body: some View {
+        
+        let canSignIn = context.viewState.isFormValid && !context.viewState.isLoading
+        
         ScrollView {
             VStack(spacing: 32) {
                 // Header section
@@ -109,11 +112,11 @@ struct AccountSettingsScreen: View {
                         .frame(maxWidth: .infinity)
                         .frame(height: 50)
                         .background(
-                            context.viewState.isFormValid && !context.viewState.isLoading
+                            canSignIn
                                 ? Color.primary
                                 : Color.surface.opacity(0.5)
                         )
-                        .foregroundColor(.white)
+                        .foregroundColor(canSignIn ? .onPrimary : .onSurface)
                         .clipShape(RoundedRectangle(cornerRadius: .radiusL))
                     }
                     .disabled(!context.viewState.isFormValid || context.viewState.isLoading)

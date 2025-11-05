@@ -40,9 +40,9 @@ class ResourceSelectionScreenViewModel: ResourceSelectionScreenViewModelType, Re
     override func process(viewAction: ResourceSelectionScreenViewAction) {
         switch viewAction {
         case .pop:
-            break
-        case .selectResource(let resource):
-            break
+            actionsSubject.send(.pop)
+        case .selectResource(let resource, let date):
+            actionsSubject.send(.pushResourceTimeslotSelectionScreen(resource: resource, date: date))
         case .loadResources(let date):
             if let user = authenticationService.getCurrentUser() {
                 Task { await loadResources(from: user.school, for: date) }

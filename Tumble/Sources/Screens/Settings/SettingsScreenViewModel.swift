@@ -48,6 +48,7 @@ class SettingsScreenViewModel: SettingsScreenViewModelType, SettingsScreenViewMo
         authenticationService.authStatePublisher
             .sink { [weak self] authState in
                 guard let self else { return }
+                AppLogger.shared.debug("SettingsScreenViewModel: Received auth state update via publisher: \(authState)")
                 state.authState = authState
             }
             .store(in: &cancellables)
@@ -143,12 +144,30 @@ class SettingsScreenViewModel: SettingsScreenViewModelType, SettingsScreenViewMo
     }
     
     private func handleRemoveAccount() {
+        AppLogger.shared.debug("SettingsScreenViewModel: handleRemoveAccount started")
         Task {
             do {
                 if let currentUser = authenticationService.getCurrentUser() {
-                    _ = try await authenticationService.removeAccount(username: currentUser.username)
+                    AppLogger.shared.debug("SettingsScreenViewModel: Removing user: \(currentUser.username)")
+                    let remainingAccounts = try await authenticationService.removeAccount(username: currentUser.username)
+                    AppLogger.shared.info("Available remaining accounts: \(remainingAccounts) ")
                     
+                    // Force a UI refresh after account removal
                     await MainActor.run {
+                        AppLogger.shared.debug("SettingsScreenViewModel: Forcing UI refresh after account removal")
+                        let currentAuthState = authenticationService.getCurrentAuthState()
+                        AppLogger.shared.debug("SettingsScreenViewModel: Current auth state after removal: \(currentAuthState)")
+                        
+                        self.state.authState = currentAuthState
+                        self.state.bindings = SettingsScreenViewStateBindings(
+                            quickSettings: self.quickSettings,
+                            authenticationService: self.authenticationService,
+                            onActiveUsernameChange: { [weak self] newUsername in
+                                self?.handleActiveUserChange(newUsername)
+                            }
+                        )
+                        
+                        AppLogger.shared.debug("SettingsScreenViewModel: UI refresh completed")
                         actionsSubject.send(.removeAccount)
                     }
                 }
