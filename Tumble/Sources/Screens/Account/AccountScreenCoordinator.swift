@@ -18,9 +18,7 @@ struct AccountScreenCoordinatorParameters {
 
 enum AccountScreenCoordinatorAction {
     case resourceSelectionScreen
-    case eventsScreen
-    case resourceBookingDetails
-    case eventDetails
+    case resourceBookingDetails(Response.Booking)
     case dismiss
 }
 
@@ -51,12 +49,8 @@ final class AccountScreenCoordinator: CoordinatorProtocol {
                 switch action {
                 case .resourceSelectionScreen:
                     actionsSubject.send(.resourceSelectionScreen)
-                case .eventsScreen:
-                    actionsSubject.send(.eventsScreen)
-                case .resourceBookingDetails:
-                    actionsSubject.send(.resourceBookingDetails)
-                case .eventDetails:
-                    actionsSubject.send(.eventDetails)
+                case .resourceBookingDetails(let booking):
+                    actionsSubject.send(.resourceBookingDetails(booking))
                 case .dismiss:
                     actionsSubject.send(.dismiss)
                 }

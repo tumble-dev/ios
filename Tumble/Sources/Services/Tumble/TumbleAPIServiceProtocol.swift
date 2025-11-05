@@ -33,6 +33,11 @@ protocol TumbleApiServiceProtocol {
         responseType: T.Type
     ) async throws -> T
     
+    func delete<T: Codable>(
+        _ endpoint: TumbleEndpoint,
+        responseType: T.Type
+    ) async throws -> T
+    
     func performVoidRequest(_ endpoint: TumbleEndpoint) async throws
     
     // MARK: - Extension
@@ -46,8 +51,9 @@ protocol TumbleApiServiceProtocol {
 
     func getAllResources(school: String, date: String, authToken: String) async throws -> [Response.Resource]
     func bookResource(resourceId: String, school: String, booking: Response.BookingRequest, authToken: String) async throws -> Response.GenericResponse
+    func confirmResourceBooking(bookingId: String, school: String, authToken: String) async throws -> Response.GenericResponse
     func getUserBookings(school: String, authToken: String) async throws -> [Response.Booking]
-    func unbookResource(bookingId: String, school: String, authToken: String) async throws
+    func unbookResource(bookingId: String, school: String, authToken: String) async throws -> Response.GenericResponse
     func getRegisteredEvents(school: String, authToken: String) async throws -> [Response.UserEvent]
     func getAvailableEvents(school: String, authToken: String) async throws -> [Response.UserEvent]
     func registerForEvent(eventId: String, school: String, authToken: String) async throws

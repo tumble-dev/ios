@@ -13,6 +13,7 @@ enum HTTPMethod: String {
     case GET
     case POST
     case PUT
+    case DELETE
 }
 
 // MARK: - API Endpoint Protocol
@@ -72,6 +73,7 @@ enum TumbleEndpoint {
     case bookResource(resourceId: String, school: String)
     case userBookings(school: String)
     case unbookResource(bookingId: String, school: String)
+    case confirmResourceBooking(bookingId: String, school: String)
     
     // Events
     case registeredEvents(school: String)
@@ -99,6 +101,8 @@ extension TumbleEndpoint: APIEndpoint {
             return "/api/v1/resources/bookings"
         case .unbookResource(let bookingId, _):
             return "/api/v1/resources/bookings/\(bookingId)"
+        case .confirmResourceBooking(let bookingId, _):
+            return "/api/v1/resources/bookings/\(bookingId)/confirm"
         case .registeredEvents:
             return "/api/v1/events/registered"
         case .availableEvents:
@@ -139,6 +143,8 @@ extension TumbleEndpoint: APIEndpoint {
             return [URLQueryItem(name: "school", value: school)]
         case .unbookResource(_, let school):
             return [URLQueryItem(name: "school", value: school)]
+        case .confirmResourceBooking(_, let school):
+            return [URLQueryItem(name: "school", value: school)]
         case .registeredEvents(let school):
             return [URLQueryItem(name: "school", value: school)]
         case .availableEvents(let school):
@@ -157,10 +163,10 @@ extension TumbleEndpoint: APIEndpoint {
             return .GET
         case .loginKronox, .bookResource, .registerEvent:
             return .POST
-        case .unregisterEvent:
+        case .unregisterEvent, .confirmResourceBooking:
             return .PUT
         case .unbookResource:
-            return .PUT
+            return .DELETE
         }
     }
     

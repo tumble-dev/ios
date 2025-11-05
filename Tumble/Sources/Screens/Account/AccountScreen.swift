@@ -65,9 +65,8 @@ struct AccountContentView: View {
                 switch dataState {
                 case .loading:
                     LoadingDataView()
-                case .loaded(let events, let bookings):
+                case .loaded(let bookings):
                     AccountDataView(
-                        events: events,
                         bookings: bookings,
                         onAction: onAction
                     )
@@ -123,7 +122,6 @@ struct UserInfoCard: View {
 }
 
 struct AccountDataView: View {
-    let events: [Response.UserEvent]
     let bookings: [Response.Booking]
     let onAction: (AccountScreenViewAction) -> Void
     
@@ -145,7 +143,9 @@ struct AccountDataView: View {
                 } else {
                     VStack(spacing: 12) {
                         ForEach(Array(bookings.prefix(3).enumerated()), id: \.offset) { _, booking in
-                            BookingRowView(booking: booking)
+                            BookingRowView(booking: booking) {
+                                onAction(.showResourceBookingDetails(booking))
+                            }
                         }
                         
                         if bookings.count > 3 {
@@ -223,13 +223,15 @@ struct SectionCard<Content: View>: View {
 
 struct BookingRowView: View {
     let booking: Response.Booking
+    let onTap: () -> Void
     
     var needsConfirmation: Bool {
         booking.showConfirmButton
     }
     
     var body: some View {
-        HStack(spacing: 16) {
+        Button(action: onTap) {
+            HStack(spacing: 16) {
             // Status indicator with glow effect
             ZStack {
                 Circle()
@@ -287,6 +289,8 @@ struct BookingRowView: View {
         .padding(.spacingM)
         .cardStyle()
     }
+    .buttonStyle(PlainButtonStyle())
+}
 }
 
 struct EventRowView: View {

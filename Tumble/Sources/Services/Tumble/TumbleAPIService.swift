@@ -164,6 +164,13 @@ final class TumbleAPIService: TumbleApiServiceProtocol {
         return try await performRequest(endpoint, responseType: responseType)
     }
     
+    func delete<T: Codable>(
+        _ endpoint: TumbleEndpoint,
+        responseType: T.Type
+    ) async throws -> T {
+        return try await performRequest(endpoint, responseType: responseType)
+    }
+    
     /// Performs a request without expecting a response body (returns success status)
     func performVoidRequest(_ endpoint: TumbleEndpoint) async throws {
         let _: EmptyResponse = try await performRequest(endpoint, responseType: EmptyResponse.self)
@@ -317,6 +324,8 @@ final class TumbleAPIService: TumbleApiServiceProtocol {
             return "book_resource"
         case .unbookResource:
             return "unbook_resource"
+        case .confirmResourceBooking:
+            return "confirm_resource_booking"
         case .registeredEvents:
             return "registered_events"
         case .registerEvent:
@@ -535,8 +544,9 @@ extension TumbleAPIService {
     }
 }
 
+// MARK: - Authenticated Endpoints
+
 extension TumbleAPIService {
-    // MARK: - Authenticated Resources
 
     func getUserBookings(school: String, authToken: String) async throws -> [Response.Booking] {
         let endpoint = TumbleEndpoint.userBookings(school: school)
@@ -558,14 +568,24 @@ extension TumbleAPIService {
         return try handleResponse(data: data, response: response, responseType: Response.GenericResponse.self)
     }
     
-    func unbookResource(bookingId: String, school: String, authToken: String) async throws {
+    func unbookResource(bookingId: String, school: String, authToken: String) async throws -> Response.GenericResponse {
         let endpoint = TumbleEndpoint.unbookResource(bookingId: bookingId, school: school)
         let request = endpoint.urlRequest(authToken: authToken)
         let (data, response) = try await session.data(for: request)
-        let _: EmptyResponse = try handleResponse(data: data, response: response, responseType: EmptyResponse.self)
+        return try handleResponse(data: data, response: response, responseType: Response.GenericResponse.self)
     }
     
-    // MARK: - Authenticated Events
+
+    func confirmResourceBooking(
+        bookingId: String,
+        school: String,
+        authToken: String
+    ) async throws -> Response.GenericResponse {
+        let endpoint = TumbleEndpoint.confirmResourceBooking(bookingId: bookingId, school: school)
+        let request = endpoint.urlRequest(authToken: authToken)
+        let (data, response) = try await session.data(for: request)
+        return try handleResponse(data: data, response: response, responseType: Response.GenericResponse.self)
+    }
 
     func getRegisteredEvents(school: String, authToken: String) async throws -> [Response.UserEvent] {
         let endpoint = TumbleEndpoint.registeredEvents(school: school)

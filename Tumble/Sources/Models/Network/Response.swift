@@ -142,7 +142,8 @@ enum Response {
         }
     }
 
-    struct Booking: Codable {
+    struct Booking: Codable, Equatable {
+        let id: String
         let resourceId: String
         let timeSlot: TimeSlot?
         let locationId: String
@@ -152,6 +153,7 @@ enum Response {
         let confirmationClosed: Date?
         
         private enum CodingKeys: String, CodingKey {
+            case id = "id"
             case resourceId = "resource_id"
             case timeSlot = "time_slot"
             case locationId = "location_id"

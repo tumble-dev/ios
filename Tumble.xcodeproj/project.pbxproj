@@ -86,6 +86,11 @@
 		0B30CA452E7F41900002D799 /* AccountSettingsScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B30CA442E7F418B0002D799 /* AccountSettingsScreenViewModel.swift */; };
 		0B30CA472E7F419B0002D799 /* AccountSettingsScreenVIewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B30CA462E7F41930002D799 /* AccountSettingsScreenVIewModelProtocol.swift */; };
 		0B30CA492E7F41A30002D799 /* AccountSettingsScreenCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B30CA482E7F419E0002D799 /* AccountSettingsScreenCoordinator.swift */; };
+		0B5228FF2EBBBA5600FA7A76 /* BookingDetailsScreenCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B5228FE2EBBBA5200FA7A76 /* BookingDetailsScreenCoordinator.swift */; };
+		0B5229022EBBBA6400FA7A76 /* BookingDetailsScreenModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B5229012EBBBA6000FA7A76 /* BookingDetailsScreenModels.swift */; };
+		0B5229042EBBBA6C00FA7A76 /* BookingDetailsScreenViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B5229032EBBBA6700FA7A76 /* BookingDetailsScreenViewModelProtocol.swift */; };
+		0B5229062EBBBA8C00FA7A76 /* BookingDetailsScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B5229052EBBBA7000FA7A76 /* BookingDetailsScreenViewModel.swift */; };
+		0B5229082EBBBAA300FA7A76 /* BookingDetailsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B5229072EBBBA9F00FA7A76 /* BookingDetailsScreen.swift */; };
 		0B5DC81C2E79C7A0001B668F /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 0B5DC81B2E79C7A0001B668F /* FirebaseAnalytics */; };
 		0B5DC81E2E79C7A0001B668F /* FirebaseAnalyticsCore in Frameworks */ = {isa = PBXBuildFile; productRef = 0B5DC81D2E79C7A0001B668F /* FirebaseAnalyticsCore */; };
 		0B5DC8202E79C7A0001B668F /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 0B5DC81F2E79C7A0001B668F /* FirebaseCore */; };
@@ -276,6 +281,11 @@
 		0B30CA442E7F418B0002D799 /* AccountSettingsScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSettingsScreenViewModel.swift; sourceTree = "<group>"; };
 		0B30CA462E7F41930002D799 /* AccountSettingsScreenVIewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSettingsScreenVIewModelProtocol.swift; sourceTree = "<group>"; };
 		0B30CA482E7F419E0002D799 /* AccountSettingsScreenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSettingsScreenCoordinator.swift; sourceTree = "<group>"; };
+		0B5228FE2EBBBA5200FA7A76 /* BookingDetailsScreenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingDetailsScreenCoordinator.swift; sourceTree = "<group>"; };
+		0B5229012EBBBA6000FA7A76 /* BookingDetailsScreenModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingDetailsScreenModels.swift; sourceTree = "<group>"; };
+		0B5229032EBBBA6700FA7A76 /* BookingDetailsScreenViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingDetailsScreenViewModelProtocol.swift; sourceTree = "<group>"; };
+		0B5229052EBBBA7000FA7A76 /* BookingDetailsScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingDetailsScreenViewModel.swift; sourceTree = "<group>"; };
+		0B5229072EBBBA9F00FA7A76 /* BookingDetailsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingDetailsScreen.swift; sourceTree = "<group>"; };
 		0B6A39EA2E81BBC300977B1A /* WebSocketSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketSessionManager.swift; sourceTree = "<group>"; };
 		0B6A39ED2E832E5A00977B1A /* Shimmer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shimmer.swift; sourceTree = "<group>"; };
 		0B878AE02E85B8F000E69FF5 /* AnalyticsPermissionsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsPermissionsScreen.swift; sourceTree = "<group>"; };
@@ -570,6 +580,7 @@
 		0B30C9022E7EE6380002D799 /* Account */ = {
 			isa = PBXGroup;
 			children = (
+				0B5228FD2EBBBA4D00FA7A76 /* BookingDetails */,
 				0BE9F4652EB3D68F00CC3E5D /* Resources */,
 				0B30C90B2E7EF0E70002D799 /* AccountScreen.swift */,
 				0B30C9092E7EE9CA0002D799 /* AccountScreenViewModel.swift */,
@@ -590,6 +601,18 @@
 				0B30CA402E7F41020002D799 /* AccountSettingsScreen.swift */,
 			);
 			path = Accounts;
+			sourceTree = "<group>";
+		};
+		0B5228FD2EBBBA4D00FA7A76 /* BookingDetails */ = {
+			isa = PBXGroup;
+			children = (
+				0B5229072EBBBA9F00FA7A76 /* BookingDetailsScreen.swift */,
+				0B5229052EBBBA7000FA7A76 /* BookingDetailsScreenViewModel.swift */,
+				0B5229032EBBBA6700FA7A76 /* BookingDetailsScreenViewModelProtocol.swift */,
+				0B5229012EBBBA6000FA7A76 /* BookingDetailsScreenModels.swift */,
+				0B5228FE2EBBBA5200FA7A76 /* BookingDetailsScreenCoordinator.swift */,
+			);
+			path = BookingDetails;
 			sourceTree = "<group>";
 		};
 		0B6A39EC2E832E4F00977B1A /* Modifier */ = {
@@ -1106,6 +1129,7 @@
 				0BAEDF122E7B17B900EA6796 /* Response.swift in Sources */,
 				0B19F9372E7C8B4B0037E29E /* DateSectionHeader.swift in Sources */,
 				0BAEDF1D2E7B1B1E00EA6796 /* TumbleAPIService.swift in Sources */,
+				0B5228FF2EBBBA5600FA7A76 /* BookingDetailsScreenCoordinator.swift in Sources */,
 				0B30CA452E7F41900002D799 /* AccountSettingsScreenViewModel.swift in Sources */,
 				0B19F9312E7C6DAA0037E29E /* QuickViewScreen.swift in Sources */,
 				0B30C8F82E7E2BAF0002D799 /* BookmarksSettingsScreenModels.swift in Sources */,
@@ -1119,6 +1143,7 @@
 				0B19F92B2E7C68140037E29E /* QuickViewScreenCoordinator.swift in Sources */,
 				D4722149292454560063BDB7 /* Application.swift in Sources */,
 				0B19F93B2E7C91A80037E29E /* SearchMenuActionStyle.swift in Sources */,
+				0B5229042EBBBA6C00FA7A76 /* BookingDetailsScreenViewModelProtocol.swift in Sources */,
 				0B19F9422E7CAAE90037E29E /* InfoView.swift in Sources */,
 				0BAEE20F2E7B644400EA6796 /* BookmarksFlowCoordinatorStateMachine.swift in Sources */,
 				0B19F7EF2E7C44B90037E29E /* EventStorageService.swift in Sources */,
@@ -1174,6 +1199,7 @@
 				0BDE197D2E8003FA004C6A51 /* AuthenticationServiceProtocol.swift in Sources */,
 				0BDE19822E8005F1004C6A51 /* UserDataStorageServiceProtocol.swift in Sources */,
 				0B19F7E32E7C38700037E29E /* SearchScreenCoordinator.swift in Sources */,
+				0B5229082EBBBAA300FA7A76 /* BookingDetailsScreen.swift in Sources */,
 				0BAEE2122E7B66C600EA6796 /* OnboardingFlowCoordinator.swift in Sources */,
 				0B19F95C2E7D78900037E29E /* SettingsScreenModels.swift in Sources */,
 				0B30CA3C2E7F29630002D799 /* UserDataStorageService.swift in Sources */,
@@ -1205,6 +1231,7 @@
 				0B19F6AB2E7C1CDA0037E29E /* NotificationPermissionsScreenViewModelProtocol.swift in Sources */,
 				0BAEDF002E7B175900EA6796 /* TumbleEndpoint.swift in Sources */,
 				0BAEDF182E7B189E00EA6796 /* UserPreference.swift in Sources */,
+				0B5229022EBBBA6400FA7A76 /* BookingDetailsScreenModels.swift in Sources */,
 				0B19F9402E7C9A1B0037E29E /* Event.swift in Sources */,
 				0B19F7E72E7C3A840037E29E /* SearchScreenModels.swift in Sources */,
 				0BAEE1FE2E7B5B9B00EA6796 /* NavigationRootCoordinator.swift in Sources */,
@@ -1213,6 +1240,7 @@
 				0B878AE92E85B92800E69FF5 /* AnalyticsPermissionsScreenViewModelProtocol.swift in Sources */,
 				0BAEDF1F2E7B1D4900EA6796 /* AppSettings.swift in Sources */,
 				0B30CA432E7F41890002D799 /* AccountSettingsScreenModels.swift in Sources */,
+				0B5229062EBBBA8C00FA7A76 /* BookingDetailsScreenViewModel.swift in Sources */,
 				0B30C8FE2E7E2BCB0002D799 /* BookmarksSettingsScreenCoordinator.swift in Sources */,
 				0B30C90A2E7EE9CD0002D799 /* AccountScreenViewModel.swift in Sources */,
 				0B19F9532E7D76330037E29E /* AccountFlowCoordinator.swift in Sources */,

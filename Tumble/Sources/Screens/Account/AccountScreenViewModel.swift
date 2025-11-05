@@ -46,40 +46,18 @@ class AccountScreenViewModel: AccountScreenViewModelType, AccountScreenViewModel
             actionsSubject.send(.dismiss)
         case .showResources:
             actionsSubject.send(.resourceSelectionScreen)
-        case .showEvents:
-            break
-        case .showResourceBookingDetails:
-            break
-        case .showEventDetails:
-            break
+        case .showResourceBookingDetails(let booking):
+            actionsSubject.send(.resourceBookingDetails(booking))
         }
     }
     
     private func loadUserData(from school: String) async {
         do {
             let bookings = try await fetchUserBookings(from: school)
-            let registeredEvents = try await fetchUserRegisteredEvents(from: school)
-            updateDataState(newState: .loaded(events: registeredEvents, bookings: bookings))
+            updateDataState(newState: .loaded(bookings: bookings))
         } catch {
             updateDataState(newState: .error(error.localizedDescription))
             return
-        }
-    }
-    
-    private func fetchUserRegisteredEvents(from school: String) async throws -> [Response.UserEvent] {
-        do {
-            let token = try await authenticationService.getCurrentSessionToken()
-            return try await tumbleApiService.getRegisteredEvents(school: school, authToken: token)
-        } catch NetworkError.unauthorized {
-            AppLogger.shared.info("Session expired while fetching events - WebSocket should handle re-auth")
-            
-            // If session is expired, the auth state will change to .error or trigger re-auth
-            // The setupListeners() will catch this and update the UI accordingly
-            // Don't try to handle it here - let the WebSocket session management do its job
-            throw AuthError.sessionExpired
-        } catch {
-            AppLogger.shared.error("Failed to fetch user registered events: \(error)")
-            throw error
         }
     }
 

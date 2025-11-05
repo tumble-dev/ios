@@ -12,18 +12,13 @@ enum AccountScreenViewAction: Equatable {
     case close
     // Navigation
     case showResources
-    case showEvents
-    
     // Sheets
-    case showResourceBookingDetails
-    case showEventDetails
+    case showResourceBookingDetails(Response.Booking)
 }
 
 enum AccountScreenViewModelAction: Equatable {
     case resourceSelectionScreen
-    case eventsScreen
-    case resourceBookingDetails
-    case eventDetails
+    case resourceBookingDetails(Response.Booking)
     case dismiss
 }
 
@@ -41,7 +36,7 @@ enum AccountScreenUserState {
 
 enum AccountScreenDataState {
     case loading
-    case loaded(events: [Response.UserEvent], bookings: [Response.Booking])
+    case loaded(bookings: [Response.Booking])
     case empty
     case hidden
     case error(String)

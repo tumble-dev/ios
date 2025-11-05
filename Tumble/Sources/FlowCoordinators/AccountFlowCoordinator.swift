@@ -86,12 +86,8 @@ class AccountFlowCoordinator: FlowCoordinatorProtocol {
                 switch action {
                 case .resourceSelectionScreen:
                     presentResourceSelectionScreen(animated: true)
-                case .eventsScreen:
-                    break
-                case .resourceBookingDetails:
-                    break
-                case .eventDetails:
-                    break
+                case .resourceBookingDetails(let booking):
+                    presentBookingDetailsScreen(booking: booking)
                 case .dismiss:
                     parameters.navigationSplitCoordinator.setSheetCoordinator(nil)
                 }
@@ -146,6 +142,19 @@ class AccountFlowCoordinator: FlowCoordinatorProtocol {
                 appSettings: parameters.appSettings,
                 resource: resource,
                 selectedPickerDate: selectedPickerDate
+            )
+        )
+        
+        navigationStackCoordinator.push(coordinator)
+    }
+    
+    private func presentBookingDetailsScreen(booking: Response.Booking) {
+        let coordinator = BookingDetailsScreenCoordinator(
+            parameters: .init(
+                booking: booking,
+                school: "hkr",
+                tumbleApiService: parameters.tumbleApiService,
+                authenticationService: parameters.authenticationService
             )
         )
         
