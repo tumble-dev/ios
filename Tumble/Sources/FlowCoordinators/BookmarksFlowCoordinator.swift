@@ -91,7 +91,7 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
                 eventStorageService: eventStorageService,
                 analyticsService: analyticsService,
                 authenticationService: authenticationService,
-                navigationSplitCoordinator: navigationSplitCoordinator
+                navigationRootCoordinator: navigationRootCoordinator
             )
         )
         
@@ -102,7 +102,7 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
                 tumbleApiService: tumbleApiService,
                 eventStorageService: eventStorageService,
                 analyticsService: analyticsService,
-                navigationSplitCoordinator: navigationSplitCoordinator
+                navigationRootCoordinator: navigationRootCoordinator
             )
         )
         
@@ -115,7 +115,7 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
                 userDataStorageService: userDataStorageService,
                 authenticationService: authenticationService,
                 analyticsService: analyticsService,
-                navigationSplitCoordinator: navigationSplitCoordinator
+                navigationRootCoordinator: navigationRootCoordinator
             )
         )
         
@@ -201,7 +201,7 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
             return
         }
         
-        navigationSplitCoordinator.setSheetCoordinator(nil, animated: animated)
+        navigationRootCoordinator.setSheetCoordinator(nil, animated: animated)
         
         // Prevents system crashes when presenting a sheet if another one was already shown
         try? await Task.sleep(nanoseconds: 200000)
@@ -295,8 +295,10 @@ private extension BookmarksFlowCoordinator {
             }
             .store(in: &cancellables)
         
-        sidebarNavigationStackCoordinator.setRootCoordinator(coordinator)
-        navigationRootCoordinator.setRootCoordinator(navigationSplitCoordinator)
+        let navigationStackCoordinator = NavigationStackCoordinator()
+        navigationStackCoordinator.setRootCoordinator(coordinator)
+        
+        navigationRootCoordinator.setRootCoordinator(navigationStackCoordinator)
     }
     
     private func presentEventDetailsSreen(eventId: String) {
@@ -317,13 +319,13 @@ private extension BookmarksFlowCoordinator {
                 guard let self else { return }
                 switch actions {
                 case .dismiss:
-                    navigationSplitCoordinator.setSheetCoordinator(nil)
+                    navigationRootCoordinator.setSheetCoordinator(nil)
                 }
             }
             .store(in: &cancellables)
         
         eventDetailsStackCoordinator.setRootCoordinator(coordinator)
-        navigationSplitCoordinator.setSheetCoordinator(eventDetailsStackCoordinator, animated: true) { [weak self] in
+        navigationRootCoordinator.setSheetCoordinator(eventDetailsStackCoordinator, animated: true) { [weak self] in
             self?.stateMachine.processEvent(.dismissedEventDetails)
         }
     }

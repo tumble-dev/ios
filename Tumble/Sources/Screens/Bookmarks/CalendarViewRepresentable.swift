@@ -31,7 +31,7 @@ struct CalendarViewRepresentable: UIViewRepresentable {
         calendar.delegate = context.coordinator
         calendar.dataSource = context.coordinator
         
-        calendar.appearance.weekdayTextColor = UIColor(named: "OnBackground")?.withAlphaComponent(0.7)
+        calendar.appearance.weekdayTextColor = UIColor(named: "OnBackground")
         calendar.appearance.titleDefaultColor = UIColor(named: "OnBackground")
         calendar.appearance.selectionColor = UIColor(named: "PrimaryColor")
         calendar.appearance.titleTodayColor = UIColor(named: "OnPrimary")

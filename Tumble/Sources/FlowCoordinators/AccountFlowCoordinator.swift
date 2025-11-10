@@ -21,7 +21,7 @@ struct AccountFlowCoordinatorParameters {
     let userDataStorageService: UserDataStorageServiceProtocol
     let authenticationService: AuthenticationServiceProtocol
     let analyticsService: AnalyticsServiceProtocol
-    let navigationSplitCoordinator: NavigationSplitCoordinator
+    let navigationRootCoordinator: NavigationRootCoordinator
 }
 
 class AccountFlowCoordinator: FlowCoordinatorProtocol {
@@ -64,7 +64,6 @@ class AccountFlowCoordinator: FlowCoordinatorProtocol {
         // Configure presentation detents to make the sheet initially smaller
         if #available(iOS 16.0, *) {
             navigationStackCoordinator.setPresentationDetents([
-                .fraction(0.4),
                 .medium,
                 .large
             ])
@@ -89,14 +88,14 @@ class AccountFlowCoordinator: FlowCoordinatorProtocol {
                 case .resourceBookingDetails(let booking):
                     presentBookingDetailsScreen(booking: booking)
                 case .dismiss:
-                    parameters.navigationSplitCoordinator.setSheetCoordinator(nil)
+                    parameters.navigationRootCoordinator.setSheetCoordinator(nil)
                 }
             }
             .store(in: &cancellables)
         
         navigationStackCoordinator.setRootCoordinator(accountScreenCoordinator, animated: animated)
         
-        parameters.navigationSplitCoordinator.setSheetCoordinator(navigationStackCoordinator) { [weak self] in
+        parameters.navigationRootCoordinator.setSheetCoordinator(navigationStackCoordinator) { [weak self] in
             guard let self else { return }
             
             navigationStackCoordinator = nil

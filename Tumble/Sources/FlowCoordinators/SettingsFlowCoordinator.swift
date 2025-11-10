@@ -19,7 +19,7 @@ struct SettingsFlowCoordinatorParameters {
     let eventStorageService: EventStorageServiceProtocol
     let analyticsService: AnalyticsServiceProtocol
     let authenticationService: AuthenticationServiceProtocol
-    let navigationSplitCoordinator: NavigationSplitCoordinator
+    let navigationRootCoordinator: NavigationRootCoordinator
 }
 
 class SettingsFlowCoordinator: FlowCoordinatorProtocol {
@@ -76,7 +76,7 @@ class SettingsFlowCoordinator: FlowCoordinatorProtocol {
                 
                 switch action {
                 case .dismiss:
-                    parameters.navigationSplitCoordinator.setSheetCoordinator(nil)
+                    parameters.navigationRootCoordinator.setSheetCoordinator(nil)
                     
                 case .notifications:
                     presentNotificationSettings()
@@ -110,7 +110,7 @@ class SettingsFlowCoordinator: FlowCoordinatorProtocol {
         
         navigationStackCoordinator.setRootCoordinator(settingsScreenCoordinator, animated: animated)
         
-        parameters.navigationSplitCoordinator.setSheetCoordinator(navigationStackCoordinator) { [weak self] in
+        parameters.navigationRootCoordinator.setSheetCoordinator(navigationStackCoordinator) { [weak self] in
             guard let self else { return }
             
             navigationStackCoordinator = nil
