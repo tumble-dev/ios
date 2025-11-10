@@ -48,19 +48,22 @@ struct BookmarksScreen: View {
                 )
                 
             case .loaded(let events):
-                switch context.viewState.bookmarksViewType {
-                case .daily:
+                if UIDevice.current.userInterfaceIdiom == .pad {
+                    // iPad: Always show daily list in sidebar
                     bookmarksDailyView(events: events)
-                case .monthly:
-                    bookmarksMonthlyView(events: events)
-                case .weekly:
-                    bookmarksWeeklyView(events: events)
+                } else {
+                    // iPhone: Show selected view type
+                    switch context.viewState.bookmarksViewType {
+                    case .daily: bookmarksDailyView(events: events)
+                    case .monthly: bookmarksMonthlyView(events: events)
+                    case .weekly: bookmarksWeeklyView(events: events)
+                    }
                 }
             }
         }
         .toolbar { toolbar }
         .navigationTitle("Bookmarks")
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitleDisplayMode(UIDevice.current.userInterfaceIdiom == .pad ? .large : .inline)
         .background(Color.background)
         .tint(.primary)
     }
@@ -236,7 +239,9 @@ struct BookmarksScreen: View {
         }
         
         ToolbarItem(placement: .topBarTrailing) {
-            viewTypeMenu
+            if UIDevice.current.userInterfaceIdiom != .pad {
+                viewTypeMenu
+            }
         }
         
         // Only show search in daily view

@@ -85,6 +85,9 @@ class BookmarksFlowCoordinatorStateMachine {
             switch (fromState, event) {
             case (.bookmarks, .showEventDetails(let eventId)):
                 return .eventDetailsScreen(eventId: eventId)
+            
+            case (.eventDetailsScreen, .showEventDetails(let eventId)):
+                return .eventDetailsScreen(eventId: eventId)
 
             case (.bookmarks, .dismissedEventDetails):
                 return .bookmarks

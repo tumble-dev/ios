@@ -2,28 +2,22 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>FirebaseAppDelegateProxyEnabled</key>
-	<string>YES</string>
-	<key>DEVELOPMENT_TEAM</key>
-	<string>$(DEVELOPMENT_TEAM)</string>
-	<key>BASE_BUNDLE_IDENTIFIER</key>
-	<string>$(BASE_BUNDLE_IDENTIFIER)</string>
-	<key>APP_VERSION</key>
-	<string>$(APP_VERSION)</string>
-	<key>CFBundleDisplayName</key>
-	<string>$(APP_DISPLAY_NAME)</string>
-	<key>CFBundleShortVersionString</key>
-	<string>$(MARKETING_VERSION)</string>
-	<key>API_URL</key>
-	<string>$(API_URL)</string>
 	<key>API_KEY</key>
 	<string>$(API_KEY)</string>
+	<key>API_URL</key>
+	<string>$(API_URL)</string>
 	<key>APP_GROUP_IDENTIFIER</key>
 	<string>$(APP_GROUP_IDENTIFIER)</string>
+	<key>APP_VERSION</key>
+	<string>$(APP_VERSION)</string>
+	<key>BASE_BUNDLE_IDENTIFIER</key>
+	<string>$(BASE_BUNDLE_IDENTIFIER)</string>
+	<key>DEVELOPMENT_TEAM</key>
+	<string>$(DEVELOPMENT_TEAM)</string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<string>YES</string>
 	<key>KEYCHAIN_ACCESS_GROUP_IDENTIFIER</key>
 	<string>$(KEYCHAIN_ACCESS_GROUP_IDENTIFIER)</string>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
 	<key>Scene Configuration</key>
 	<dict/>
 	<key>UIApplicationSceneManifest</key>

@@ -93,7 +93,7 @@ struct BookingInfo: View {
                     Text("Booking Details")
                         .font(.title2)
                         .fontWeight(.semibold)
-                        .foregroundColor(.white)
+                        .foregroundColor(.onSurface)
                     Spacer()
                 }
                 .padding(.top, 8)
@@ -106,7 +106,7 @@ struct BookingInfo: View {
                     Text("Resource \(booking.resourceId)")
                         .font(.body)
                         .fontWeight(.medium)
-                        .foregroundColor(.white)
+                        .foregroundColor(.onSurface)
                 }
                 
                 // Location
@@ -117,7 +117,7 @@ struct BookingInfo: View {
                     Text(booking.locationId)
                         .font(.body)
                         .fontWeight(.medium)
-                        .foregroundColor(.white)
+                        .foregroundColor(.onSurface)
                 }
                 
                 // Time Slot
@@ -129,7 +129,7 @@ struct BookingInfo: View {
                         Text(timeSlot.timeString())
                             .font(.body)
                             .fontWeight(.medium)
-                            .foregroundColor(.white)
+                            .foregroundColor(.onSurface)
                     }
                 }
                 
@@ -162,10 +162,10 @@ struct BookingInfo: View {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Opens: \(formatDateTime(confirmationOpen))")
                                 .font(.body)
-                                .foregroundColor(.white)
+                                .foregroundColor(.onSurface)
                             Text("Closes: \(formatDateTime(confirmationClosed))")
                                 .font(.body)
-                                .foregroundColor(.white)
+                                .foregroundColor(.onSurface)
                         }
                     }
                 }
@@ -181,7 +181,7 @@ struct BookingInfo: View {
                             .frame(maxWidth: .infinity)
                             .padding()
                             .background(Color.green)
-                            .foregroundColor(.white)
+                            .foregroundColor(.onSurface)
                             .cornerRadius(12)
                             .font(.headline)
                         }
@@ -229,7 +229,7 @@ struct BookingHeaderCard: View {
                     Text("Resource \(booking.resourceId)")
                         .font(.title)
                         .fontWeight(.bold)
-                        .foregroundColor(.white)
+                        .foregroundColor(.onSurface)
                     
                     HStack(spacing: 8) {
                         Circle()
@@ -238,12 +238,12 @@ struct BookingHeaderCard: View {
                         
                         Text(booking.locationId)
                             .font(.subheadline)
-                            .foregroundColor(.white.opacity(0.8))
+                            .foregroundColor(.onSurface.opacity(0.8))
                         
                         if let timeSlot = booking.timeSlot {
                             Text("• \(timeSlot.timeString())")
                                 .font(.subheadline)
-                                .foregroundColor(.white.opacity(0.8))
+                                .foregroundColor(.onSurface.opacity(0.8))
                         }
                     }
                 }

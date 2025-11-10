@@ -40,6 +40,20 @@ class NavigationRootCoordinator: ObservableObject, CoordinatorProtocol, CustomSt
         }
     }
     
+    @Published fileprivate var fullScreenCoverModule: NavigationModule? {
+        didSet {
+            if let oldValue {
+                logPresentationChange("Remove fullscreen cover", oldValue)
+                oldValue.tearDown()
+            }
+            
+            if let fullScreenCoverModule {
+                logPresentationChange("Set fullscreen cover", fullScreenCoverModule)
+                fullScreenCoverModule.coordinator?.start()
+            }
+        }
+    }
+    
     // periphery:ignore - might be useful to have
     // The currently presented sheet coordinator
     // Sheets will be presented through the NavigationSplitCoordinator if provided
@@ -98,6 +112,29 @@ class NavigationRootCoordinator: ObservableObject, CoordinatorProtocol, CustomSt
 
         withTransaction(transaction) {
             sheetModule = NavigationModule(coordinator, dismissalCallback: dismissalCallback)
+        }
+    }
+    
+    /// Present a fullscreen cover on top of the split view
+    /// - Parameters:
+    ///   - coordinator: the coordinator to display
+    ///   - animated: whether the transition should be animated
+    ///   - dismissalCallback: called when the fullscreen cover has been dismissed, programatically or otherwise
+    func setFullScreenCoverCoordinator(_ coordinator: (any CoordinatorProtocol)?, animated: Bool = true, dismissalCallback: (() -> Void)? = nil) {
+        guard let coordinator else {
+            fullScreenCoverModule = nil
+            return
+        }
+        
+        if fullScreenCoverModule?.coordinator === coordinator {
+            fatalError("Cannot use the same coordinator more than once")
+        }
+
+        var transaction = Transaction()
+        transaction.disablesAnimations = !animated
+
+        withTransaction(transaction) {
+            fullScreenCoverModule = NavigationModule(coordinator, dismissalCallback: dismissalCallback)
         }
     }
     
@@ -161,6 +198,9 @@ private struct NavigationRootCoordinatorView: View {
         }
         .animation(.default, value: rootCoordinator.rootModule)
         .sheet(item: $rootCoordinator.sheetModule) { module in
+            module.coordinator?.toPresentable()
+        }
+        .fullScreenCover(item: $rootCoordinator.fullScreenCoverModule) { module in
             module.coordinator?.toPresentable()
         }
         .overlay {

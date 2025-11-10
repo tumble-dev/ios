@@ -23,10 +23,25 @@ struct PlaceHolderScreen: View {
     let showBackgroundGradient: Bool
     
     var body: some View {
-        VStack {}
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background()
-            .ignoresSafeArea(edges: .top)
-            .ignoresSafeArea(.keyboard)
+        VStack(spacing: 24) {
+            Image(systemName: "calendar.badge.clock")
+                .font(.system(size: 64))
+                .foregroundStyle(Color.onBackground)
+            
+            VStack(spacing: 8) {
+                Text("Select an event")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                
+                Text("Choose an event from your bookmarks to view details")
+                    .font(.subheadline)
+                    .foregroundStyle(Color.onBackground)
+                    .multilineTextAlignment(.center)
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.background)
+        .ignoresSafeArea(edges: .top)
+        .ignoresSafeArea(.keyboard)
     }
 }

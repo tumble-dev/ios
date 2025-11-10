@@ -454,22 +454,14 @@
 		0B19F7E12E7C36650037E29E /* Search */ = {
 			isa = PBXGroup;
 			children = (
+				0B19F7F32E7C47A20037E29E /* SchoolPill.swift */,
 				0B19F9292E7C67F80037E29E /* QuickView */,
-				0B19F7F22E7C479D0037E29E /* View */,
 				0B19F7E82E7C3F4A0037E29E /* SearchScreen.swift */,
 				0B19F7E62E7C3A820037E29E /* SearchScreenModels.swift */,
 				0B19F7E42E7C3A450037E29E /* SearchScreenViewModel.swift */,
 				0B19F7E22E7C38700037E29E /* SearchScreenCoordinator.swift */,
 			);
 			path = Search;
-			sourceTree = "<group>";
-		};
-		0B19F7F22E7C479D0037E29E /* View */ = {
-			isa = PBXGroup;
-			children = (
-				0B19F7F32E7C47A20037E29E /* SchoolPill.swift */,
-			);
-			path = View;
 			sourceTree = "<group>";
 		};
 		0B19F7F52E7C47D30037E29E /* Extensions */ = {
@@ -1371,13 +1363,15 @@
 				ENABLE_TESTING_SEARCH_PATHS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Tumble/Sources/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Tumble;
+				INFOPLIST_KEY_CFBundleDisplayName = "$(APP_DISPLAY_NAME)";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Camera is used for scanning QR codes for room booking functionality in Universities";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

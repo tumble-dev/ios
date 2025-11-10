@@ -56,6 +56,8 @@ struct SearchScreen: View {
                         }
                     )
                 )
+                .navigationTitle("Search")
+                .navigationBarTitleDisplayMode(.inline)
                 
             case .loading:
                 VStack {
@@ -75,6 +77,8 @@ struct SearchScreen: View {
                     },
                     universityImage: nil
                 )
+                .navigationTitle("Results")
+                .navigationBarTitleDisplayMode(.inline)
                 
             case .empty:
                 VStack {

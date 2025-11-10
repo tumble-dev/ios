@@ -19,7 +19,7 @@ struct SearchFlowCoordinatorParameters {
     let tumbleApiService: TumbleApiServiceProtocol
     let eventStorageService: EventStorageServiceProtocol
     let analyticsService: AnalyticsServiceProtocol
-    let navigationRootCoordinator: NavigationRootCoordinator
+    let navigationSplitCoordinator: NavigationSplitCoordinator
 }
 
 class SearchFlowCoordinator: FlowCoordinatorProtocol {
@@ -66,20 +66,13 @@ class SearchFlowCoordinator: FlowCoordinatorProtocol {
             )
         )
         
-        if #available(iOS 16.0, *) {
-            navigationStackCoordinator.setPresentationDetents([
-                .medium,
-                .large
-            ])
-        }
-        
         searchScreenCoordinator.actions
             .sink { [weak self] action in
                 guard let self else { return }
                 
                 switch action {
                 case .dismiss:
-                    parameters.navigationRootCoordinator.setSheetCoordinator(nil)
+                    parameters.navigationSplitCoordinator.setSheetCoordinator(nil)
                     
                 case .quickView(programmeId: let programmeId, school: let school):
                     presentSearchQuickView(programmeId: programmeId, school: school)
@@ -89,7 +82,7 @@ class SearchFlowCoordinator: FlowCoordinatorProtocol {
         
         navigationStackCoordinator.setRootCoordinator(searchScreenCoordinator, animated: animated)
         
-        parameters.navigationRootCoordinator.setSheetCoordinator(navigationStackCoordinator) { [weak self] in
+        parameters.navigationSplitCoordinator.setSheetCoordinator(navigationStackCoordinator) { [weak self] in
             guard let self else { return }
             
             navigationStackCoordinator = nil

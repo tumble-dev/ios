@@ -75,13 +75,14 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
         detailNavigationStackCoordinator = NavigationStackCoordinator(navigationSplitCoordinator: navigationSplitCoordinator)
         
         navigationSplitCoordinator.setSidebarCoordinator(sidebarNavigationStackCoordinator)
+        navigationSplitCoordinator.setDetailCoordinator(detailNavigationStackCoordinator) // Add this
         
         onboardingFlowCoordinator = OnboardingFlowCoordinator(
             appSettings: appSettings,
             analyticsService: analyticsService,
             notificationManager: notificationManager,
             isFirstOpen: isFirstOpen,
-            rootNavigationStackCoordinator: detailNavigationStackCoordinator
+            navigationRootCoordinator: navigationRootCoordinator
         )
         
         settingsFlowCoordinator = SettingsFlowCoordinator(
@@ -91,7 +92,7 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
                 eventStorageService: eventStorageService,
                 analyticsService: analyticsService,
                 authenticationService: authenticationService,
-                navigationRootCoordinator: navigationRootCoordinator
+                navigationSplitCoordinator: navigationSplitCoordinator
             )
         )
         
@@ -102,7 +103,7 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
                 tumbleApiService: tumbleApiService,
                 eventStorageService: eventStorageService,
                 analyticsService: analyticsService,
-                navigationRootCoordinator: navigationRootCoordinator
+                navigationSplitCoordinator: navigationSplitCoordinator
             )
         )
         
@@ -115,7 +116,7 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
                 userDataStorageService: userDataStorageService,
                 authenticationService: authenticationService,
                 analyticsService: analyticsService,
-                navigationRootCoordinator: navigationRootCoordinator
+                navigationSplitCoordinator: navigationSplitCoordinator
             )
         )
         
@@ -158,7 +159,7 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
                 guard let self else { return }
                 switch action {
                 case .presentedAccount:
-                    stateMachine.processEvent(.showAccountScreen)
+                    break
                 case .dismissedAccount:
                     stateMachine.processEvent(.dismissedAccountScreen)
                 }
@@ -189,9 +190,7 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
     }
     
     func handleAppRoute(_ appRoute: AppRoute, animated: Bool) {
-        Task {
-            await asyncHandleAppRoute(appRoute, animated: animated)
-        }
+        fatalError()
     }
     
     // MARK: - Private
@@ -201,18 +200,12 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
             return
         }
         
-        navigationRootCoordinator.setSheetCoordinator(nil, animated: animated)
+        navigationSplitCoordinator.setSheetCoordinator(nil, animated: animated)
         
         // Prevents system crashes when presenting a sheet if another one was already shown
-        try? await Task.sleep(nanoseconds: 200000)
+        try? await Task.sleep(nanoseconds: 200_000)
     }
     
-    func asyncHandleAppRoute(_ appRoute: AppRoute, animated: Bool) async {
-        switch appRoute {
-        default:
-            break
-        }
-    }
 }
 
 // MARK: - Setup
@@ -244,6 +237,12 @@ private extension BookmarksFlowCoordinator {
                 break
             case (.bookmarks, .showEventDetails(let eventId), .eventDetailsScreen):
                 presentEventDetailsSreen(eventId: eventId)
+            case (.eventDetailsScreen, .showEventDetails(let eventId), .eventDetailsScreen):
+                presentEventDetailsSreen(eventId: eventId)
+            case (.eventDetailsScreen, .showAccountScreen, .accountScreen):
+                accountFlowCoordinator.handleAppRoute(.account, animated: true)
+            case (.bookmarks, .dismissedEventDetails, .bookmarks):
+                break
             default:
                 fatalError("Unknown transition: \(context)")
             }
@@ -295,15 +294,17 @@ private extension BookmarksFlowCoordinator {
             }
             .store(in: &cancellables)
         
-        let navigationStackCoordinator = NavigationStackCoordinator()
-        navigationStackCoordinator.setRootCoordinator(coordinator)
+        sidebarNavigationStackCoordinator.setRootCoordinator(coordinator)
+            
+        // Only set detail on iPad
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            detailNavigationStackCoordinator.setRootCoordinator(PlaceholderScreenCoordinator())
+        }
         
-        navigationRootCoordinator.setRootCoordinator(navigationStackCoordinator)
+        navigationRootCoordinator.setRootCoordinator(navigationSplitCoordinator)
     }
-    
+
     private func presentEventDetailsSreen(eventId: String) {
-        let eventDetailsStackCoordinator = NavigationStackCoordinator()
-        
         let parameters = EventDetailsScreenCoordinatorParameters(
             eventId: eventId,
             appSettings: appSettings,
@@ -319,14 +320,14 @@ private extension BookmarksFlowCoordinator {
                 guard let self else { return }
                 switch actions {
                 case .dismiss:
-                    navigationRootCoordinator.setSheetCoordinator(nil)
+                    // Reset to placeholder
+                    detailNavigationStackCoordinator.setRootCoordinator(PlaceholderScreenCoordinator())
+                    stateMachine.processEvent(.dismissedEventDetails)
                 }
             }
             .store(in: &cancellables)
         
-        eventDetailsStackCoordinator.setRootCoordinator(coordinator)
-        navigationRootCoordinator.setSheetCoordinator(eventDetailsStackCoordinator, animated: true) { [weak self] in
-            self?.stateMachine.processEvent(.dismissedEventDetails)
-        }
+        // Show in detail pane on iPad, pushes on iPhone (split view auto-collapses)
+        detailNavigationStackCoordinator.setRootCoordinator(coordinator)
     }
 }

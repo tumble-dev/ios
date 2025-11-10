@@ -18,7 +18,7 @@ class OnboardingFlowCoordinator: FlowCoordinatorProtocol {
     private let notificationManager: NotificationManagerProtocol
     private let isFirstOpen: Bool
     
-    private let rootNavigationStackCoordinator: NavigationStackCoordinator
+    private let navigationRootCoordinator: NavigationRootCoordinator
     
     private var navigationStackCoordinator: NavigationStackCoordinator!
     
@@ -27,9 +27,9 @@ class OnboardingFlowCoordinator: FlowCoordinatorProtocol {
         analyticsService: AnalyticsServiceProtocol,
         notificationManager: NotificationManagerProtocol,
         isFirstOpen: Bool,
-        rootNavigationStackCoordinator: NavigationStackCoordinator
+        navigationRootCoordinator: NavigationRootCoordinator
     ) {
-        self.rootNavigationStackCoordinator = rootNavigationStackCoordinator
+        self.navigationRootCoordinator = navigationRootCoordinator
         navigationStackCoordinator = NavigationStackCoordinator()
         self.appSettings = appSettings
         self.analyticsService = analyticsService
@@ -56,7 +56,7 @@ class OnboardingFlowCoordinator: FlowCoordinatorProtocol {
             fatalError("This flow coordinator shouldn't have been started")
         }
         
-        rootNavigationStackCoordinator.setFullScreenCoverCoordinator(navigationStackCoordinator, animated: !isFirstOpen)
+        navigationRootCoordinator.setFullScreenCoverCoordinator(navigationStackCoordinator, animated: !isFirstOpen)
         stateMachine.tryEvent(.next)
     }
     
@@ -114,7 +114,7 @@ private extension OnboardingFlowCoordinator {
             case (_, _, .analyticsPermissions):
                 presentAnalyticsPermissionsScreen()
             case (_, _, .finished):
-                rootNavigationStackCoordinator.setFullScreenCoverCoordinator(nil)
+                navigationRootCoordinator.setFullScreenCoverCoordinator(nil)
                 stateMachine.tryState(.initial)
             case (.finished, _, .initial):
                 break
