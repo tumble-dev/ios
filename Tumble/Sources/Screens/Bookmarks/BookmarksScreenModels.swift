@@ -6,13 +6,13 @@
 //
 
 import Foundation
-import UIKit
 
-enum BookmarksScreenViewAction: Equatable {
+enum BookmarksScreenViewAction {
     case openEvent(eventId: String)
     case showSearch
     case showSettings
     case showAccount
+    case changeViewType(BookmarksViewType)
 }
 
 enum BookmarksScreenViewModelAction: Equatable {
@@ -24,6 +24,7 @@ enum BookmarksScreenViewModelAction: Equatable {
 
 struct BookmarksScreenViewState: BindableState {
     var dataState: BookmarksScreenDataState = .loading
+    var bookmarksViewType: BookmarksViewType = .daily
 }
 
 enum BookmarksScreenDataState {

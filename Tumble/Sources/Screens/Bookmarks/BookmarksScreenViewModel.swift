@@ -39,17 +39,21 @@ class BookmarksScreenViewModel: BookmarksScreenViewModelType, ObservableObject {
             actionsSubject.send(.presentSettingsScreen)
         case .showAccount:
             actionsSubject.send(.presentAccountScreen)
+        case .changeViewType(let viewType):
+            appSettings.bookmarkViewType = viewType
         }
     }
     
     private func setupListeners() {
-        // Listen to both allEvents and bookmarkedProgrammes changes
-        Publishers.CombineLatest(
+        Publishers.CombineLatest3(
             eventStorageService.allEventsPublisher,
-            appSettings.$bookmarkedProgrammes
+            appSettings.$bookmarkedProgrammes,
+            appSettings.$bookmarkViewType
         )
-        .sink { [weak self] allEvents, bookmarkedProgrammes in
+        .sink { [weak self] allEvents, bookmarkedProgrammes, viewType in
             guard let self else { return }
+            
+            state.bookmarksViewType = viewType
             
             guard !allEvents.isEmpty else {
                 state.dataState = .empty

@@ -61,7 +61,7 @@ class BookingDetailsScreenViewModel: BookingDetailsScreenViewModelType, BookingD
             let token = try await authenticationService.getCurrentSessionToken()
             
 
-            try await tumbleApiService.confirmResourceBooking(
+            _ = try await tumbleApiService.confirmResourceBooking(
                 bookingId: self.originalBooking.id,
                 school: "hkr",
                 authToken: token
@@ -91,7 +91,7 @@ class BookingDetailsScreenViewModel: BookingDetailsScreenViewModelType, BookingD
     private func cancelBooking() async {
         do {
             let token = try await authenticationService.getCurrentSessionToken()
-            try await tumbleApiService.unbookResource(
+            _ = try await tumbleApiService.unbookResource(
                 bookingId: originalBooking.id,
                 school: school,
                 authToken: token

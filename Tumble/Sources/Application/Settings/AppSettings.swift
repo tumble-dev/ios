@@ -8,6 +8,12 @@
 import Combine
 import Foundation
 
+enum BookmarksViewType: Int, Codable {
+    case daily = 0
+    case weekly = 1
+    case monthly = 2
+}
+
 final class AppSettings: ObservableObject {
     private enum UserDefaultsKeys: String {
         // Internal
@@ -98,8 +104,8 @@ final class AppSettings: ObservableObject {
     @UserPreference(key: UserDefaultsKeys.openEventFromWidget, defaultValue: false, storageType: .userDefaults(store))
     var openEventFromWidget: Bool
     
-    @UserPreference(key: UserDefaultsKeys.bookmarkViewType, defaultValue: 0, storageType: .userDefaults(store))
-    var bookmarkViewType: Int
+    @UserPreference(key: UserDefaultsKeys.bookmarkViewType, defaultValue: .daily, storageType: .userDefaults(store))
+    var bookmarkViewType: BookmarksViewType
     
     // MARK: - Advanced Settings - Performance & Data
     

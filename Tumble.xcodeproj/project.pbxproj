@@ -62,6 +62,8 @@
 		0B19F9652E7DA5CA0037E29E /* AdvancedSettingsScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F9642E7DA5CA0037E29E /* AdvancedSettingsScreenViewModel.swift */; };
 		0B19F9672E7DAB680037E29E /* AdvancedSettingsScreenModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F9662E7DAB680037E29E /* AdvancedSettingsScreenModels.swift */; };
 		0B19F9692E7DAB940037E29E /* AppAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F9682E7DAB940037E29E /* AppAppearance.swift */; };
+		0B27ACEC2EC28159006BCCCB /* CalendarViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B27ACEB2EC28159006BCCCB /* CalendarViewRepresentable.swift */; };
+		0B27ACEE2EC28730006BCCCB /* WeeklyCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B27ACED2EC28730006BCCCB /* WeeklyCalendarView.swift */; };
 		0B30C8E42E7DAC4E0002D799 /* AdvancedSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B30C8E32E7DAC4E0002D799 /* AdvancedSettingsScreen.swift */; };
 		0B30C8E72E7E04F50002D799 /* AnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B30C8E62E7E04F50002D799 /* AnalyticsService.swift */; };
 		0B30C8EA2E7E10E70002D799 /* NotificationsSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B30C8E92E7E10E20002D799 /* NotificationsSettingsScreen.swift */; };
@@ -257,6 +259,8 @@
 		0B19F9642E7DA5CA0037E29E /* AdvancedSettingsScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedSettingsScreenViewModel.swift; sourceTree = "<group>"; };
 		0B19F9662E7DAB680037E29E /* AdvancedSettingsScreenModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedSettingsScreenModels.swift; sourceTree = "<group>"; };
 		0B19F9682E7DAB940037E29E /* AppAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAppearance.swift; sourceTree = "<group>"; };
+		0B27ACEB2EC28159006BCCCB /* CalendarViewRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewRepresentable.swift; sourceTree = "<group>"; };
+		0B27ACED2EC28730006BCCCB /* WeeklyCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyCalendarView.swift; sourceTree = "<group>"; };
 		0B30C8E32E7DAC4E0002D799 /* AdvancedSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedSettingsScreen.swift; sourceTree = "<group>"; };
 		0B30C8E62E7E04F50002D799 /* AnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
 		0B30C8E92E7E10E20002D799 /* NotificationsSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsSettingsScreen.swift; sourceTree = "<group>"; };
@@ -824,7 +828,9 @@
 		0BAEE20A2E7B638200EA6796 /* Bookmarks */ = {
 			isa = PBXGroup;
 			children = (
+				0B27ACED2EC28730006BCCCB /* WeeklyCalendarView.swift */,
 				0B19F9452E7CB1530037E29E /* Details */,
+				0B27ACEB2EC28159006BCCCB /* CalendarViewRepresentable.swift */,
 				0BAEE2242E7B6CB600EA6796 /* BookmarksScreenViewModel.swift */,
 				0BAEE2262E7B6CFA00EA6796 /* BookmarksScreenModels.swift */,
 				0BAEE2222E7B6CAE00EA6796 /* BookmarksScreen.swift */,
@@ -1157,6 +1163,7 @@
 				0B114B792EB7F31A00067E26 /* ResourceBookingScreenViewModel.swift in Sources */,
 				0B19F9632E7DA5BC0037E29E /* AdvancedSettingsScreenViewModelProtocol.swift in Sources */,
 				D42BAC1E298D3D6A0025EAA9 /* AppLogger.swift in Sources */,
+				0B27ACEE2EC28730006BCCCB /* WeeklyCalendarView.swift in Sources */,
 				0BAEE20D2E7B639100EA6796 /* PlaceholderScreenCoordinator.swift in Sources */,
 				0B19F7FC2E7C4AD70037E29E /* Schools.swift in Sources */,
 				0B30C8EC2E7E10F40002D799 /* NotificationsSettingsScreenModels.swift in Sources */,
@@ -1187,6 +1194,7 @@
 				0B19F6A92E7C1CC40037E29E /* NotificationPermissionsScreenCoordinator.swift in Sources */,
 				0B19F92F2E7C6AB10037E29E /* QuickViewScreenViewModel.swift in Sources */,
 				0B878AE52E85B90900E69FF5 /* AnayticsPermissionsScreenModels.swift in Sources */,
+				0B27ACEC2EC28159006BCCCB /* CalendarViewRepresentable.swift in Sources */,
 				0B30CA412E7F41640002D799 /* AccountSettingsScreen.swift in Sources */,
 				0B114B772EB7F2A200067E26 /* ResourceBookingScreen.swift in Sources */,
 				0BAEE2322E7BF90700EA6796 /* NotificationManagerProtocol.swift in Sources */,
