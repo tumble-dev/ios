@@ -13,6 +13,7 @@ enum BookmarksScreenViewAction {
     case showSettings
     case showAccount
     case changeViewType(BookmarksViewType)
+    case loadHistoricalEvents
 }
 
 enum BookmarksScreenViewModelAction: Equatable {
@@ -23,7 +24,7 @@ enum BookmarksScreenViewModelAction: Equatable {
 }
 
 struct BookmarksScreenViewState: BindableState {
-    var dataState: BookmarksScreenDataState = .loading
+    var dataState: BookmarksScreenDataState = .empty
     var bookmarksViewType: BookmarksViewType = .daily
 }
 

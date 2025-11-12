@@ -41,4 +41,10 @@ class ServiceLocator {
     func register(userDataStorageService: UserDataStorageServiceProtocol) {
         self.userDataStorageService = userDataStorageService
     }
+    
+    private(set) var networkMonitor: NetworkMonitorProtocol!
+    
+    func register(networkMonitor: NetworkMonitorProtocol) {
+        self.networkMonitor = networkMonitor
+    }
 }

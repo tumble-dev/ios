@@ -97,6 +97,9 @@ class EventStorageService: EventStorageServiceProtocol, ObservableObject {
         loadFromDisk()
         allEventsSubject.send(Array(events.values))
         
+        // Perform automatic cleanup on initialization
+        performAutomaticCleanup()
+        
         setupStorageOptimizationObserver()
     }
     
@@ -355,6 +358,98 @@ class EventStorageService: EventStorageServiceProtocol, ObservableObject {
             return Array(upcomingEvents.prefix(limit))
         }
         return upcomingEvents
+    }
+    
+    /// Get events for smart bookmarks display (prioritizes current/future events)
+    func getEventsForSmartBookmarks() -> [Response.Event] {
+        let now = Date()
+        let calendar = Calendar.current
+        let startOfToday = calendar.startOfDay(for: now)
+        
+        // Get all events from today onwards, sorted by date
+        let futureEvents = getEvents { $0.from >= startOfToday }
+            .sorted { $0.from < $1.from }
+        
+        // If we have future events, return them
+        if !futureEvents.isEmpty {
+            return futureEvents
+        }
+        
+        // If no future events, get the most recent past events (last 7 days)
+        let sevenDaysAgo = calendar.date(byAdding: .day, value: -7, to: startOfToday) ?? startOfToday
+        let recentPastEvents = getEvents { event in
+            event.from >= sevenDaysAgo && event.from < startOfToday
+        }.sorted { $0.from > $1.from } // Most recent first for past events
+        
+        return recentPastEvents
+    }
+    
+    /// Get historical events (for pull-to-refresh past events loading)
+    func getHistoricalEvents(before date: Date, limit: Int = 50) -> [Response.Event] {
+        let calendar = Calendar.current
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: date)) ?? date
+        
+        return getEvents { $0.from < endOfDay }
+            .sorted { $0.from > $1.from } // Most recent first
+            .prefix(limit)
+            .map { $0 }
+    }
+    
+    /// Clean up events older than the specified number of days
+    func cleanupOldEvents(olderThan days: Int = 30) {
+        queue.async(flags: .barrier) { [weak self] in
+            guard let self = self else { return }
+            
+            let calendar = Calendar.current
+            let cutoffDate = calendar.date(byAdding: .day, value: -days, to: Date()) ?? Date()
+            
+            let eventsToRemove = events.values.filter { event in
+                event.from < cutoffDate
+            }
+            
+            guard !eventsToRemove.isEmpty else {
+                AppLogger.shared.info("No old events to clean up")
+                return
+            }
+            
+            let removedEventIds = eventsToRemove.map { $0.id }
+            for eventId in removedEventIds {
+                events.removeValue(forKey: eventId)
+            }
+            
+            AppLogger.shared.info("Cleaned up \(eventsToRemove.count) events older than \(days) days")
+            
+            // Save the updated events
+            do {
+                try self.saveToDisk()
+                
+                // Notify about the cleanup
+                DispatchQueue.main.async {
+                    let changeEvent = EventStorageEvent.eventsCleared
+                    self.lastChangeEvent = changeEvent
+                    self.changeSubject.send(changeEvent)
+                    self.publishEvents()
+                }
+            } catch {
+                AppLogger.shared.error("Failed to save events after cleanup: \(error)")
+            }
+        }
+    }
+    
+    /// Perform automatic cleanup on app launch/background
+    func performAutomaticCleanup() {
+        let lastCleanupKey = "lastEventStorageCleanup"
+        let calendar = Calendar.current
+        let now = Date()
+        
+        // Check if we've already cleaned up today
+        if let lastCleanup = UserDefaults.standard.object(forKey: lastCleanupKey) as? Date,
+           calendar.isDate(lastCleanup, inSameDayAs: now) {
+            return
+        }
+        
+        cleanupOldEvents()
+        UserDefaults.standard.set(now, forKey: lastCleanupKey)
     }
     
     /// Get events modified after a specific date

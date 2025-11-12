@@ -21,6 +21,7 @@ enum NetworkError: Swift.Error, LocalizedError {
     case notFound
     case timeout
     case noInternetConnection
+    case wifiOnlyModeEnabled
     case unknown(Swift.Error)
     
     var errorDescription: String? {
@@ -45,6 +46,8 @@ enum NetworkError: Swift.Error, LocalizedError {
             return "Request timeout"
         case .noInternetConnection:
             return "No internet connection"
+        case .wifiOnlyModeEnabled:
+            return "Wi-Fi only mode is enabled. Connect to Wi-Fi to continue."
         case .unknown(let error):
             return "Unknown error: \(error.localizedDescription)"
         }
@@ -101,6 +104,7 @@ struct EmptyResponse: Codable {
 /// This service automatically respects user-configured network settings including:
 /// - Connection timeout from AppSettings.connectionTimeout
 /// - Retry attempts from AppSettings.retryAttempts
+/// - Wi-Fi only mode from AppSettings.wifiOnlyMode
 /// 
 /// The service listens for changes to these settings and updates its configuration accordingly.
 final class TumbleAPIService: TumbleApiServiceProtocol {
@@ -109,17 +113,21 @@ final class TumbleAPIService: TumbleApiServiceProtocol {
     private let encoder: JSONEncoder
     private var config: RequestConfig
     private let appSettings: AppSettings
+    private let networkMonitor: NetworkMonitorProtocol
     private var settingsObserver: AnyCancellable?
+    private var networkObserver: AnyCancellable?
+    private var currentNetworkStatus: NetworkMonitorReachability = .unreachable
     
-    init(appSettings: AppSettings) {
+    init(appSettings: AppSettings, networkMonitor: NetworkMonitorProtocol) {
         self.appSettings = appSettings
+        self.networkMonitor = networkMonitor
         self.config = RequestConfig(
             timeout: appSettings.connectionTimeout,
             retryCount: appSettings.retryAttempts,
             retryDelay: 1.0
         )
         
-        AppLogger.shared.info("TumbleAPIService initialized with timeout: \(appSettings.connectionTimeout)s, retry attempts: \(appSettings.retryAttempts)")
+        AppLogger.shared.info("TumbleAPIService initialized with timeout: \(appSettings.connectionTimeout)s, retry attempts: \(appSettings.retryAttempts), Wi-Fi only: \(appSettings.wifiOnlyMode)")
         
         let sessionConfig = URLSessionConfiguration.default
         sessionConfig.timeoutIntervalForRequest = config.timeout
@@ -136,7 +144,7 @@ final class TumbleAPIService: TumbleApiServiceProtocol {
         encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .formatted(dateFormatter)
         
-        setupSettingsObserver()
+        setupObservers()
     }
     
     /// Fallback initializer for backwards compatibility (uses default config)
@@ -145,18 +153,51 @@ final class TumbleAPIService: TumbleApiServiceProtocol {
         let tempSettings = AppSettings()
         tempSettings.connectionTimeout = config.timeout
         tempSettings.retryAttempts = config.retryCount
-        self.init(appSettings: tempSettings)
+        // Use a simple network monitor for backwards compatibility
+        let tempNetworkMonitor = NetworkMonitor()
+        self.init(appSettings: tempSettings, networkMonitor: tempNetworkMonitor)
+    }
+    
+    /// Fallback initializer for backwards compatibility (with just settings)
+    convenience init(appSettings: AppSettings) {
+        let tempNetworkMonitor = NetworkMonitor()
+        self.init(appSettings: appSettings, networkMonitor: tempNetworkMonitor)
+    }
+    
+    private func setupObservers() {
+        setupSettingsObserver()
+        setupNetworkObserver()
     }
     
     private func setupSettingsObserver() {
         // Observe changes to network settings
-        settingsObserver = Publishers.CombineLatest(
+        settingsObserver = Publishers.CombineLatest3(
             appSettings.$connectionTimeout,
-            appSettings.$retryAttempts
+            appSettings.$retryAttempts,
+            appSettings.$wifiOnlyMode
         )
         .dropFirst() // Skip initial value
-        .sink { [weak self] timeout, retryAttempts in
+        .sink { [weak self] timeout, retryAttempts, wifiOnlyMode in
             self?.updateNetworkConfiguration(timeout: timeout, retryAttempts: retryAttempts)
+            AppLogger.shared.info("Network settings updated - Wi-Fi only: \(wifiOnlyMode)")
+        }
+    }
+    
+    private func setupNetworkObserver() {
+        // Monitor network connectivity changes
+        networkObserver = networkMonitor.reachabilityPublisher
+            .sink { [weak self] networkStatus in
+                self?.currentNetworkStatus = networkStatus
+                self?.logNetworkStatusChange(networkStatus)
+            }
+    }
+    
+    private func logNetworkStatusChange(_ status: NetworkMonitorReachability) {
+        switch status {
+        case .reachable(let connectionType):
+            AppLogger.shared.info("Network status: Connected via \(connectionType)")
+        case .unreachable:
+            AppLogger.shared.info("Network status: Disconnected")
         }
     }
     
@@ -180,6 +221,29 @@ final class TumbleAPIService: TumbleApiServiceProtocol {
     
     deinit {
         settingsObserver?.cancel()
+        networkObserver?.cancel()
+    }
+    
+    /// Checks if network requests are allowed based on current settings and connectivity
+    private func isNetworkRequestAllowed() -> Result<Void, NetworkError> {
+        // Check basic connectivity
+        switch currentNetworkStatus {
+        case .unreachable:
+            return .failure(.noInternetConnection)
+        case .reachable(let connectionType):
+            // If Wi-Fi only mode is enabled, only allow Wi-Fi and wired connections
+            if appSettings.wifiOnlyMode {
+                switch connectionType {
+                case .wifi, .wiredEthernet:
+                    return .success(())
+                case .cellular, .other:
+                    AppLogger.shared.info("Blocking network request - Wi-Fi only mode enabled, current connection: \(connectionType)")
+                    return .failure(.wifiOnlyModeEnabled)
+                }
+            } else {
+                return .success(())
+            }
+        }
     }
     
     // MARK: - Generic Request Methods
@@ -245,6 +309,14 @@ final class TumbleAPIService: TumbleApiServiceProtocol {
         responseType: T.Type,
         retryCount: Int = 0
     ) async throws -> T {
+        // Check if network request is allowed (Wi-Fi only mode, connectivity, etc.)
+        switch isNetworkRequestAllowed() {
+        case .success:
+            break
+        case .failure(let error):
+            throw error
+        }
+        
         let startTime = Date()
         let endpointName = getEndpointName(endpoint)
         
@@ -309,6 +381,14 @@ final class TumbleAPIService: TumbleApiServiceProtocol {
         responseType: T.Type,
         retryCount: Int = 0
     ) async throws -> T {
+        // Check if network request is allowed (Wi-Fi only mode, connectivity, etc.)
+        switch isNetworkRequestAllowed() {
+        case .success:
+            break
+        case .failure(let error):
+            throw error
+        }
+        
         let startTime = Date()
         let endpointName = getEndpointName(endpoint)
         
@@ -424,6 +504,8 @@ final class TumbleAPIService: TumbleApiServiceProtocol {
                 return "timeout"
             case .noInternetConnection:
                 return "no_internet"
+            case .wifiOnlyModeEnabled:
+                return "wifi_only_mode_enabled"
             case .unknown:
                 return "unknown_network_error"
             }

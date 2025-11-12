@@ -43,7 +43,7 @@ class ApplicationCoordinator: ApplicationCoordinatorProtocol, NotificationManage
         windowManager = WindowManager(appDelegate: appDelegate)
         let networkMonitor = NetworkMonitor()
         appMediator = AppMediator(windowManager: windowManager, networkMonitor: networkMonitor)
-        Self.setupServiceLocator(appSettings: appSettings, appHooks: appHooks)
+        Self.setupServiceLocator(appSettings: appSettings, appHooks: appHooks, networkMonitor: networkMonitor)
 
         // MARK: - Services, Managers & Controllers
 
@@ -75,6 +75,9 @@ class ApplicationCoordinator: ApplicationCoordinatorProtocol, NotificationManage
         self.appDelegate = appDelegate
         self.appSettings = appSettings
         self.appHooks = appHooks
+        
+        // Set up lifecycle observers for event cleanup
+        setupLifecycleObservers()
 
         // Wire delegate and subscribe to AppDelegate callbacks BEFORE starting notifications,
         // otherwise the APNs token event can be missed (PassthroughSubject has no buffer).
@@ -83,6 +86,10 @@ class ApplicationCoordinator: ApplicationCoordinatorProtocol, NotificationManage
         notificationManager.start()
 
         setupStateMachine()
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
     func start() {
@@ -356,14 +363,37 @@ private extension ApplicationCoordinator {
     }
 
     // MARK: - Private
+    
+    /// Set up lifecycle observers for automatic event cleanup
+    private func setupLifecycleObservers() {
+        NotificationCenter.default.addObserver(
+            forName: UIApplication.didEnterBackgroundNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            // Perform cleanup when app enters background
+            ServiceLocator.shared.eventStorageService.performAutomaticCleanup()
+        }
+        
+        NotificationCenter.default.addObserver(
+            forName: UIApplication.willEnterForegroundNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            // Perform cleanup when app comes to foreground (in case it's been a while)
+            ServiceLocator.shared.eventStorageService.performAutomaticCleanup()
+        }
+    }
 
     /// Register services used throughout application
     private static func setupServiceLocator(
         appSettings: AppSettings,
-        appHooks: AppHooks
+        appHooks: AppHooks,
+        networkMonitor: NetworkMonitorProtocol
     ) {
         ServiceLocator.shared.register(appSettings: appSettings)
-        ServiceLocator.shared.register(tumbleApiService: TumbleAPIService(appSettings: appSettings))
+        ServiceLocator.shared.register(networkMonitor: networkMonitor)
+        ServiceLocator.shared.register(tumbleApiService: TumbleAPIService(appSettings: appSettings, networkMonitor: networkMonitor))
         ServiceLocator.shared.register(analytics: AnalyticsService(appSettings: appSettings))
         ServiceLocator.shared.register(eventStorageService: EventStorageService(appSettings: appSettings))
         ServiceLocator.shared.register(userDataStorageService: UserDataStorageService(appSettings: appSettings))

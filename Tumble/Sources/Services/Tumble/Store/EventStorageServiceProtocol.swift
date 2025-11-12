@@ -28,10 +28,14 @@ protocol EventStorageServiceProtocol {
     func getEvents(from startDate: Date, to endDate: Date) -> [Response.Event]
     func getTodaysEvents() -> [Response.Event]
     func getUpcomingEvents(limit: Int?) -> [Response.Event]
+    func getEventsForSmartBookmarks() -> [Response.Event]
+    func getHistoricalEvents(before date: Date, limit: Int) -> [Response.Event]
     func getEventsModifiedAfter(_ date: Date) -> [Response.Event]
     func getSpecialEvents() -> [Response.Event]
     func getAllEventsSorted() -> [Response.Event]
     func getEventsGroupedByDate() -> [String: [Response.Event]]
     
     func updateColor(forCourse courseId: String, withColor colorHex: String)
+    func cleanupOldEvents(olderThan days: Int)
+    func performAutomaticCleanup()
 }
