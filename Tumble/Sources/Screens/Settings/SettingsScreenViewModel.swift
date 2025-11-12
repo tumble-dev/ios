@@ -17,7 +17,6 @@ class SettingsScreenViewModel: SettingsScreenViewModelType, SettingsScreenViewMo
     
     private var actionsSubject: PassthroughSubject<SettingsScreenViewModelAction, Never> = .init()
     
-    
     var actions: AnyPublisher<SettingsScreenViewModelAction, Never> {
         actionsSubject.eraseToAnyPublisher()
     }
@@ -54,7 +53,6 @@ class SettingsScreenViewModel: SettingsScreenViewModelType, SettingsScreenViewMo
             .store(in: &cancellables)
     }
 
-    // Also update initial state
     init(
         quickSettings: SettingsProtocol,
         analyticsService: AnalyticsServiceProtocol,
@@ -68,7 +66,7 @@ class SettingsScreenViewModel: SettingsScreenViewModelType, SettingsScreenViewMo
             bindings: .init(
                 quickSettings: quickSettings,
                 authenticationService: authenticationService,
-                onActiveUsernameChange: nil  // Will be set up in setupObservers
+                onActiveUsernameChange: nil
             )
         )
         super.init(initialViewState: initialState)

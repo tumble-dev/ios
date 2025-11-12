@@ -28,7 +28,7 @@ class ResourceBookingScreenViewModel: ResourceBookingScreenViewModelType, Resour
         analyticsService: AnalyticsServiceProtocol,
         authenticationService: AuthenticationServiceProtocol,
         resource: Response.Resource,
-        selectedPickerDate: Date,
+        selectedPickerDate: Date
     ) {
         self.analyticsService = analyticsService
         self.tumbleApiService = tumbleApiService
@@ -40,7 +40,6 @@ class ResourceBookingScreenViewModel: ResourceBookingScreenViewModelType, Resour
         ))
         
         setupListeners()
-        
     }
     
     override func process(viewAction: ResourceBookingScreenViewAction) {
@@ -112,7 +111,8 @@ class ResourceBookingScreenViewModel: ResourceBookingScreenViewModelType, Resour
     @MainActor
     private func updateSlotAvailabilityAfterBooking(slot: Response.AvailabilitySlot) {
         guard let locationId = slot.locationId,
-              let availabilities = state.resource.availabilities else {
+              let availabilities = state.resource.availabilities
+        else {
             return
         }
         
@@ -125,7 +125,8 @@ class ResourceBookingScreenViewModel: ResourceBookingScreenViewModelType, Resour
                 for (timeslotIndex, availabilitySlot) in timeslots {
                     // Match the specific slot by timeSlotId and locationId
                     if availabilitySlot.locationId == slot.locationId &&
-                       availabilitySlot.timeSlotId == slot.timeSlotId {
+                        availabilitySlot.timeSlotId == slot.timeSlotId
+                    {
                         // Create a new AvailabilitySlot with unavailable status
                         let updatedSlot = Response.AvailabilitySlot(
                             availability: .unavailable,

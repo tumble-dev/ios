@@ -20,6 +20,9 @@ struct SplashScreen: View {
                 .ignoresSafeArea(.all)
             
             Image("AppIconOpaque")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 100, height: 100)
         }
     }
 }

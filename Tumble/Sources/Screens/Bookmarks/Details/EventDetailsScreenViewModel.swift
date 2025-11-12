@@ -61,10 +61,25 @@ class EventDetailsScreenViewModel: EventDetailsScreenViewModelType, ObservableOb
             state.bindings.colorPickerLocalSelection = event.color
             // Rebuild the ColorPicker binding to use the local state (fast) and debounce persistence
             state.bindings.colorPickerSelection = createColorPickerBinding(for: event)
+            
+            // Load notification states
+            Task {
+                await loadNotificationStates(for: event)
+            }
         } else {
             state.dataState = .error(msg: "Couldn't load event from storage.")
             state.bindings.colorPickerLocalSelection = .clear
             state.bindings.colorPickerSelection = .constant(.clear)
+        }
+    }
+    
+    private func loadNotificationStates(for event: Response.Event) async {
+        let isEventNotificationEnabled = await notificationManager.isEventNotificationScheduled(for: event.id)
+        let isCourseNotificationEnabled = await notificationManager.areCourseNotificationsEnabled(for: event.courseId)
+        
+        await MainActor.run {
+            state.isEventNotificationEnabled = isEventNotificationEnabled
+            state.isCourseNotificationEnabled = isCourseNotificationEnabled
         }
     }
     
@@ -78,6 +93,62 @@ class EventDetailsScreenViewModel: EventDetailsScreenViewModelType, ObservableOb
             state.isColorPickerShown = true
         case .hideColorPicker:
             state.isColorPickerShown = false
+        case .toggleEventNotification(let enabled):
+            handleEventNotificationToggle(enabled: enabled)
+        case .toggleCourseNotification(let enabled):
+            handleCourseNotificationToggle(enabled: enabled)
+        }
+    }
+    
+    // MARK: - Notification Handling
+    
+    private func handleEventNotificationToggle(enabled: Bool) {
+        guard case .loaded(let event) = state.dataState else { return }
+        
+        // Provide immediate UI feedback - optimistic update
+        state.isEventNotificationEnabled = enabled
+        
+        Task {
+            if enabled {
+                let success = await notificationManager.scheduleEventNotification(
+                    for: event.id,
+                    eventTitle: event.title,
+                    eventDate: event.from
+                )
+                
+                // Only update if the operation failed - revert the optimistic update
+                if !success {
+                    await MainActor.run {
+                        state.isEventNotificationEnabled = false
+                    }
+                }
+            } else {
+                notificationManager.cancelEventNotification(for: event.id)
+                // Cancellation is typically fast and reliable, so we keep the optimistic update
+            }
+        }
+    }
+    
+    private func handleCourseNotificationToggle(enabled: Bool) {
+        guard case .loaded(let event) = state.dataState else { return }
+        
+        // Provide immediate UI feedback - optimistic update
+        state.isCourseNotificationEnabled = enabled
+        
+        Task {
+            if enabled {
+                let success = await notificationManager.enableCourseNotifications(for: event.courseId)
+                
+                // Only update if the operation failed - revert the optimistic update
+                if !success {
+                    await MainActor.run {
+                        state.isCourseNotificationEnabled = false
+                    }
+                }
+            } else {
+                await notificationManager.disableCourseNotifications(for: event.courseId)
+                // Disabling is typically fast and reliable, so we keep the optimistic update
+            }
         }
     }
     
@@ -103,4 +174,3 @@ class EventDetailsScreenViewModel: EventDetailsScreenViewModelType, ObservableOb
         )
     }
 }
-

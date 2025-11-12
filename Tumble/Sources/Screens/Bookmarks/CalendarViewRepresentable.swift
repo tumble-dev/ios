@@ -5,7 +5,6 @@
 //  Created by Adis Veletanlic on 2025-11-10.
 //
 
-
 //
 //  CalendarViewRepresentable.swift
 //  Tumble
@@ -27,7 +26,6 @@ struct CalendarViewRepresentable: UIViewRepresentable {
     let calendar = FSCalendar()
     
     func makeUIView(context: Context) -> FSCalendar {
-                
         calendar.delegate = context.coordinator
         calendar.dataSource = context.coordinator
         
@@ -55,7 +53,6 @@ struct CalendarViewRepresentable: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: FSCalendar, context: Context) {
-                
         uiView.scope = .month
         uiView.firstWeekday = 2
         uiView.appearance.weekdayTextColor = UIColor(named: "OnBackground")?.withAlphaComponent(0.7)
@@ -84,7 +81,7 @@ struct CalendarViewRepresentable: UIViewRepresentable {
         var parent: CalendarViewRepresentable
         var calendarDayEvents: [Date: [Response.Event]]
         
-        init(_ parent: CalendarViewRepresentable, calendarDayEvents: [Date : [Response.Event]]) {
+        init(_ parent: CalendarViewRepresentable, calendarDayEvents: [Date: [Response.Event]]) {
             self.parent = parent
             self.calendarDayEvents = calendarDayEvents
         }

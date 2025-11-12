@@ -17,6 +17,8 @@ struct EventDetailsScreenViewState: BindableState {
     
     var dataState: EventDetailsDataState = .loading
     var isColorPickerShown: Bool = false
+    var isEventNotificationEnabled: Bool = false
+    var isCourseNotificationEnabled: Bool = false
 }
 
 enum EventDetailsScreenViewModelAction: Equatable {
@@ -28,6 +30,8 @@ enum EventDetailsScreenViewAction: Equatable {
     case close
     case showColorPicker
     case hideColorPicker
+    case toggleEventNotification(Bool)
+    case toggleCourseNotification(Bool)
 }
 
 enum EventDetailsDataState: Equatable {
@@ -35,4 +39,3 @@ enum EventDetailsDataState: Equatable {
     case loaded(event: Response.Event)
     case error(msg: String)
 }
-

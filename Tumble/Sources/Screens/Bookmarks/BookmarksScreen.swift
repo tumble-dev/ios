@@ -6,8 +6,8 @@
 //
 
 import Combine
-import SwiftUI
 import FSCalendar
+import SwiftUI
 
 struct BookmarksScreen: View {
     @ObservedObject var context: BookmarksScreenViewModel.Context
@@ -111,7 +111,6 @@ struct BookmarksScreen: View {
                 } else {
                     ScrollView {
                         LazyVStack(spacing: 0) {
-                            
                             // Events
                             ForEach(selectedDateEvents.sorted { $0.from < $1.from }, id: \.id) { event in
                                 EventCard(event: event)

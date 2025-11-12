@@ -5,8 +5,8 @@
 //  Created by Adis Veletanlic on 2025-09-22.
 //
 
-import Foundation
 import Combine
+import Foundation
 
 // MARK: - WebSocket Message Types
 
@@ -84,7 +84,7 @@ final class WebSocketSessionManager: NSObject, WebSocketSessionManagerProtocol, 
         let config = URLSessionConfiguration.default
         config.timeoutIntervalForRequest = 30
         config.timeoutIntervalForResource = 60
-        self.urlSession = URLSession(configuration: config)
+        urlSession = URLSession(configuration: config)
         
         super.init()
     }
@@ -206,7 +206,8 @@ final class WebSocketSessionManager: NSObject, WebSocketSessionManagerProtocol, 
         AppLogger.shared.debug("Received WebSocket message: \(text)")
         
         guard let data = text.data(using: .utf8),
-              let wsMessage = try? JSONDecoder().decode(WSMessage.self, from: data) else {
+              let wsMessage = try? JSONDecoder().decode(WSMessage.self, from: data)
+        else {
             AppLogger.shared.error("Failed to decode WebSocket message: \(text)")
             return
         }
@@ -226,22 +227,22 @@ final class WebSocketSessionManager: NSObject, WebSocketSessionManagerProtocol, 
             if let userData = message.data?.value as? [String: Any],
                let username = userData["username"] as? String,
                let name = userData["name"] as? String,
-               let sessionId = userData["session_id"] as? String {
-                
+               let sessionId = userData["session_id"] as? String
+            {
                 let user = Response.User(
                     name: name,
                     sessionId: sessionId,
                     username: username
                 )
                 
-                if let authContinuation = self.authContinuation {
+                if let authContinuation = authContinuation {
                     self.authContinuation = nil
                     authContinuation.resume(returning: user)
                 }
                 
                 onAuthenticationSuccess?(user)
             } else {
-                if let authContinuation = self.authContinuation {
+                if let authContinuation = authContinuation {
                     self.authContinuation = nil
                     authContinuation.resume(throwing: AuthError.decodingError)
                 }
@@ -252,13 +253,14 @@ final class WebSocketSessionManager: NSObject, WebSocketSessionManagerProtocol, 
             
             let errorMessage: String
             if let errorData = message.data?.value as? [String: Any],
-               let error = errorData["error"] as? String {
+               let error = errorData["error"] as? String
+            {
                 errorMessage = error
             } else {
                 errorMessage = "Authentication failed"
             }
             
-            if let authContinuation = self.authContinuation {
+            if let authContinuation = authContinuation {
                 self.authContinuation = nil
                 authContinuation.resume(throwing: AuthError.invalidCredentials)
             }
@@ -325,7 +327,7 @@ final class WebSocketSessionManager: NSObject, WebSocketSessionManagerProtocol, 
         if !isReconnecting {
             isReconnecting = true
             
-            try? await Task.sleep(nanoseconds: 2_000_000_000)
+            try? await Task.sleep(nanoseconds: 2000000000)
             
             if connectionState != .disconnected {
                 await connect()
@@ -367,8 +369,8 @@ struct AnyCodable: Codable {
             value = arrayValue.map { $0.value }
         } else {
             throw DecodingError.typeMismatch(AnyCodable.self,
-                DecodingError.Context(codingPath: decoder.codingPath,
-                                    debugDescription: "Cannot decode AnyCodable"))
+                                             DecodingError.Context(codingPath: decoder.codingPath,
+                                                                   debugDescription: "Cannot decode AnyCodable"))
         }
     }
     
@@ -390,8 +392,8 @@ struct AnyCodable: Codable {
             try container.encode(arrayValue.map { AnyCodable($0) })
         default:
             throw EncodingError.invalidValue(value,
-                EncodingError.Context(codingPath: encoder.codingPath,
-                                    debugDescription: "Cannot encode value of type \(type(of: value))"))
+                                             EncodingError.Context(codingPath: encoder.codingPath,
+                                                                   debugDescription: "Cannot encode value of type \(type(of: value))"))
         }
     }
 }

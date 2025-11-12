@@ -13,7 +13,6 @@
 		0B114B7E2EB7F4C100067E26 /* ResourceBookingScreenViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B114B7D2EB7F4C100067E26 /* ResourceBookingScreenViewModelProtocol.swift */; };
 		0B114B802EB7F7FF00067E26 /* ResourceBookingScreenCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B114B7F2EB7F7FB00067E26 /* ResourceBookingScreenCoordinator.swift */; };
 		0B19F6972E7C106E0037E29E /* UserNotificationCenterProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F6962E7C106E0037E29E /* UserNotificationCenterProtocol.swift */; };
-		0B19F6992E7C109B0037E29E /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F6982E7C109B0037E29E /* NotificationManager.swift */; };
 		0B19F69B2E7C10C60037E29E /* NotificationConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F69A2E7C10C60037E29E /* NotificationConstants.swift */; };
 		0B19F69F2E7C144F0037E29E /* AppSettingsHookProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F69E2E7C144F0037E29E /* AppSettingsHookProtocol.swift */; };
 		0B19F6A12E7C14770037E29E /* AppHooks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19F6A02E7C14730037E29E /* AppHooks.swift */; };
@@ -101,6 +100,7 @@
 		0B5DC8262E79C7CF001B668F /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 0B5DC8252E79C7CF001B668F /* FirebaseMessaging */; };
 		0B6A39EB2E81BBC300977B1A /* WebSocketSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B6A39EA2E81BBC300977B1A /* WebSocketSessionManager.swift */; };
 		0B6A39EE2E832E5B00977B1A /* Shimmer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B6A39ED2E832E5A00977B1A /* Shimmer.swift */; };
+		0B6A3DE92EC4AE6500BA9E70 /* UNUserNotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B6A3DE82EC4AE6000BA9E70 /* UNUserNotificationCenter.swift */; };
 		0B878AE12E85B8F600E69FF5 /* AnalyticsPermissionsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B878AE02E85B8F000E69FF5 /* AnalyticsPermissionsScreen.swift */; };
 		0B878AE32E85B8FE00E69FF5 /* AnalyticsPermissionsScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B878AE22E85B8FA00E69FF5 /* AnalyticsPermissionsScreenViewModel.swift */; };
 		0B878AE52E85B90900E69FF5 /* AnayticsPermissionsScreenModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B878AE42E85B90200E69FF5 /* AnayticsPermissionsScreenModels.swift */; };
@@ -153,6 +153,7 @@
 		0BAEE2292E7B6E1800EA6796 /* SplashScreenCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAEE2282E7B6E1400EA6796 /* SplashScreenCoordinator.swift */; };
 		0BAEE2322E7BF90700EA6796 /* NotificationManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAEE2312E7BF90700EA6796 /* NotificationManagerProtocol.swift */; };
 		0BAEE2382E7BFD3500EA6796 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 0BAEE2372E7BFD3500EA6796 /* KeychainAccess */; };
+		0BB20E9E2EC3F0DB002CCDAC /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB20E9D2EC3F0DB002CCDAC /* NotificationManager.swift */; };
 		0BDE19672E7F771D004C6A51 /* UserAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BDE19662E7F771D004C6A51 /* UserAvatar.swift */; };
 		0BDE196B2E7F7AEE004C6A51 /* DesignTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BDE196A2E7F7AEE004C6A51 /* DesignTokens.swift */; };
 		0BDE19762E7F82BB004C6A51 /* SwiftUIIntrospect in Frameworks */ = {isa = PBXBuildFile; productRef = 0BDE19752E7F82BB004C6A51 /* SwiftUIIntrospect */; };
@@ -210,7 +211,6 @@
 		0B114B7D2EB7F4C100067E26 /* ResourceBookingScreenViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceBookingScreenViewModelProtocol.swift; sourceTree = "<group>"; };
 		0B114B7F2EB7F7FB00067E26 /* ResourceBookingScreenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceBookingScreenCoordinator.swift; sourceTree = "<group>"; };
 		0B19F6962E7C106E0037E29E /* UserNotificationCenterProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserNotificationCenterProtocol.swift; sourceTree = "<group>"; };
-		0B19F6982E7C109B0037E29E /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		0B19F69A2E7C10C60037E29E /* NotificationConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationConstants.swift; sourceTree = "<group>"; };
 		0B19F69E2E7C144F0037E29E /* AppSettingsHookProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsHookProtocol.swift; sourceTree = "<group>"; };
 		0B19F6A02E7C14730037E29E /* AppHooks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppHooks.swift; sourceTree = "<group>"; };
@@ -292,6 +292,7 @@
 		0B5229072EBBBA9F00FA7A76 /* BookingDetailsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingDetailsScreen.swift; sourceTree = "<group>"; };
 		0B6A39EA2E81BBC300977B1A /* WebSocketSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketSessionManager.swift; sourceTree = "<group>"; };
 		0B6A39ED2E832E5A00977B1A /* Shimmer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shimmer.swift; sourceTree = "<group>"; };
+		0B6A3DE82EC4AE6000BA9E70 /* UNUserNotificationCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UNUserNotificationCenter.swift; sourceTree = "<group>"; };
 		0B878AE02E85B8F000E69FF5 /* AnalyticsPermissionsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsPermissionsScreen.swift; sourceTree = "<group>"; };
 		0B878AE22E85B8FA00E69FF5 /* AnalyticsPermissionsScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsPermissionsScreenViewModel.swift; sourceTree = "<group>"; };
 		0B878AE42E85B90200E69FF5 /* AnayticsPermissionsScreenModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnayticsPermissionsScreenModels.swift; sourceTree = "<group>"; };
@@ -342,6 +343,7 @@
 		0BAEE2262E7B6CFA00EA6796 /* BookmarksScreenModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksScreenModels.swift; sourceTree = "<group>"; };
 		0BAEE2282E7B6E1400EA6796 /* SplashScreenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenCoordinator.swift; sourceTree = "<group>"; };
 		0BAEE2312E7BF90700EA6796 /* NotificationManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManagerProtocol.swift; sourceTree = "<group>"; };
+		0BB20E9D2EC3F0DB002CCDAC /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		0BDE19662E7F771D004C6A51 /* UserAvatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAvatar.swift; sourceTree = "<group>"; };
 		0BDE196A2E7F7AEE004C6A51 /* DesignTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignTokens.swift; sourceTree = "<group>"; };
 		0BDE19782E7F8630004C6A51 /* ServiceLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocator.swift; sourceTree = "<group>"; };
@@ -467,6 +469,7 @@
 		0B19F7F52E7C47D30037E29E /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				0B6A3DE82EC4AE6000BA9E70 /* UNUserNotificationCenter.swift */,
 				0B19F7F62E7C47E20037E29E /* Color.swift */,
 				0BDE196A2E7F7AEE004C6A51 /* DesignTokens.swift */,
 				0B19F93F2E7C9A1A0037E29E /* Event.swift */,
@@ -873,9 +876,9 @@
 		0BAEE2302E7BF90200EA6796 /* Manager */ = {
 			isa = PBXGroup;
 			children = (
-				0B19F6982E7C109B0037E29E /* NotificationManager.swift */,
 				0B19F6962E7C106E0037E29E /* UserNotificationCenterProtocol.swift */,
 				0BAEE2312E7BF90700EA6796 /* NotificationManagerProtocol.swift */,
+				0BB20E9D2EC3F0DB002CCDAC /* NotificationManager.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -1191,7 +1194,6 @@
 				0B114B772EB7F2A200067E26 /* ResourceBookingScreen.swift in Sources */,
 				0BAEE2322E7BF90700EA6796 /* NotificationManagerProtocol.swift in Sources */,
 				0B19F7EB2E7C422E0037E29E /* AppMediatorProtocol.swift in Sources */,
-				0B19F6992E7C109B0037E29E /* NotificationManager.swift in Sources */,
 				0BAEDF1A2E7B196100EA6796 /* School.swift in Sources */,
 				0B19F6972E7C106E0037E29E /* UserNotificationCenterProtocol.swift in Sources */,
 				0B19F6A32E7C16A60037E29E /* Popup.swift in Sources */,
@@ -1211,6 +1213,7 @@
 				0B19F7F42E7C47A20037E29E /* SchoolPill.swift in Sources */,
 				0B19F95A2E7D78790037E29E /* SettingsScreenViewModelProtocol.swift in Sources */,
 				0B30CA492E7F41A30002D799 /* AccountSettingsScreenCoordinator.swift in Sources */,
+				0B6A3DE92EC4AE6500BA9E70 /* UNUserNotificationCenter.swift in Sources */,
 				0BAEE1FA2E7B4A9F00EA6796 /* WindowManager.swift in Sources */,
 				D4562E0B2A27E9020059ED36 /* PopupFactory.swift in Sources */,
 				0B19F9582E7D783A0037E29E /* SettingsScreenViewModel.swift in Sources */,
@@ -1240,6 +1243,7 @@
 				0B878AE92E85B92800E69FF5 /* AnalyticsPermissionsScreenViewModelProtocol.swift in Sources */,
 				0BAEDF1F2E7B1D4900EA6796 /* AppSettings.swift in Sources */,
 				0B30CA432E7F41890002D799 /* AccountSettingsScreenModels.swift in Sources */,
+				0BB20E9E2EC3F0DB002CCDAC /* NotificationManager.swift in Sources */,
 				0B5229062EBBBA8C00FA7A76 /* BookingDetailsScreenViewModel.swift in Sources */,
 				0B30C8FE2E7E2BCB0002D799 /* BookmarksSettingsScreenCoordinator.swift in Sources */,
 				0B30C90A2E7EE9CD0002D799 /* AccountScreenViewModel.swift in Sources */,

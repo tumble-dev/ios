@@ -153,7 +153,7 @@ enum Response {
         let confirmationClosed: Date?
         
         private enum CodingKeys: String, CodingKey {
-            case id = "id"
+            case id
             case resourceId = "resource_id"
             case timeSlot = "time_slot"
             case locationId = "location_id"

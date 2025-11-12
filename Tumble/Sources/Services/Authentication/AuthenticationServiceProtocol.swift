@@ -5,8 +5,8 @@
 //  Created by Adis Veletanlic on 2025-09-21.
 //
 
-import SwiftUI
 import Combine
+import SwiftUI
 
 protocol AuthenticationServiceProtocol {
     var authStatePublisher: Published<AuthState>.Publisher { get }
@@ -22,8 +22,8 @@ protocol AuthenticationServiceProtocol {
     func autoReconnect() async throws
     func getCurrentAuthState() -> AuthState
     
-    
     // MARK: - Account actions
+
     func addAccount(username: String, password: String, school: String) async throws -> TumbleUser
     func removeAccount(username: String) async throws -> [TumbleUser]
 }

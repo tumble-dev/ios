@@ -28,7 +28,7 @@ class BookingDetailsScreenViewModel: BookingDetailsScreenViewModelType, BookingD
         tumbleApiService: TumbleApiServiceProtocol,
         authenticationService: AuthenticationServiceProtocol
     ) {
-        self.originalBooking = booking
+        originalBooking = booking
         self.school = school
         self.tumbleApiService = tumbleApiService
         self.authenticationService = authenticationService
@@ -60,9 +60,8 @@ class BookingDetailsScreenViewModel: BookingDetailsScreenViewModelType, BookingD
         do {
             let token = try await authenticationService.getCurrentSessionToken()
             
-
             _ = try await tumbleApiService.confirmResourceBooking(
-                bookingId: self.originalBooking.id,
+                bookingId: originalBooking.id,
                 school: "hkr",
                 authToken: token
             )
@@ -125,4 +124,3 @@ class BookingDetailsScreenViewModel: BookingDetailsScreenViewModelType, BookingD
         state.booking = booking
     }
 }
-

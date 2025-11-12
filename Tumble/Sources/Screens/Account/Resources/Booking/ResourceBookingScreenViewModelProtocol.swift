@@ -5,8 +5,8 @@
 //  Created by Adis Veletanlic on 2025-11-02.
 //
 
-import Foundation
 import Combine
+import Foundation
 
 @MainActor
 protocol ResourceBookingScreenViewModelProtocol {

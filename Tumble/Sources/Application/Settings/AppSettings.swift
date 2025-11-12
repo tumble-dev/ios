@@ -25,6 +25,7 @@ final class AppSettings: ObservableObject {
         
         // Notification Settings - Messaging
         case inAppMessagingEnabled
+        case pushNotificationsEnabled
         case notificationOffset
         
         // Settings - General
@@ -79,6 +80,9 @@ final class AppSettings: ObservableObject {
     
     @UserPreference(key: UserDefaultsKeys.inAppMessagingEnabled, defaultValue: false, storageType: .userDefaults(store))
     var inAppMessagingEnabled: Bool
+    
+    @UserPreference(key: UserDefaultsKeys.pushNotificationsEnabled, defaultValue: false, storageType: .userDefaults(store))
+    var pushNotificationsEnabled: Bool
     
     @UserPreference(key: UserDefaultsKeys.lastVersionLaunched, storageType: .userDefaults(store))
     var lastVersionLaunched: String?
@@ -195,6 +199,7 @@ extension AppSettings: NotificationsSettingsProtocol {
     func resetNotificationsSettings() {
         notificationOffset = .hour
         inAppMessagingEnabled = true
+        pushNotificationsEnabled = true
     }
 }
 

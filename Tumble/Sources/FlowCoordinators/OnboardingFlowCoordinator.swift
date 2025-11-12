@@ -150,7 +150,8 @@ private extension OnboardingFlowCoordinator {
         let coordinator = NotificationPermissionsScreenCoordinator(
             parameters: .init(
                 notificationManager: notificationManager,
-                appSettings: appSettings)
+                appSettings: appSettings
+            )
         )
         
         coordinator.actions
@@ -167,7 +168,7 @@ private extension OnboardingFlowCoordinator {
     }
     
     private func presentAnalyticsPermissionsScreen() {
-        let coordinator =  AnalyticsPermissionsScreenCoordinator(
+        let coordinator = AnalyticsPermissionsScreenCoordinator(
             parameters: .init(
                 appSettings: appSettings
             )
@@ -186,5 +187,4 @@ private extension OnboardingFlowCoordinator {
         
         presentCoordinator(coordinator)
     }
-    
 }

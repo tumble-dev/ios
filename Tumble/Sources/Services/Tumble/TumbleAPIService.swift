@@ -461,7 +461,7 @@ final class TumbleAPIService: TumbleApiServiceProtocol {
         let networkError = mapError(error)
         
         if shouldRetry(error: networkError) && retryCount < config.retryCount {
-            try await Task.sleep(nanoseconds: UInt64(config.retryDelay * 1_000_000_000))
+            try await Task.sleep(nanoseconds: UInt64(config.retryDelay * 1000000000))
             return try await performRequest(endpoint, responseType: responseType, retryCount: retryCount + 1)
         }
         
@@ -547,7 +547,6 @@ extension TumbleAPIService {
 // MARK: - Authenticated Endpoints
 
 extension TumbleAPIService {
-
     func getUserBookings(school: String, authToken: String) async throws -> [Response.Booking] {
         let endpoint = TumbleEndpoint.userBookings(school: school)
         let request = endpoint.urlRequest(authToken: authToken)
@@ -575,7 +574,6 @@ extension TumbleAPIService {
         return try handleResponse(data: data, response: response, responseType: Response.GenericResponse.self)
     }
     
-
     func confirmResourceBooking(
         bookingId: String,
         school: String,

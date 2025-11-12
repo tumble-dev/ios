@@ -232,65 +232,65 @@ struct BookingRowView: View {
     var body: some View {
         Button(action: onTap) {
             HStack(spacing: 16) {
-            // Status indicator with glow effect
-            ZStack {
-                Circle()
-                    .fill(needsConfirmation ? Color.red : Color.green)
-                    .frame(width: 12, height: 12)
-                
-                if needsConfirmation {
+                // Status indicator with glow effect
+                ZStack {
                     Circle()
-                        .fill(Color.red.opacity(0.3))
-                        .frame(width: 20, height: 20)
-                        .blur(radius: 2)
-                }
-            }
-            
-            VStack(alignment: .leading, spacing: 6) {
-                HStack {
-                    Text("Resource \(booking.resourceId)")
-                        .font(.subheadline)
-                        .fontWeight(.medium)
-                        .foregroundColor(.onSurface)
-                    
-                    Spacer()
-                    
-                    if let timeSlot = booking.timeSlot {
-                        Text(timeSlot.timeString())
-                            .font(.caption)
-                            .fontWeight(.medium)
-                            .foregroundColor(.onPrimary)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 2)
-                            .background(Color.primary.opacity(0.7))
-                            .clipShape(Capsule())
+                        .fill(needsConfirmation ? Color.red : Color.green)
+                        .frame(width: 12, height: 12)
+                
+                    if needsConfirmation {
+                        Circle()
+                            .fill(Color.red.opacity(0.3))
+                            .frame(width: 20, height: 20)
+                            .blur(radius: 2)
                     }
                 }
+            
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack {
+                        Text("Resource \(booking.resourceId)")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .foregroundColor(.onSurface)
+                    
+                        Spacer()
+                    
+                        if let timeSlot = booking.timeSlot {
+                            Text(timeSlot.timeString())
+                                .font(.caption)
+                                .fontWeight(.medium)
+                                .foregroundColor(.onPrimary)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 2)
+                                .background(Color.primary.opacity(0.7))
+                                .clipShape(Capsule())
+                        }
+                    }
                 
-                Text("Location: \(booking.locationId)")
+                    Text("Location: \(booking.locationId)")
+                        .font(.caption)
+                        .foregroundColor(.onSurface)
+                
+                    if needsConfirmation {
+                        HStack(spacing: 4) {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .font(.caption2)
+                            Text("Confirmation required")
+                                .font(.caption)
+                        }
+                        .foregroundColor(.red)
+                    }
+                }
+            
+                Image(systemName: "chevron.right")
                     .font(.caption)
                     .foregroundColor(.onSurface)
-                
-                if needsConfirmation {
-                    HStack(spacing: 4) {
-                        Image(systemName: "exclamationmark.triangle.fill")
-                            .font(.caption2)
-                        Text("Confirmation required")
-                            .font(.caption)
-                    }
-                    .foregroundColor(.red)
-                }
             }
-            
-            Image(systemName: "chevron.right")
-                .font(.caption)
-                .foregroundColor(.onSurface)
+            .padding(.spacingM)
+            .cardStyle()
         }
-        .padding(.spacingM)
-        .cardStyle()
+        .buttonStyle(PlainButtonStyle())
     }
-    .buttonStyle(PlainButtonStyle())
-}
 }
 
 struct EventRowView: View {

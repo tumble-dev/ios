@@ -13,4 +13,3 @@ protocol BookingDetailsScreenViewModelProtocol {
     var context: BookingDetailsScreenViewModel.Context { get }
     var actions: AnyPublisher<BookingDetailsScreenViewModelAction, Never> { get }
 }
-

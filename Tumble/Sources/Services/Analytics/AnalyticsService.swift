@@ -5,10 +5,10 @@
 //  Created by Adis Veletanlic on 2025-09-19.
 //
 
-import FirebaseAnalytics
-import Foundation
 import Combine
+import FirebaseAnalytics
 import FirebaseCrashlytics
+import Foundation
 
 protocol AnalyticsServiceProtocol {
     func logEvent(_ event: String, parameters: [String: Any]?)
@@ -48,6 +48,7 @@ final class AnalyticsService: AnalyticsServiceProtocol {
         
         AppLogger.shared.info("Firebase Analytics collection set to: \(enabled)")
     }
+
     func setUserProperty(_ value: String?, forName name: String) {
         guard appSettings.analyticsEnabled else {
             AppLogger.shared.info("Analytics disabled - skipping user property: \(name)")

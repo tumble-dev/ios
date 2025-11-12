@@ -125,7 +125,6 @@ class AccountFlowCoordinator: FlowCoordinatorProtocol {
                 navigationStackCoordinator.pop()
             case .pushResourceTimeslotSelectionScreen(let resource, let date):
                 presentResourceTimeSlotSelectionScreen(resource: resource, selectedPickerDate: date)
-                break
             }
         }
         .store(in: &cancellables)
@@ -160,5 +159,4 @@ class AccountFlowCoordinator: FlowCoordinatorProtocol {
         
         navigationStackCoordinator.push(coordinator)
     }
-    
 }

@@ -16,4 +16,6 @@ enum NotificationPermissionsScreenViewModelAction {
     case next
 }
 
-struct NotificationPermissionsScreenViewState: BindableState {}
+struct NotificationPermissionsScreenViewState: BindableState {
+    var isProcessing: Bool = false
+}

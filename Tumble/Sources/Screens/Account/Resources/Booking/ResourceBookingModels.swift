@@ -5,9 +5,9 @@
 //  Created by Adis Veletanlic on 2025-11-02.
 //
 
+import Combine
 import Foundation
 import UIKit
-import Combine
 
 enum ResourceBookingScreenViewAction: Equatable {
     case bookResource(String, Date, Response.AvailabilitySlot)

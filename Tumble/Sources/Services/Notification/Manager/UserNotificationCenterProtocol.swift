@@ -17,4 +17,6 @@ protocol UserNotificationCenterProtocol: AnyObject {
     func setNotificationCategories(_ categories: Set<UNNotificationCategory>)
     func authorizationStatus() async -> UNAuthorizationStatus
     func notificationSettings() async -> UNNotificationSettings
+    func pendingNotificationRequests() async -> [UNNotificationRequest]
+    func removePendingNotificationRequests(withIdentifiers identifiers: [String])
 }

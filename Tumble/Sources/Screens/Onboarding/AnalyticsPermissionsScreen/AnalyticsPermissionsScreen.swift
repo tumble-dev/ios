@@ -5,8 +5,8 @@
 //  Created by Adis Veletanlic on 2025-09-25.
 //
 
-import SwiftUI
 import Combine
+import SwiftUI
 
 struct AnalyticsPermissionsScreen: View {
     @ObservedObject var context: AnalyticsPermissionsScreenViewModel.Context
@@ -131,7 +131,7 @@ struct AnalyticsPermissionsScreen: View {
     
     private var benefitsSection: some View {
         VStack(spacing: 24) {
-            ForEach(Array(benefits.enumerated()), id: \.offset) { index, benefit in
+            ForEach(Array(benefits.enumerated()), id: \.offset) { _, benefit in
                 benefitRow(
                     icon: benefit.icon,
                     title: benefit.title,

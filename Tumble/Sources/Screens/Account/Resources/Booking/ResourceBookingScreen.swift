@@ -195,7 +195,8 @@ private struct TimeslotDropdown: View {
         Menu {
             ForEach(Array(timeslots.enumerated()), id: \.offset) { index, timeslot in
                 if let timeslotId = timeslot.id,
-                   timeslotHasAvailable(availabilities: resource.availabilities ?? [:], timeslotId: timeslotId) {
+                   timeslotHasAvailable(availabilities: resource.availabilities ?? [:], timeslotId: timeslotId)
+                {
                     Button {
                         selectedIndex = index
                     } label: {
@@ -285,7 +286,7 @@ private struct TimeslotSelectionView: View {
                     .padding(32)
                 } else {
                     // Show all slots, but distinguish between available and unavailable
-                    ForEach(Array(availabilityValues.enumerated()), id: \.offset) { index, slot in
+                    ForEach(Array(availabilityValues.enumerated()), id: \.offset) { _, slot in
                         let isBooking = bookingLocationId == slot.locationId && context.viewState.bookingState == .booking
                         
                         AvailabilitySlotRow(
@@ -303,11 +304,13 @@ private struct TimeslotSelectionView: View {
         }
         .onChange(of: context.viewState.bookingState) { bookingState in
             // Clear booking location when booking completes (success or error)
-            if case .success = bookingState, 
-               bookingLocationId != nil {
+            if case .success = bookingState,
+               bookingLocationId != nil
+            {
                 bookingLocationId = nil
             } else if case .error = bookingState,
-                      bookingLocationId != nil {
+                      bookingLocationId != nil
+            {
                 bookingLocationId = nil
             }
         }

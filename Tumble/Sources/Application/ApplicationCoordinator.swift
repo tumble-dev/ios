@@ -49,7 +49,8 @@ class ApplicationCoordinator: ApplicationCoordinatorProtocol, NotificationManage
 
         notificationManager = NotificationManager(
             notificationCenter: UNUserNotificationCenter.current(),
-            appSettings: appSettings
+            appSettings: appSettings,
+            eventStorageService: ServiceLocator.shared.eventStorageService
         )
 
         keychainController = KeychainController(accessGroup: Config.keychainAccessGroupIdentifier)
@@ -177,6 +178,15 @@ extension ApplicationCoordinator {
             }
         }
         // TODO: Check for bookmark notification as well
+    }
+    
+    func openEventDetails(eventId: String) async {
+        AppLogger.shared.info("[ApplicationCoordinator] Opening event details for event ID: \(eventId)")
+        
+        // Ensure we're on the main actor since we're dealing with UI navigation
+        await MainActor.run {
+            handleAppRoute(.eventDetails(eventId: eventId))
+        }
     }
 
     func registerForRemoteNotifications() {

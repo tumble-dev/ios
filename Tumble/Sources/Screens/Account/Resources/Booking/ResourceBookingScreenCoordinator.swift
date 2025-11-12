@@ -55,7 +55,6 @@ final class ResourceBookingScreenCoordinator: CoordinatorProtocol {
                     // Handle booking failure if needed
                     // Error is already shown in the UI via alerts
                     AppLogger.shared.error("Resource booking failed: \(errorMessage)")
-                    break
                 }
             }
             .store(in: &cancellables)

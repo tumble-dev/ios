@@ -30,10 +30,25 @@ class NotificationPermissionsScreenViewModel: NotificationPermissionsScreenViewM
     override func process(viewAction: NotificationPermissionsScreenViewAction) {
         switch viewAction {
         case .enable:
+            state.isProcessing = true
             appSettings.inAppMessagingEnabled = true
-            notificationManager.requestAuthorization()
-            actionsSubject.send(.next)
+            
+            Task {
+                await handleNotificationAuthorization()
+            }
         case .notNow:
+            actionsSubject.send(.next)
+        }
+    }
+    
+    // MARK: - Private
+    
+    private func handleNotificationAuthorization() async {
+        // Request authorization and wait for the full registration flow to complete
+        await notificationManager.requestAuthorizationAndWaitForRegistration()
+        
+        await MainActor.run {
+            state.isProcessing = false
             actionsSubject.send(.next)
         }
     }

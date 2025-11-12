@@ -19,6 +19,7 @@ struct EventDetailsScreen: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 case .loaded(let event):
                     EventInfo(event: event)
+                        .environmentObject(context)
                 case .error(let message):
                     VStack(spacing: 8) {
                         Image(systemName: "exclamationmark.triangle")
@@ -49,8 +50,8 @@ struct EventDetailsScreen: View {
             }
         }
         ToolbarItem(placement: .topBarLeading) {
-            Button { } label: {
-                ColorPicker("Course Color", selection: context.colorPickerSelection)
+            Button {} label: {
+                ColorPicker("Color", selection: context.colorPickerSelection)
             }
             .accessibilityLabel("Course Color")
         }
@@ -59,11 +60,12 @@ struct EventDetailsScreen: View {
 
 struct EventInfo: View {
     let event: Response.Event
+    @EnvironmentObject private var context: EventDetailsScreenViewModel.Context
     
     var body: some View {
         VStack(spacing: 16) {
             EventHeaderCard(
-                event: event,
+                event: event
             )
             
             VStack(alignment: .leading, spacing: 16) {
@@ -168,6 +170,20 @@ struct EventInfo: View {
                             .fontWeight(.medium)
                     }
                 }
+                
+                // Notification Settings Section
+                VStack(alignment: .leading, spacing: 16) {
+                    HStack {
+                        Text("Notification Settings")
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.onBackground)
+                        Spacer()
+                    }
+                    .padding(.top, 8)
+                    
+                    NotificationSettingsCard(event: event)
+                }
             }
         }
     }
@@ -257,3 +273,83 @@ struct DetailCard<Content: View>: View {
     }
 }
 
+struct NotificationSettingsCard: View {
+    let event: Response.Event
+    
+    var body: some View {
+        VStack(spacing: 12) {
+            // Event-specific notification
+            NotificationToggleRow(
+                icon: "bell.fill",
+                title: "Remind me about this event",
+                subtitle: "Get notified 15 minutes before this event starts",
+                isEnabled: context.viewState.isEventNotificationEnabled
+            ) { enabled in
+                context.send(viewAction: .toggleEventNotification(enabled))
+            }
+            
+            Divider()
+                .padding(.horizontal, -16)
+            
+            // Course-specific notification
+            NotificationToggleRow(
+                icon: "graduationcap.fill",
+                title: "Notify me about all \(event.courseName) events",
+                subtitle: "Get push notifications for all events in this course",
+                isEnabled: context.viewState.isCourseNotificationEnabled
+            ) { enabled in
+                context.send(viewAction: .toggleCourseNotification(enabled))
+            }
+        }
+        .padding(.spacingM)
+        .cardStyle()
+    }
+    
+    @EnvironmentObject private var context: EventDetailsScreenViewModel.Context
+}
+
+struct NotificationToggleRow: View {
+    let icon: String
+    let title: String
+    let subtitle: String
+    let isEnabled: Bool
+    let onToggle: (Bool) -> Void
+    
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            // Icon container
+            ZStack {
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(isEnabled ? Color.blue.opacity(0.2) : Color.primary.opacity(0.1))
+                    .frame(width: 32, height: 32)
+                
+                Image(systemName: icon)
+                    .font(.system(size: 16))
+                    .foregroundColor(isEnabled ? .blue : .primary)
+            }
+            
+            // Content
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(.body)
+                    .fontWeight(.medium)
+                    .foregroundColor(.onSurface)
+                
+                Text(subtitle)
+                    .font(.caption)
+                    .foregroundColor(.onSurface.opacity(0.7))
+                    .lineLimit(2)
+            }
+            
+            Spacer()
+            
+            // Toggle
+            Toggle("", isOn: Binding(
+                get: { isEnabled },
+                set: onToggle
+            ))
+            .labelsHidden()
+            .tint(.primary)
+        }
+    }
+}

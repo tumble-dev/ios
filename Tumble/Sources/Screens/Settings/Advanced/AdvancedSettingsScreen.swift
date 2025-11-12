@@ -148,8 +148,8 @@ struct AdvancedSettingsScreen: View {
                     Stepper("Retry Attempts: \(context.viewState.bindings.retryAttempts)",
                             value: context.viewState.bindings.binding(for: \.retryAttempts),
                             in: 1...10)
-                    .font(.body)
-                    .foregroundColor(.onSurface)
+                        .font(.body)
+                        .foregroundColor(.onSurface)
                 }
                 .padding(.vertical, .spacingM)
             }

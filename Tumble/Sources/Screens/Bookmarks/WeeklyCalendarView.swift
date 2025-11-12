@@ -12,7 +12,7 @@ struct WeeklyCalendarView: View {
     let onEventTap: (String) -> Void
     
     @State private var currentWeekOffset: Int = 0
-    @State private var selectedDate: Date = Date()
+    @State private var selectedDate: Date = .init()
     @GestureState private var dragOffset: CGFloat = 0
     
     private let calendar = Calendar.current

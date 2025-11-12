@@ -17,7 +17,6 @@ struct AccountSettingsScreen: View {
     }
     
     var body: some View {
-        
         let canSignIn = context.viewState.isFormValid && !context.viewState.isLoading
         
         ScrollView {

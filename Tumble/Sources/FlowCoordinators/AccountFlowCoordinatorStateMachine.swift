@@ -113,5 +113,4 @@ class AccountFlowCoordinatorStateMachine {
     func addErrorHandler(_ handler: @escaping StateMachine<State, Event>.Handler) {
         stateMachine.addErrorHandler(handler: handler)
     }
-    
 }

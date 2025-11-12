@@ -8,9 +8,8 @@
 import SwiftUI
 
 struct ResourceSelectionScreen: View {
-    
     @ObservedObject var context: ResourceSelectionScreenViewModel.Context
-    @State private var selectedPickerDate: Date = Date()
+    @State private var selectedPickerDate: Date = .init()
     
     var body: some View {
         VStack(spacing: 0) {

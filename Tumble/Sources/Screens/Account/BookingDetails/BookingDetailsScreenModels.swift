@@ -1,5 +1,5 @@
 //
-//  BookingScreenModels.swift
+//  BookingDetailsScreenModels.swift
 //  Tumble iOS
 //
 //  Created by Adis Veletanlic on 2025-11-05.

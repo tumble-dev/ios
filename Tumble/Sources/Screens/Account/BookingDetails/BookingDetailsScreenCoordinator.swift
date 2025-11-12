@@ -56,4 +56,3 @@ final class BookingDetailsScreenCoordinator: CoordinatorProtocol {
         AnyView(BookingDetailsScreen(context: viewModel.context))
     }
 }
-

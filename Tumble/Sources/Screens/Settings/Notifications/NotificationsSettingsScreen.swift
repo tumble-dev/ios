@@ -26,21 +26,42 @@ struct NotificationsSettingsScreen: View {
                 context.send(viewAction: .resetAllSettings)
             }
         } message: {
-            Text("This will reset all advanced settings to their default values. This action cannot be undone.")
+            Text("This will reset all notification settings to their default values. Both local and push notifications will be enabled, and notification timing will be reset to 1 hour before events.")
         }
     }
     
     @ViewBuilder
     private var messagingSection: some View {
-        SettingsCard(title: "Notifications") {
+        SettingsCard(title: "Notification Settings") {
             VStack(spacing: 0) {
-                
                 HStack {
-                    Text("Notifications")
-                        .font(.body)
-                        .foregroundColor(.onSurface)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Local Notifications")
+                            .font(.body)
+                            .foregroundColor(.onSurface)
+                        Text("Event reminders and course notifications")
+                            .font(.caption)
+                            .foregroundColor(.onSurface.opacity(0.7))
+                    }
                     Spacer()
                     Toggle("", isOn: context.viewState.bindings.binding(for: \.inAppMessagingEnabled))
+                        .tint(.primary)
+                }
+                .padding(.vertical, .spacingM)
+                
+                Divider()
+                
+                HStack {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Push Notifications")
+                            .font(.body)
+                            .foregroundColor(.onSurface)
+                        Text("Updates and announcements from server")
+                            .font(.caption)
+                            .foregroundColor(.onSurface.opacity(0.7))
+                    }
+                    Spacer()
+                    Toggle("", isOn: context.viewState.bindings.binding(for: \.pushNotificationsEnabled))
                         .tint(.primary)
                 }
                 .padding(.vertical, .spacingM)

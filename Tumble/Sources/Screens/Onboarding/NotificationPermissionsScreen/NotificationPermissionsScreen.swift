@@ -115,7 +115,7 @@ struct NotificationPermissionsScreen: View {
     
     private var benefitsSection: some View {
         VStack(spacing: 24) {
-            ForEach(Array(benefits.enumerated()), id: \.offset) { index, benefit in
+            ForEach(Array(benefits.enumerated()), id: \.offset) { _, benefit in
                 benefitRow(
                     icon: benefit.icon,
                     title: benefit.title,
@@ -161,11 +161,20 @@ struct NotificationPermissionsScreen: View {
             // Primary action button
             Button(action: { context.send(viewAction: .enable) }) {
                 HStack(spacing: 8) {
-                    Image(systemName: "bell.fill")
-                        .font(.system(size: 16, weight: .medium))
-                    
-                    Text("Enable Notifications")
-                        .font(.system(.headline))
+                    if context.viewState.isProcessing {
+                        ProgressView()
+                            .scaleEffect(0.8)
+                            .progressViewStyle(CircularProgressViewStyle(tint: .onPrimary))
+                        
+                        Text("Setting up...")
+                            .font(.system(.headline))
+                    } else {
+                        Image(systemName: "bell.fill")
+                            .font(.system(size: 16, weight: .medium))
+                        
+                        Text("Enable Notifications")
+                            .font(.system(.headline))
+                    }
                 }
                 .foregroundColor(.onPrimary)
                 .frame(maxWidth: .infinity)
@@ -174,15 +183,18 @@ struct NotificationPermissionsScreen: View {
                 .clipShape(RoundedRectangle(cornerRadius: .radiusL))
             }
             .buttonStyle(PrimaryButtonStyle())
+            .disabled(context.viewState.isProcessing)
             
-            // Secondary action button
-            Button(action: { context.send(viewAction: .notNow) }) {
-                Text("Maybe Later")
-                    .font(.system(.body))
-                    .foregroundColor(.onBackground.opacity(0.7))
-                    .frame(height: 48)
+            // Secondary action button - only show if not processing
+            if !context.viewState.isProcessing {
+                Button(action: { context.send(viewAction: .notNow) }) {
+                    Text("Maybe Later")
+                        .font(.system(.body))
+                        .foregroundColor(.onBackground.opacity(0.7))
+                        .frame(height: 48)
+                }
+                .buttonStyle(SecondaryButtonStyle())
             }
-            .buttonStyle(SecondaryButtonStyle())
             
             // Privacy note
             Text("You can change this in Settings at any time")

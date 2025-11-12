@@ -154,7 +154,8 @@ struct BookingInfo: View {
                 
                 // Confirmation Period (if available)
                 if let confirmationOpen = booking.confirmationOpen,
-                   let confirmationClosed = booking.confirmationClosed {
+                   let confirmationClosed = booking.confirmationClosed
+                {
                     DetailCard(
                         icon: "calendar.badge.clock",
                         title: "Confirmation Period"
@@ -254,4 +255,3 @@ struct BookingHeaderCard: View {
         .cardStyle()
     }
 }
-

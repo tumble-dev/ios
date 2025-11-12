@@ -471,7 +471,6 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
         }
         
         do {
-            
             try userDataStorage.removeUserProfile(username: username)
             
             switch keychainController.removeAllUserData(forUsername: username) {
@@ -532,7 +531,6 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
         }
                 
         do {
-                        
             guard let credentials = keychainController.getLoginCredentials(forUsername: username) else {
                 await updateAuthState(.error(msg: "No stored credentials for user: \(username)"))
                 
@@ -638,7 +636,6 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
                 }
             default:
                 AppLogger.shared.debug("AuthenticationService: No special handling for state: \(newState)")
-                break
             }
             
             AppLogger.shared.debug("AuthenticationService: Final authState: \(authState)")

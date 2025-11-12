@@ -51,6 +51,7 @@ protocol NotificationsSettingsProtocol: AnyObject {
     
     var notificationOffset: NotificationOffset { get set }
     var inAppMessagingEnabled: Bool { get set }
+    var pushNotificationsEnabled: Bool { get set }
 }
 
 enum NotificationOffset: Int, Codable, CaseIterable {
