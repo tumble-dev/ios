@@ -363,7 +363,7 @@ private extension ApplicationCoordinator {
         appHooks: AppHooks
     ) {
         ServiceLocator.shared.register(appSettings: appSettings)
-        ServiceLocator.shared.register(tumbleApiService: TumbleAPIService())
+        ServiceLocator.shared.register(tumbleApiService: TumbleAPIService(appSettings: appSettings))
         ServiceLocator.shared.register(analytics: AnalyticsService(appSettings: appSettings))
         ServiceLocator.shared.register(eventStorageService: EventStorageService(appSettings: appSettings))
         ServiceLocator.shared.register(userDataStorageService: UserDataStorageService(appSettings: appSettings))

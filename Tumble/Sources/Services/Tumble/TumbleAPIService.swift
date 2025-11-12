@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 // MARK: - Network Swift.Error
 
@@ -95,20 +96,36 @@ struct EmptyResponse: Codable {
 
 // MARK: - Tumble API Service
 
+/// A service that handles all HTTP requests to the Tumble API.
+/// 
+/// This service automatically respects user-configured network settings including:
+/// - Connection timeout from AppSettings.connectionTimeout
+/// - Retry attempts from AppSettings.retryAttempts
+/// 
+/// The service listens for changes to these settings and updates its configuration accordingly.
 final class TumbleAPIService: TumbleApiServiceProtocol {
-    private let session: URLSession
+    private var session: URLSession
     private let decoder: JSONDecoder
     private let encoder: JSONEncoder
-    private let config: RequestConfig
+    private var config: RequestConfig
+    private let appSettings: AppSettings
+    private var settingsObserver: AnyCancellable?
     
-    init(config: RequestConfig = .default) {
-        self.config = config
+    init(appSettings: AppSettings) {
+        self.appSettings = appSettings
+        self.config = RequestConfig(
+            timeout: appSettings.connectionTimeout,
+            retryCount: appSettings.retryAttempts,
+            retryDelay: 1.0
+        )
+        
+        AppLogger.shared.info("TumbleAPIService initialized with timeout: \(appSettings.connectionTimeout)s, retry attempts: \(appSettings.retryAttempts)")
         
         let sessionConfig = URLSessionConfiguration.default
         sessionConfig.timeoutIntervalForRequest = config.timeout
         sessionConfig.timeoutIntervalForResource = config.timeout * 2
         sessionConfig.waitsForConnectivity = true
-        session = URLSession(configuration: sessionConfig)
+        self.session = URLSession(configuration: sessionConfig)
         
         decoder = JSONDecoder()
         let dateFormatter = DateFormatter()
@@ -118,6 +135,51 @@ final class TumbleAPIService: TumbleApiServiceProtocol {
 
         encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .formatted(dateFormatter)
+        
+        setupSettingsObserver()
+    }
+    
+    /// Fallback initializer for backwards compatibility (uses default config)
+    convenience init(config: RequestConfig = .default) {
+        // Create temporary settings with config values
+        let tempSettings = AppSettings()
+        tempSettings.connectionTimeout = config.timeout
+        tempSettings.retryAttempts = config.retryCount
+        self.init(appSettings: tempSettings)
+    }
+    
+    private func setupSettingsObserver() {
+        // Observe changes to network settings
+        settingsObserver = Publishers.CombineLatest(
+            appSettings.$connectionTimeout,
+            appSettings.$retryAttempts
+        )
+        .dropFirst() // Skip initial value
+        .sink { [weak self] timeout, retryAttempts in
+            self?.updateNetworkConfiguration(timeout: timeout, retryAttempts: retryAttempts)
+        }
+    }
+    
+    private func updateNetworkConfiguration(timeout: Double, retryAttempts: Int) {
+        AppLogger.shared.info("Updating network configuration - Timeout: \(timeout)s, Retry attempts: \(retryAttempts)")
+        
+        // Update config
+        config = RequestConfig(
+            timeout: timeout,
+            retryCount: retryAttempts,
+            retryDelay: 1.0
+        )
+        
+        // Create new URLSession with updated configuration
+        let sessionConfig = URLSessionConfiguration.default
+        sessionConfig.timeoutIntervalForRequest = timeout
+        sessionConfig.timeoutIntervalForResource = timeout * 2
+        sessionConfig.waitsForConnectivity = true
+        session = URLSession(configuration: sessionConfig)
+    }
+    
+    deinit {
+        settingsObserver?.cancel()
     }
     
     // MARK: - Generic Request Methods
