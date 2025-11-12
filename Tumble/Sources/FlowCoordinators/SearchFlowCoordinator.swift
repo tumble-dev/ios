@@ -66,6 +66,13 @@ class SearchFlowCoordinator: FlowCoordinatorProtocol {
             )
         )
         
+        if #available(iOS 16.0, *) {
+            navigationStackCoordinator.setPresentationDetents([
+                .medium,
+                .large
+            ])
+        }
+        
         searchScreenCoordinator.actions
             .sink { [weak self] action in
                 guard let self else { return }

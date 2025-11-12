@@ -10,6 +10,7 @@ import UIKit
 
 enum AccountScreenViewAction: Equatable {
     case close
+    case refreshBookings
     // Navigation
     case showResources
     // Sheets

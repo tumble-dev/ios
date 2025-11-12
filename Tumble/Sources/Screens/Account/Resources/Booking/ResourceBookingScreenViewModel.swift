@@ -18,6 +18,9 @@ class ResourceBookingScreenViewModel: ResourceBookingScreenViewModelType, Resour
         
     private var actionsSubject: PassthroughSubject<ResourceBookingScreenViewModelAction, Never> = .init()
     
+    // Task for booking operation that can be cancelled
+    private var bookingTask: Task<Void, Never>?
+    
     var actions: AnyPublisher<ResourceBookingScreenViewModelAction, Never> {
         actionsSubject.eraseToAnyPublisher()
     }
@@ -42,13 +45,23 @@ class ResourceBookingScreenViewModel: ResourceBookingScreenViewModelType, Resour
         setupListeners()
     }
     
+    deinit {
+        // Cancel any ongoing network tasks when the view model is deallocated
+        bookingTask?.cancel()
+        AppLogger.shared.debug("[ResourceBookingScreenViewModel] Deallocated and cancelled ongoing tasks")
+    }
+    
     override func process(viewAction: ResourceBookingScreenViewAction) {
         switch viewAction {
         case .bookResource(let resourceId, let date, let slot):
-            Task {
+            // Cancel any existing booking task before starting a new one
+            bookingTask?.cancel()
+            bookingTask = Task {
                 await bookResource(resourceId: resourceId, date: date, slot: slot)
             }
         case .resetBookingState:
+            // Cancel ongoing booking when resetting state
+            bookingTask?.cancel()
             Task { @MainActor in
                 state.bookingState = .idle
             }
@@ -56,14 +69,32 @@ class ResourceBookingScreenViewModel: ResourceBookingScreenViewModelType, Resour
     }
 
     private func bookResource(resourceId: String, date: Date, slot: Response.AvailabilitySlot) async {
+        // Check if the task was cancelled before starting
+        guard !Task.isCancelled else {
+            AppLogger.shared.debug("[ResourceBookingScreenViewModel] Book resource task was cancelled")
+            return
+        }
+        
         await MainActor.run {
             state.bookingState = .booking
         }
         
         do {
+            // Check cancellation before each async operation
+            guard !Task.isCancelled else {
+                AppLogger.shared.debug("[ResourceBookingScreenViewModel] Book resource task cancelled during token fetch")
+                return
+            }
+            
             let authToken = try await authenticationService.getCurrentSessionToken()
             
+            guard !Task.isCancelled else {
+                AppLogger.shared.debug("[ResourceBookingScreenViewModel] Book resource task cancelled after token fetch")
+                return
+            }
+            
             guard case .loaded(let user) = state.userState else {
+                guard !Task.isCancelled else { return }
                 await MainActor.run {
                     state.bookingState = .error("User not found")
                 }
@@ -80,22 +111,44 @@ class ResourceBookingScreenViewModel: ResourceBookingScreenViewModelType, Resour
                 authToken: authToken
             )
             
-            AppLogger.shared.info("Booking successful: \(response.message)")
+            // Check cancellation before updating UI
+            guard !Task.isCancelled else {
+                AppLogger.shared.debug("[ResourceBookingScreenViewModel] Book resource task cancelled after API call")
+                return
+            }
+            
+            AppLogger.shared.info("[ResourceBookingScreenViewModel] Booking successful: \(response.message)")
             await MainActor.run {
                 // Update the local resource state to mark the slot as unavailable
                 updateSlotAvailabilityAfterBooking(slot: slot)
                 state.bookingState = .success
             }
-            actionsSubject.send(.bookingSuccess)
             
+            // Send success action
+            await MainActor.run {
+                actionsSubject.send(.bookingSuccess)
+            }
+            
+        } catch is CancellationError {
+            AppLogger.shared.debug("[ResourceBookingScreenViewModel] Book resource task was cancelled")
         } catch let error as NetworkError {
-            AppLogger.shared.error("Booking failed: \(error.errorDescription ?? "Unknown error")")
+            guard !Task.isCancelled else {
+                AppLogger.shared.debug("[ResourceBookingScreenViewModel] Book resource task cancelled during error handling")
+                return
+            }
+            
+            AppLogger.shared.error("[ResourceBookingScreenViewModel] Booking failed: \(error.errorDescription ?? "Unknown error")")
             await MainActor.run {
                 state.bookingState = .error(error.errorDescription ?? "Booking failed")
             }
             actionsSubject.send(.bookingFailed(error.errorDescription ?? "Booking failed"))
         } catch {
-            AppLogger.shared.error("Booking failed: \(error.localizedDescription)")
+            guard !Task.isCancelled else {
+                AppLogger.shared.debug("[ResourceBookingScreenViewModel] Book resource task cancelled during error handling")
+                return
+            }
+            
+            AppLogger.shared.error("[ResourceBookingScreenViewModel] Booking failed: \(error.localizedDescription)")
             await MainActor.run {
                 state.bookingState = .error(error.localizedDescription)
             }

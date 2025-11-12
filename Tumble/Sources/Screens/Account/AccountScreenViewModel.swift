@@ -48,6 +48,20 @@ class AccountScreenViewModel: AccountScreenViewModelType, AccountScreenViewModel
             actionsSubject.send(.resourceSelectionScreen)
         case .showResourceBookingDetails(let booking):
             actionsSubject.send(.resourceBookingDetails(booking))
+        case .refreshBookings:
+            refreshBookings()
+        }
+    }
+    
+    /// Refreshes the bookings list by reloading data from the server
+    private func refreshBookings() {
+        guard case .loaded(let user) = state.userState else {
+            AppLogger.shared.warning("[AccountScreenViewModel] Cannot refresh bookings - no user loaded")
+            return
+        }
+        
+        Task {
+            await loadUserData(from: user.school)
         }
     }
     

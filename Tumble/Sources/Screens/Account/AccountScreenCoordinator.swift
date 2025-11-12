@@ -60,6 +60,10 @@ final class AccountScreenCoordinator: CoordinatorProtocol {
     
     // MARK: - Public
     
+    func refreshBookings() {
+        viewModel.context.send(viewAction: .refreshBookings)
+    }
+    
     func toPresentable() -> AnyView {
         AnyView(AccountScreen(context: viewModel.context))
     }

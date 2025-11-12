@@ -28,6 +28,7 @@ class AccountFlowCoordinator: FlowCoordinatorProtocol {
     private let parameters: AccountFlowCoordinatorParameters
     
     private var navigationStackCoordinator: NavigationStackCoordinator!
+    private var accountScreenCoordinator: AccountScreenCoordinator?
     private var cancellables = Set<AnyCancellable>()
     
     private let actionsSubject: PassthroughSubject<AccountFlowCoordinatorAction, Never> = .init()
@@ -64,7 +65,6 @@ class AccountFlowCoordinator: FlowCoordinatorProtocol {
         // Configure presentation detents to make the sheet initially smaller
         if #available(iOS 16.0, *) {
             navigationStackCoordinator.setPresentationDetents([
-                .fraction(0.4),
                 .medium,
                 .large
             ])
@@ -79,6 +79,9 @@ class AccountFlowCoordinator: FlowCoordinatorProtocol {
                 appSettings: parameters.appSettings
             )
         )
+        
+        // Store reference to the coordinator so we can refresh it later
+        self.accountScreenCoordinator = accountScreenCoordinator
         
         accountScreenCoordinator.actions
             .sink { [weak self] action in
@@ -144,6 +147,23 @@ class AccountFlowCoordinator: FlowCoordinatorProtocol {
             )
         )
         
+        // Subscribe to the coordinator's actions to handle booking completion
+        coordinator.actions
+            .sink { [weak self] action in
+                guard let self else { return }
+                switch action {
+                case .pop:
+                    navigationStackCoordinator.pop(animated: true)
+                case .pushResourceTimeslotSelectionScreen(let resource, let date):
+                    presentResourceTimeSlotSelectionScreen(resource: resource, selectedPickerDate: date)
+                case .bookingMade:
+                    // Refresh the account screen to show the new booking
+                    AppLogger.shared.info("[AccountFlowCoordinator] New booking was made, refreshing account screen")
+                    accountScreenCoordinator?.refreshBookings()
+                }
+            }
+            .store(in: &cancellables)
+        
         navigationStackCoordinator.push(coordinator)
     }
     
@@ -159,6 +179,22 @@ class AccountFlowCoordinator: FlowCoordinatorProtocol {
                     authenticationService: parameters.authenticationService
                 )
             )
+            
+            // Subscribe to the coordinator's actions to handle dismissal
+            coordinator.actions
+                .sink { [weak self] action in
+                    guard let self else { return }
+                    switch action {
+                    case .dismiss:
+                        // Pop the booking details screen to return to account screen
+                        navigationStackCoordinator.pop(animated: true)
+                    case .bookingUpdated:
+                        // Refresh the account screen to remove the cancelled booking from the list
+                        AppLogger.shared.info("[AccountFlowCoordinator] Booking was updated, refreshing account screen")
+                        accountScreenCoordinator?.refreshBookings()
+                    }
+                }
+                .store(in: &cancellables)
             
             navigationStackCoordinator.push(coordinator)
         } catch BookingError.noAuthenticatedUser {

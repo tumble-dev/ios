@@ -20,6 +20,7 @@ struct ResourceBookingScreenCoordinatorParameters {
 enum ResourceBookingScreenCoordinatorAction {
     case pop
     case pushResourceTimeslotSelectionScreen(Response.Resource, Date)
+    case bookingMade
 }
 
 final class ResourceBookingScreenCoordinator: CoordinatorProtocol {
@@ -45,12 +46,12 @@ final class ResourceBookingScreenCoordinator: CoordinatorProtocol {
         )
         
         viewModel.actions
-            .sink { action in
+            .sink { [weak self] action in
+                guard let self else { return }
                 switch action {
                 case .bookingSuccess:
-                    // Handle successful booking if needed
-                    // For example, you could show a toast or update parent coordinator
-                    break
+                    // Notify parent coordinator that a booking was made
+                    actionsSubject.send(.bookingMade)
                 case .bookingFailed(let errorMessage):
                     // Handle booking failure if needed
                     // Error is already shown in the UI via alerts

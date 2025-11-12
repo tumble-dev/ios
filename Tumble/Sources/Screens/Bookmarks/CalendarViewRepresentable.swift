@@ -36,10 +36,10 @@ struct CalendarViewRepresentable: UIViewRepresentable {
         calendar.appearance.todayColor = UIColor(named: "PrimaryColor")?.withAlphaComponent(0.5)
         calendar.appearance.titleFont = .boldSystemFont(ofSize: 20)
         calendar.appearance.headerTitleFont = UIFont(
-            descriptor: UIFontDescriptor.preferredFontDescriptor(withTextStyle: .largeTitle), size: 25
+            descriptor: UIFontDescriptor.preferredFontDescriptor(withTextStyle: .title1), size: 25
         )
         calendar.appearance.headerMinimumDissolvedAlpha = 0.12
-        calendar.appearance.headerTitleFont = .systemFont(ofSize: 30, weight: .black)
+        calendar.appearance.headerTitleFont = .systemFont(ofSize: 30, weight: .semibold)
         calendar.appearance.headerTitleColor = UIColor(named: "OnBackground")
         calendar.appearance.headerDateFormat = "MMMM"
         calendar.appearance.eventDefaultColor = UIColor(named: "PrimaryColor")
@@ -62,10 +62,10 @@ struct CalendarViewRepresentable: UIViewRepresentable {
         uiView.appearance.todayColor = UIColor(named: "PrimaryColor")?.withAlphaComponent(0.5)
         uiView.appearance.titleFont = .boldSystemFont(ofSize: 20)
         uiView.appearance.headerTitleFont = UIFont(
-            descriptor: UIFontDescriptor.preferredFontDescriptor(withTextStyle: .largeTitle), size: 30
+            descriptor: UIFontDescriptor.preferredFontDescriptor(withTextStyle: .title1), size: 30
         )
         uiView.appearance.headerMinimumDissolvedAlpha = 0.12
-        uiView.appearance.headerTitleFont = .systemFont(ofSize: 30, weight: .black)
+        uiView.appearance.headerTitleFont = .systemFont(ofSize: 30, weight: .semibold)
         uiView.appearance.headerTitleColor = UIColor(named: "OnBackground")
         uiView.appearance.headerDateFormat = "MMMM"
         
