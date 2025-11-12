@@ -152,6 +152,12 @@ class ApplicationCoordinator: ApplicationCoordinatorProtocol, NotificationManage
                 bookmarksFlowCoordinator.handleAppRoute(.eventDetails(eventId: eventId), animated: true)
                 handled = true
             }
+        case .bookingDetails(let bookingId):
+            if let bookmarksFlowCoordinator {
+                // TODO: Implement booking details navigation in BookmarksFlowCoordinator
+                AppLogger.shared.info("[ApplicationCoordinator] Booking details navigation to be implemented in BookmarksFlowCoordinator for booking: \(bookingId)")
+                // For now, this will be stored for later handling
+            }
         default:
             break
         }
@@ -177,7 +183,118 @@ extension ApplicationCoordinator {
                 handleAppRoute(.eventDetails(eventId: eventId))
             }
         }
-        // TODO: Check for bookmark notification as well
+    }
+    
+    func openBookingDetails(bookingId: String) async {
+        AppLogger.shared.info("[ApplicationCoordinator] Opening booking details for booking ID: \(bookingId)")
+        
+        // Ensure we're on the main actor since we're dealing with UI navigation
+        await MainActor.run {
+            handleAppRoute(.bookingDetails(bookingId: bookingId))
+        }
+    }
+    
+    func bookingActionTapped(bookingId: String, action: BookingAction) async {
+        AppLogger.shared.info("[ApplicationCoordinator] Booking action tapped: \(action) for booking ID: \(bookingId)")
+        
+        _ = await MainActor.run {
+            Task {
+                switch action {
+                case .confirm:
+                    await confirmBooking(bookingId)
+                case .cancel:
+                    await cancelBooking(bookingId)
+                }
+            }
+        }
+    }
+    
+    private func confirmBooking(_ bookingId: String) async {
+        do {
+            AppLogger.shared.info("[ApplicationCoordinator] Confirming booking \(bookingId)")
+            
+            let token = try await authenticationService.getCurrentSessionToken()
+            let userSchool = try getCurrentUserSchool()
+            
+            _ = try await ServiceLocator.shared.tumbleApiService.confirmResourceBooking(
+                bookingId: bookingId,
+                school: userSchool,
+                authToken: token
+            )
+            
+            AppLogger.shared.info("[ApplicationCoordinator] Successfully confirmed booking \(bookingId)")
+            
+            // Cancel any scheduled notifications for this booking since it's now confirmed
+            notificationManager.cancelBookingReminderNotification(for: bookingId)
+            
+        } catch BookingError.noAuthenticatedUser {
+            AppLogger.shared.error("[ApplicationCoordinator] Cannot confirm booking \(bookingId): No authenticated user")
+            await notificationManager.showLocalNotification(
+                with: "Authentication Required",
+                subtitle: "Please log in to confirm your booking."
+            )
+        } catch {
+            AppLogger.shared.error("[ApplicationCoordinator] Failed to confirm booking \(bookingId): \(error)")
+            
+            // Show error notification
+            await notificationManager.showLocalNotification(
+                with: "Booking Confirmation Failed",
+                subtitle: "Could not confirm your booking. Please try again."
+            )
+        }
+    }
+    
+    private func cancelBooking(_ bookingId: String) async {
+        do {
+            AppLogger.shared.info("[ApplicationCoordinator] Cancelling booking \(bookingId)")
+            
+            let token = try await authenticationService.getCurrentSessionToken()
+            let userSchool = try getCurrentUserSchool()
+            
+            _ = try await ServiceLocator.shared.tumbleApiService.unbookResource(
+                bookingId: bookingId,
+                school: userSchool,
+                authToken: token
+            )
+            
+            AppLogger.shared.info("[ApplicationCoordinator] Successfully cancelled booking \(bookingId)")
+            
+            // Cancel any scheduled notifications for this booking since it's now cancelled
+            notificationManager.cancelBookingReminderNotification(for: bookingId)
+            
+            // Show success notification
+            await notificationManager.showLocalNotification(
+                with: "Booking Cancelled",
+                subtitle: "Your booking has been successfully cancelled."
+            )
+            
+        } catch BookingError.noAuthenticatedUser {
+            AppLogger.shared.error("[ApplicationCoordinator] Cannot cancel booking \(bookingId): No authenticated user")
+            await notificationManager.showLocalNotification(
+                with: "Authentication Required",
+                subtitle: "Please log in to cancel your booking."
+            )
+        } catch {
+            AppLogger.shared.error("[ApplicationCoordinator] Failed to cancel booking \(bookingId): \(error)")
+            
+            // Show error notification
+            await notificationManager.showLocalNotification(
+                with: "Booking Cancellation Failed",
+                subtitle: "Could not cancel your booking. Please try again."
+            )
+        }
+    }
+    
+    /// Helper method to get the current user's school from the authentication service
+    /// - Throws: BookingError.noAuthenticatedUser if no user is authenticated
+    private func getCurrentUserSchool() throws -> String {
+        guard let currentUser = authenticationService.getCurrentUser() else {
+            AppLogger.shared.error("[ApplicationCoordinator] No authenticated user found for booking operation")
+            throw BookingError.noAuthenticatedUser
+        }
+        
+        AppLogger.shared.debug("[ApplicationCoordinator] Retrieved user school: \(currentUser.school) for user: \(currentUser.username)")
+        return currentUser.school
     }
     
     func openEventDetails(eventId: String) async {
@@ -250,5 +367,18 @@ private extension ApplicationCoordinator {
         ServiceLocator.shared.register(analytics: AnalyticsService(appSettings: appSettings))
         ServiceLocator.shared.register(eventStorageService: EventStorageService(appSettings: appSettings))
         ServiceLocator.shared.register(userDataStorageService: UserDataStorageService(appSettings: appSettings))
+    }
+}
+
+// MARK: - Booking Errors
+
+enum BookingError: Error, LocalizedError {
+    case noAuthenticatedUser
+    
+    var errorDescription: String? {
+        switch self {
+        case .noAuthenticatedUser:
+            return "No authenticated user found. Please log in to perform booking operations."
+        }
     }
 }

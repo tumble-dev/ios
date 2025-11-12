@@ -8,6 +8,7 @@
 enum NotificationConstants {
     enum EventInfoKey {
         static let eventId = "event_id"
+        static let bookingId = "booking_id"
         static let pusherNotificationClientIdentifier = "pusher_notification_client_identifier"
     }
 

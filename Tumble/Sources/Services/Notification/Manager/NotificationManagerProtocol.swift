@@ -19,6 +19,8 @@ protocol NotificationManagerDelegate: AnyObject {
     func registerForRemoteNotifications()
     func unregisterForRemoteNotifications()
     func openEventDetails(eventId: String) async
+    func openBookingDetails(bookingId: String) async
+    func bookingActionTapped(bookingId: String, action: BookingAction) async
 }
 
 // MARK: - NotificationManagerProtocol
@@ -44,4 +46,9 @@ protocol NotificationManagerProtocol: AnyObject {
     func disableCourseNotifications(for courseId: String) async
     func areCourseNotificationsEnabled(for courseId: String) async -> Bool
     func refreshCourseNotifications(for courseId: String) async
+    
+    // Booking-specific notifications
+    func scheduleBookingReminderNotification(for bookingId: String, resourceName: String, bookingDate: Date) async -> Bool
+    func cancelBookingReminderNotification(for bookingId: String)
+    func isBookingReminderScheduled(for bookingId: String) async -> Bool
 }

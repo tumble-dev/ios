@@ -607,12 +607,7 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
     
     // MARK: - Private Methods
     
-    private func updateAuthState(_ newState: AuthState) async {
-        AppLogger.shared.debug("AuthenticationService: updateAuthState called with: \(newState)")
-        AppLogger.shared.debug("AuthenticationService: Current thread: \(Thread.current)")
-        AppLogger.shared.debug("AuthenticationService: getAllUsers count before update: \(getAllUsers().count)")
-        AppLogger.shared.debug("AuthenticationService: activeUsername before update: \(appSettings.activeUsername ?? "nil")")
-        
+    private func updateAuthState(_ newState: AuthState) async {        
         await MainActor.run {
             AppLogger.shared.debug("AuthenticationService: On MainActor, updating authState from \(authState) to \(newState)")
             authState = newState

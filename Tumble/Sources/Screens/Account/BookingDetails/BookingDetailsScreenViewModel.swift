@@ -62,7 +62,7 @@ class BookingDetailsScreenViewModel: BookingDetailsScreenViewModelType, BookingD
             
             _ = try await tumbleApiService.confirmResourceBooking(
                 bookingId: originalBooking.id,
-                school: "hkr",
+                school: school,
                 authToken: token
             )
             

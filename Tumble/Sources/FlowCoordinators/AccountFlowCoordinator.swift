@@ -148,15 +148,37 @@ class AccountFlowCoordinator: FlowCoordinatorProtocol {
     }
     
     private func presentBookingDetailsScreen(booking: Response.Booking) {
-        let coordinator = BookingDetailsScreenCoordinator(
-            parameters: .init(
-                booking: booking,
-                school: "hkr",
-                tumbleApiService: parameters.tumbleApiService,
-                authenticationService: parameters.authenticationService
+        do {
+            let userSchool = try getCurrentUserSchool()
+            
+            let coordinator = BookingDetailsScreenCoordinator(
+                parameters: .init(
+                    booking: booking,
+                    school: userSchool,
+                    tumbleApiService: parameters.tumbleApiService,
+                    authenticationService: parameters.authenticationService
+                )
             )
-        )
+            
+            navigationStackCoordinator.push(coordinator)
+        } catch BookingError.noAuthenticatedUser {
+            AppLogger.shared.error("[AccountFlowCoordinator] Cannot present booking details: No authenticated user")
+            // Could show an alert or handle this case appropriately
+            // For now, we'll just log the error and not navigate
+        } catch {
+            AppLogger.shared.error("[AccountFlowCoordinator] Unexpected error getting user school: \(error)")
+        }
+    }
+    
+    /// Helper method to get the current user's school from the authentication service
+    /// - Throws: BookingError.noAuthenticatedUser if no user is authenticated
+    private func getCurrentUserSchool() throws -> String {
+        guard let currentUser = parameters.authenticationService.getCurrentUser() else {
+            AppLogger.shared.error("[AccountFlowCoordinator] No authenticated user found for booking operation")
+            throw BookingError.noAuthenticatedUser
+        }
         
-        navigationStackCoordinator.push(coordinator)
+        AppLogger.shared.debug("[AccountFlowCoordinator] Retrieved user school: \(currentUser.school) for user: \(currentUser.username)")
+        return currentUser.school
     }
 }

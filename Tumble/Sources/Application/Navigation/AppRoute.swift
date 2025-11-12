@@ -10,6 +10,7 @@ import Foundation
 enum AppRoute: Hashable {
     case bookmarks(viewType: String)
     case eventDetails(eventId: String)
+    case bookingDetails(bookingId: String)
     case search
     case searchResult(query: String)
     case searchQuickview(programmeId: String)

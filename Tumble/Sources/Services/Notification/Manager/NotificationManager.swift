@@ -96,6 +96,7 @@ final class NotificationManager: NSObject, NotificationManagerProtocol {
                 Task {
                     await self?.rescheduleAllEventNotifications()
                     await self?.rescheduleAllCourseNotifications()
+                    await self?.rescheduleAllBookingNotifications()
                 }
             }
             .store(in: &cancellables)
@@ -413,6 +414,55 @@ final class NotificationManager: NSObject, NotificationManagerProtocol {
         }
     }
     
+    /// Reschedules all existing booking reminder notifications when the notification offset changes
+    private func rescheduleAllBookingNotifications() async {
+        let pendingRequests = await notificationCenter.pendingNotificationRequests()
+        
+        // Find all booking notifications (main reminders, not confirmation reminders)
+        let bookingNotifications = pendingRequests.filter { 
+            $0.identifier.hasPrefix("booking_") && !$0.identifier.hasPrefix("booking_confirmation_")
+        }
+        
+        AppLogger.shared.info("Rescheduling \(bookingNotifications.count) booking notifications with new offset", source: "NotificationManager")
+        
+        // Group notifications by booking ID to avoid duplicates
+        var processedBookingIds = Set<String>()
+        
+        for request in bookingNotifications {
+            // Extract booking info from the existing notification
+            guard let bookingId = request.content.userInfo["bookingId"] as? String,
+                  let resourceName = request.content.userInfo["resourceName"] as? String,
+                  let originalBookingDateString = request.content.userInfo["originalBookingDate"] as? String,
+                  let originalBookingDate = ISO8601DateFormatter().date(from: originalBookingDateString)
+            else {
+                AppLogger.shared.error("Could not extract booking info from notification \(request.identifier)", source: "NotificationManager")
+                continue
+            }
+            
+            // Skip if we've already processed this booking ID
+            guard !processedBookingIds.contains(bookingId) else {
+                continue
+            }
+            processedBookingIds.insert(bookingId)
+            
+            // Cancel ALL notifications for this booking (main + confirmation)
+            cancelBookingReminderNotification(for: bookingId)
+            
+            // Reschedule with new offset using the original booking date
+            let success = await scheduleBookingReminderNotification(
+                for: bookingId,
+                resourceName: resourceName,
+                bookingDate: originalBookingDate
+            )
+            
+            if success {
+                AppLogger.shared.info("Successfully rescheduled booking notification for booking \(bookingId)", source: "NotificationManager")
+            } else {
+                AppLogger.shared.error("Failed to reschedule booking notification for booking \(bookingId)", source: "NotificationManager")
+            }
+        }
+    }
+    
     /// Reschedules all course notifications when the notification offset changes
     private func rescheduleAllCourseNotifications() async {
         // Get all courses that have notifications enabled
@@ -446,6 +496,132 @@ final class NotificationManager: NSObject, NotificationManagerProtocol {
         return body
     }
     
+    // MARK: - Booking-specific notifications
+    
+    func scheduleBookingReminderNotification(for bookingId: String, resourceName: String, bookingDate: Date) async -> Bool {
+        // For bookings, we need to respect the confirmation window which opens 15 minutes before the booking
+        // So we'll schedule the notification based on when the user can actually act on it
+        let offsetMinutes: Int
+        let offsetText: String
+        
+        switch appSettings.notificationOffset {
+        case .fifteenMinutes:
+            // Perfect - notification at 15 minutes = exactly when confirmation window opens
+            offsetMinutes = -15
+            offsetText = "confirmation window is now open"
+        case .hour:
+            // User wants 1 hour notice, but confirmation opens at 15 minutes
+            // Give them early warning, but mention when they can actually confirm
+            offsetMinutes = -60
+            offsetText = "confirmation opens in 45 minutes"
+        case .threeHours:
+            // User wants 3 hours notice, but confirmation opens at 15 minutes  
+            // Give them early warning, but mention when they can actually confirm
+            offsetMinutes = -180
+            offsetText = "confirmation opens in 2 hours 45 minutes"
+        }
+        
+        let reminderTime = Calendar.current.date(byAdding: .minute, value: offsetMinutes, to: bookingDate)
+        
+        guard let reminderTime = reminderTime, reminderTime > Date() else {
+            AppLogger.shared.info("Booking is too soon or in the past, cannot schedule notification with offset \(abs(offsetMinutes)) minutes", source: "NotificationManager")
+            return false
+        }
+        
+        let content = UNMutableNotificationContent()
+        content.title = "Upcoming Booking"
+        content.body = "Your booking for \(resourceName) - \(offsetText)"
+        content.categoryIdentifier = NotificationConstants.Category.booking
+        content.userInfo = [
+            "bookingId": bookingId,
+            "resourceName": resourceName,
+            "originalBookingDate": ISO8601DateFormatter().string(from: bookingDate),
+            "notificationOffset": appSettings.notificationOffset.rawValue
+        ]
+        content.sound = .default
+        
+        let trigger = UNCalendarNotificationTrigger(
+            dateMatching: Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: reminderTime),
+            repeats: false
+        )
+        
+        let request = UNNotificationRequest(
+            identifier: "booking_\(bookingId)",
+            content: content,
+            trigger: trigger
+        )
+        
+        do {
+            try await notificationCenter.add(request)
+            AppLogger.shared.info("Scheduled booking reminder for booking \(bookingId) at \(reminderTime) (offset: \(abs(offsetMinutes)) minutes)", source: "NotificationManager")
+            
+            // If the user wants advance notice (1h or 3h), also schedule a follow-up notification at 15 minutes
+            // when they can actually confirm the booking
+            if offsetMinutes < -15 {
+                await scheduleBookingConfirmationReminder(for: bookingId, resourceName: resourceName, bookingDate: bookingDate)
+            }
+            
+            return true
+        } catch {
+            AppLogger.shared.error("Failed to schedule booking reminder for booking \(bookingId): \(error)", source: "NotificationManager")
+            return false
+        }
+    }
+    
+    /// Schedules a secondary notification exactly at 15 minutes before booking when confirmation window opens
+    private func scheduleBookingConfirmationReminder(for bookingId: String, resourceName: String, bookingDate: Date) async {
+        let confirmationTime = Calendar.current.date(byAdding: .minute, value: -15, to: bookingDate)
+        
+        guard let confirmationTime = confirmationTime, confirmationTime > Date() else {
+            AppLogger.shared.info("Booking confirmation time has passed, skipping confirmation reminder for booking \(bookingId)", source: "NotificationManager")
+            return
+        }
+        
+        let content = UNMutableNotificationContent()
+        content.title = "Booking Confirmation Available"
+        content.body = "You can now confirm your booking for \(resourceName)"
+        content.categoryIdentifier = NotificationConstants.Category.booking
+        content.userInfo = [
+            "bookingId": bookingId,
+            "resourceName": resourceName,
+            "originalBookingDate": ISO8601DateFormatter().string(from: bookingDate),
+            "notificationOffset": "confirmation_window"
+        ]
+        content.sound = .default
+        
+        let trigger = UNCalendarNotificationTrigger(
+            dateMatching: Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: confirmationTime),
+            repeats: false
+        )
+        
+        let request = UNNotificationRequest(
+            identifier: "booking_confirmation_\(bookingId)", // Different identifier for confirmation reminder
+            content: content,
+            trigger: trigger
+        )
+        
+        do {
+            try await notificationCenter.add(request)
+            AppLogger.shared.info("Scheduled booking confirmation reminder for booking \(bookingId) at \(confirmationTime)", source: "NotificationManager")
+        } catch {
+            AppLogger.shared.error("Failed to schedule booking confirmation reminder for booking \(bookingId): \(error)", source: "NotificationManager")
+        }
+    }
+    
+    func cancelBookingReminderNotification(for bookingId: String) {
+        // Cancel both the initial reminder and the confirmation window reminder
+        let identifiers = ["booking_\(bookingId)", "booking_confirmation_\(bookingId)"]
+        notificationCenter.removePendingNotificationRequests(withIdentifiers: identifiers)
+        AppLogger.shared.info("Cancelled booking reminder and confirmation reminder for booking \(bookingId)", source: "NotificationManager")
+    }
+    
+    func isBookingReminderScheduled(for bookingId: String) async -> Bool {
+        let pendingRequests = await notificationCenter.pendingNotificationRequests()
+        let hasMainReminder = pendingRequests.contains { $0.identifier == "booking_\(bookingId)" }
+        let hasConfirmationReminder = pendingRequests.contains { $0.identifier == "booking_confirmation_\(bookingId)" }
+        return hasMainReminder || hasConfirmationReminder
+    }
+
     // MARK: - Private Helpers
 
     private func enablePushNotifications(_ enable: Bool) {
@@ -540,6 +716,13 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
                     AppLogger.shared.warning("Event \(eventId) no longer exists, showing generic notification tap", source: "NotificationManager")
                     await delegate?.notificationTapped(content: response.notification.request.content)
                 }
+            }
+            // Check if this is a booking notification
+            else if let bookingId = response.notification.request.content.userInfo["bookingId"] as? String,
+                    response.notification.request.content.categoryIdentifier == NotificationConstants.Category.booking
+            {
+                AppLogger.shared.info("Opening booking details for booking ID: \(bookingId)", source: "NotificationManager")
+                await delegate?.openBookingDetails(bookingId: bookingId)
             } else {
                 // Handle other types of notifications
                 await delegate?.notificationTapped(content: response.notification.request.content)
@@ -569,6 +752,6 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
 
         AppLogger.shared.info("Handling booking action: \(action) for booking: \(bookingId)", source: "NotificationManager")
 
-        // await delegate?.bookingActionTapped(bookingId: bookingId, action: action)
+        await delegate?.bookingActionTapped(bookingId: bookingId, action: action)
     }
 }
