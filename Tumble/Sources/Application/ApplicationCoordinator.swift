@@ -170,9 +170,8 @@ class ApplicationCoordinator: ApplicationCoordinatorProtocol, NotificationManage
             }
         case .bookingDetails(let bookingId):
             if let bookmarksFlowCoordinator {
-                // TODO: Implement booking details navigation in BookmarksFlowCoordinator
-                AppLogger.shared.info("[ApplicationCoordinator] Booking details navigation to be implemented in BookmarksFlowCoordinator for booking: \(bookingId)")
-                // For now, this will be stored for later handling
+                bookmarksFlowCoordinator.handleAppRoute(.bookingDetails(bookingId: bookingId), animated: true)
+                handled = true
             }
         default:
             break

@@ -191,6 +191,9 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
         switch appRoute {
         case .eventDetails(let eventId):
             stateMachine.processEvent(.showEventDetails(eventId: eventId))
+        case .bookingDetails(let bookingId):
+            // Delegate booking details navigation to AccountFlowCoordinator
+            accountFlowCoordinator.handleAppRoute(.bookingDetails(bookingId: bookingId), animated: animated)
         case .search:
             searchFlowCoordinator.handleAppRoute(.search, animated: animated)
         case .account:

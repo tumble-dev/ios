@@ -48,6 +48,8 @@ class AccountFlowCoordinator: FlowCoordinatorProtocol {
         switch appRoute {
         case .account:
             presentAccountScreen(animated: animated)
+        case .bookingDetails(let bookingId):
+            presentAccountScreenWithBookingDetails(bookingId: bookingId, animated: animated)
         default:
             break
         }
@@ -111,6 +113,37 @@ class AccountFlowCoordinator: FlowCoordinatorProtocol {
         actionsSubject.send(.presentedAccount)
     }
     
+    private func presentAccountScreenWithBookingDetails(bookingId: String, animated: Bool) {
+        presentAccountScreen(animated: animated)
+        
+        Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 100_000_000)
+            
+            await navigateToBookingDetails(bookingId: bookingId)
+        }
+    }
+    
+    private func navigateToBookingDetails(bookingId: String) async {
+        do {
+            AppLogger.shared.info("[AccountFlowCoordinator] Navigating to booking details for ID: \(bookingId)")
+            
+            let token = try await parameters.authenticationService.getCurrentSessionToken()
+            let userSchool = try getCurrentUserSchool()
+            
+            let bookings = try await parameters.tumbleApiService.getUserBookings(school: userSchool, authToken: token)
+            
+            guard let booking = bookings.first(where: { $0.id == bookingId }) else {
+                AppLogger.shared.warning("[AccountFlowCoordinator] Booking with ID \(bookingId) not found in user bookings")
+                return
+            }
+            
+            presentBookingDetailsScreen(booking: booking)
+            
+        } catch {
+            AppLogger.shared.error("[AccountFlowCoordinator] Failed to navigate to booking details: \(error)")
+        }
+    }
+    
     func presentResourceSelectionScreen(animated: Bool) {
         let coordinator = ResourceSelectionScreenCoordinator(
             parameters: .init(
@@ -147,7 +180,6 @@ class AccountFlowCoordinator: FlowCoordinatorProtocol {
             )
         )
         
-        // Subscribe to the coordinator's actions to handle booking completion
         coordinator.actions
             .sink { [weak self] action in
                 guard let self else { return }
@@ -157,7 +189,6 @@ class AccountFlowCoordinator: FlowCoordinatorProtocol {
                 case .pushResourceTimeslotSelectionScreen(let resource, let date):
                     presentResourceTimeSlotSelectionScreen(resource: resource, selectedPickerDate: date)
                 case .bookingMade:
-                    // Refresh the account screen to show the new booking
                     AppLogger.shared.info("[AccountFlowCoordinator] New booking was made, refreshing account screen")
                     accountScreenCoordinator?.refreshBookings()
                 }
