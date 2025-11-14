@@ -10,24 +10,12 @@ import Foundation
 import SwiftState
 
 class BookmarksFlowCoordinatorStateMachine {
-    /// States the AppCoordinator can find itself in
     enum State: StateType {
-        /// The initial state, used before the coordinator starts
         case initial
-                
-        /// Showing the bookmarks screen
         case bookmarks
-        
-        /// Showing bookmark details screen
         case eventDetailsScreen(eventId: String)
-        
-        /// Showing the settings screen
         case settingsScreen
-        
-        /// Showing the account screen
         case accountScreen
-        
-        /// Showing the search screen
         case searchScreen
     }
     
@@ -35,36 +23,21 @@ class BookmarksFlowCoordinatorStateMachine {
         let animated: Bool
     }
 
-    /// Events that can be triggered on the MainCoordinator state machine
     enum Event: EventType {
-        /// Start the main flows.
         case start
-        
         case showEventDetails(eventId: String)
-        
         case dismissedEventDetails
-        
-        // MARK: - Sheets & Fullscreen Covers
-        
-        /// Request presentation of the settings screen
         case showSettingsScreen
-        /// The settings screen has been dismissed
         case dismissedSettingsScreen
-        
-        /// Request presentation of the account screen.
         case showAccountScreen
-        /// The user profile screen has been dismissed.
         case dismissedAccountScreen
-        
-        /// Request presentation of the search screen
         case showSearchScreen
-        /// The search screen has been dismissed
         case dismissedSearchScreen
     }
     
     private let stateMachine: StateMachine<State, Event>
     
-    var state: BookmarksFlowCoordinatorStateMachine.State {
+    var state: State {
         stateMachine.state
     }
     
@@ -83,37 +56,52 @@ class BookmarksFlowCoordinatorStateMachine {
 
         stateMachine.addRouteMapping { event, fromState, _ in
             switch (fromState, event) {
+            // Event details from bookmarks
             case (.bookmarks, .showEventDetails(let eventId)):
                 return .eventDetailsScreen(eventId: eventId)
             
+            // Event details navigation (switching events)
             case (.eventDetailsScreen, .showEventDetails(let eventId)):
                 return .eventDetailsScreen(eventId: eventId)
 
+            // Dismiss event details back to bookmarks
+            case (.eventDetailsScreen, .dismissedEventDetails):
+                return .bookmarks
+                
             case (.bookmarks, .dismissedEventDetails):
                 return .bookmarks
 
+            // Settings from bookmarks
             case (.bookmarks, .showSettingsScreen):
                 return .settingsScreen
 
+            // Settings from event details
+            case (.eventDetailsScreen, .showSettingsScreen):
+                return .settingsScreen
+                
             case (.settingsScreen, .dismissedSettingsScreen):
                 return .bookmarks
                   
+            // Search from bookmarks
             case (.bookmarks, .showSearchScreen):
                 return .searchScreen
             
-            case (.settingsScreen, .showSearchScreen):
+            // Search from event details
+            case (.eventDetailsScreen, .showSearchScreen):
                 return .searchScreen
             
             case (.searchScreen, .dismissedSearchScreen):
                 return .bookmarks
             
-            case (_, .showAccountScreen):
+            // Account from bookmarks
+            case (.bookmarks, .showAccountScreen):
+                return .accountScreen
+
+            // Account from event details
+            case (.eventDetailsScreen, .showAccountScreen):
                 return .accountScreen
 
             case (.accountScreen, .dismissedAccountScreen):
-                return .bookmarks
-                
-            case (.eventDetailsScreen, .dismissedEventDetails):
                 return .bookmarks
     
             default:
@@ -125,7 +113,7 @@ class BookmarksFlowCoordinatorStateMachine {
             if let event = context.event {
                 AppLogger.shared.info("Transitioning from `\(context.fromState)` to `\(context.toState)` with event `\(event)`")
             } else {
-                AppLogger.shared.info("Transitioning from \(context.fromState)` to `\(context.toState)`")
+                AppLogger.shared.info("Transitioning from `\(context.fromState)` to `\(context.toState)`")
             }
         }
         
@@ -134,29 +122,22 @@ class BookmarksFlowCoordinatorStateMachine {
         }
     }
     
-    /// Attempt to move the state machine to another state through an event
-    /// It will either invoke the `transitionHandler` or the `errorHandler` depending on its current state
     func processEvent(_ event: Event, userInfo: EventUserInfo? = nil) {
         stateMachine.tryEvent(event, userInfo: userInfo)
     }
     
-    /// Registers a callback for processing state machine transitions
     func addTransitionHandler(_ handler: @escaping StateMachine<State, Event>.Handler) {
         stateMachine.addAnyHandler(.any => .any, handler: handler)
     }
     
-    /// Registers a callback for processing state machine errors
     func addErrorHandler(_ handler: @escaping StateMachine<State, Event>.Handler) {
         stateMachine.addErrorHandler(handler: handler)
     }
     
-    /// Flag indicating the machine is displaying event details screen with given event identifier
     func isDisplayingEventDetails(withEventId eventId: String) -> Bool {
-        switch stateMachine.state {
-        case .eventDetailsScreen(let eventId):
-            return eventId == eventId
-        default:
-            return false
+        if case .eventDetailsScreen(let currentEventId) = stateMachine.state {
+            return currentEventId == eventId
         }
+        return false
     }
 }

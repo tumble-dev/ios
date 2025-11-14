@@ -370,7 +370,7 @@ private extension ApplicationCoordinator {
             forName: UIApplication.didEnterBackgroundNotification,
             object: nil,
             queue: .main
-        ) { [weak self] _ in
+        ) { _ in
             // Perform cleanup when app enters background
             ServiceLocator.shared.eventStorageService.performAutomaticCleanup()
         }
@@ -379,7 +379,7 @@ private extension ApplicationCoordinator {
             forName: UIApplication.willEnterForegroundNotification,
             object: nil,
             queue: .main
-        ) { [weak self] _ in
+        ) { _ in
             // Perform cleanup when app comes to foreground (in case it's been a while)
             ServiceLocator.shared.eventStorageService.performAutomaticCleanup()
         }

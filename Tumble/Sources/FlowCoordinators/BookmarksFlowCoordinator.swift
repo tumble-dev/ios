@@ -29,7 +29,6 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
 
     private let selectedBookmarkEventSubjectId = CurrentValueSubject<String?, Never>(nil)
 
-    private var searchScreenCoordinator: SearchScreenCoordinator?
     private var eventDetailsScreenCoordinator: EventDetailsScreenCoordinator?
     private var cancellables = Set<AnyCancellable>()
 
@@ -75,7 +74,6 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
         detailNavigationStackCoordinator = NavigationStackCoordinator(navigationSplitCoordinator: navigationSplitCoordinator)
 
         navigationSplitCoordinator.setSidebarCoordinator(sidebarNavigationStackCoordinator)
-        navigationSplitCoordinator.setDetailCoordinator(detailNavigationStackCoordinator)
 
         onboardingFlowCoordinator = OnboardingFlowCoordinator(
             appSettings: appSettings,
@@ -159,7 +157,7 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
                 guard let self else { return }
                 switch action {
                 case .presentedAccount:
-                    break
+                    stateMachine.processEvent(.showAccountScreen)
                 case .dismissedAccount:
                     stateMachine.processEvent(.dismissedAccountScreen)
                 }
@@ -171,7 +169,7 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
         AppLogger.shared.info("Attempting to start onboarding")
 
         if onboardingFlowCoordinator.shouldStart {
-            AppLogger.shared.info("[BookmarksFlowCoordinator] Onboarding should not happen")
+            AppLogger.shared.info("[BookmarksFlowCoordinator] Starting onboarding")
             clearRoute(animated: false)
             onboardingFlowCoordinator.start()
         }
@@ -192,77 +190,83 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
         
         switch appRoute {
         case .eventDetails(let eventId):
-            // Trigger state machine event to show event details
             stateMachine.processEvent(.showEventDetails(eventId: eventId))
         case .search:
-            // Delegate to search flow coordinator
             searchFlowCoordinator.handleAppRoute(.search, animated: animated)
         case .account:
-            // Delegate to account flow coordinator
             accountFlowCoordinator.handleAppRoute(.account, animated: animated)
         case .settings:
-            // Delegate to settings flow coordinator
             settingsFlowCoordinator.handleAppRoute(.settings, animated: animated)
         case .bookmarks:
-            // Already showing bookmarks as the main screen, no action needed
             AppLogger.shared.info("[BookmarksFlowCoordinator] Already showing bookmarks screen")
         default:
-            // Log unhandled routes instead of crashing
             AppLogger.shared.warning("[BookmarksFlowCoordinator] Unhandled app route: \(appRoute)")
         }
     }
 
-    // MARK: - Private
+    // MARK: - Private Helpers
 
     private func clearPresentedSheets(animated: Bool) async {
-        if navigationSplitCoordinator.sheetCoordinator == nil {
-            return
-        }
-
+        guard navigationSplitCoordinator.sheetCoordinator != nil else { return }
         navigationSplitCoordinator.setSheetCoordinator(nil, animated: animated)
-
-        // Prevents system crashes when presenting a sheet if another one was already shown
-        try? await Task.sleep(nanoseconds: 200000)
+        try? await Task.sleep(nanoseconds: 200_000)
     }
 }
 
 // MARK: - Setup
 
 private extension BookmarksFlowCoordinator {
-    private func setupStateMachine() {
+    func setupStateMachine() {
         stateMachine.addTransitionHandler { [weak self] context in
             guard let self else { return }
+            
             switch (context.fromState, context.event, context.toState) {
-            /// Initial -> Bookmarks
             case (.initial, .start, .bookmarks):
                 presentBookmarksScreen()
                 attemptStartingOnboarding()
-            /// Account -> Bookmarks
-            case (.accountScreen, .dismissedAccountScreen, .bookmarks):
+                
+            case (.bookmarks, .showEventDetails(let eventId), .eventDetailsScreen):
+                presentEventDetailsScreen(eventId: eventId)
+                
+            case (.eventDetailsScreen, .showEventDetails(let eventId), .eventDetailsScreen):
+                presentEventDetailsScreen(eventId: eventId)
+                
+            case (.eventDetailsScreen, .dismissedEventDetails, .bookmarks):
+                dismissEventDetails()
+                
+            case (.bookmarks, .dismissedEventDetails, .bookmarks):
+                // No-op, already on bookmarks
                 break
-            case (.bookmarks, .showAccountScreen, .accountScreen):
-                break
-            /// Settings -> Bookmarks
-            case (.settingsScreen, .dismissedSettingsScreen, .bookmarks):
-                break
+                
             case (.bookmarks, .showSettingsScreen, .settingsScreen):
                 break
-            case (.searchScreen, .dismissedSearchScreen, .bookmarks):
+                
+            case (.settingsScreen, .dismissedSettingsScreen, .bookmarks):
                 break
+                
+            case (.eventDetailsScreen, .showSettingsScreen, .settingsScreen):
+                break
+                
             case (.bookmarks, .showSearchScreen, .searchScreen):
                 break
-            case (.eventDetailsScreen, .dismissedEventDetails, .bookmarks):
+                
+            case (.searchScreen, .dismissedSearchScreen, .bookmarks):
                 break
-            case (.bookmarks, .showEventDetails(let eventId), .eventDetailsScreen):
-                presentEventDetailsSreen(eventId: eventId)
-            case (.eventDetailsScreen, .showEventDetails(let eventId), .eventDetailsScreen):
-                presentEventDetailsSreen(eventId: eventId)
+                
+            case (.eventDetailsScreen, .showSearchScreen, .searchScreen):
+                break
+                
+            case (.bookmarks, .showAccountScreen, .accountScreen):
+                break
+                
+            case (.accountScreen, .dismissedAccountScreen, .bookmarks):
+                break
+                
             case (.eventDetailsScreen, .showAccountScreen, .accountScreen):
-                accountFlowCoordinator.handleAppRoute(.account, animated: true)
-            case (.bookmarks, .dismissedEventDetails, .bookmarks):
                 break
+                
             default:
-                fatalError("Unknown transition: \(context)")
+                AppLogger.shared.error("Unhandled transition: \(context)")
             }
         }
 
@@ -279,17 +283,16 @@ private extension BookmarksFlowCoordinator {
             if context.fromState == context.toState {
                 AppLogger.shared.error("Failed transition from equal states: \(context.fromState)")
             } else {
-                fatalError("Failed transition with context: \(context)")
+                AppLogger.shared.error("Failed transition: \(context)")
             }
         }
     }
 }
 
-// MARK: - Showing Screens
+// MARK: - Screen Presentation
 
 private extension BookmarksFlowCoordinator {
-    /// Single home screen instead of tabs
-    private func presentBookmarksScreen() {
+    func presentBookmarksScreen() {
         let parameters = BookmarksScreenCoordinatorParameters(
             appSettings: appSettings,
             eventStorageService: eventStorageService
@@ -312,17 +315,11 @@ private extension BookmarksFlowCoordinator {
             }
             .store(in: &cancellables)
 
-        // On iPad this would literally appear in the sidebar of the app
         sidebarNavigationStackCoordinator.setRootCoordinator(coordinator)
-
-        // Only set detail on iPad
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            detailNavigationStackCoordinator.setRootCoordinator(PlaceholderScreenCoordinator())
-        }
         navigationRootCoordinator.setRootCoordinator(navigationSplitCoordinator)
     }
 
-    private func presentEventDetailsSreen(eventId: String) {
+    func presentEventDetailsScreen(eventId: String) {
         let parameters = EventDetailsScreenCoordinatorParameters(
             eventId: eventId,
             appSettings: appSettings,
@@ -331,34 +328,31 @@ private extension BookmarksFlowCoordinator {
         )
 
         let coordinator = EventDetailsScreenCoordinator(parameters: parameters)
-        eventDetailsScreenCoordinator = coordinator
 
         coordinator.actions
-            .sink { [weak self] actions in
+            .sink { [weak self] action in
                 guard let self else { return }
-                switch actions {
+                switch action {
                 case .dismiss:
-                    // Reset to placeholder, good for iPadOS
-                    if UIDevice.current.userInterfaceIdiom == .pad {
-                        detailNavigationStackCoordinator.setRootCoordinator(PlaceholderScreenCoordinator())
-                    } else {
-                        navigationSplitCoordinator.setSheetCoordinator(nil)
-                    }
                     stateMachine.processEvent(.dismissedEventDetails)
                 }
             }
             .store(in: &cancellables)
 
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            detailNavigationStackCoordinator.setRootCoordinator(coordinator, dismissalCallback: { [weak self] in
-                self?.stateMachine.processEvent(.dismissedEventDetails)
-            })
-        } else {
-            let eventDetailsStackCoordinator = NavigationStackCoordinator()
-            eventDetailsStackCoordinator.setRootCoordinator(coordinator)
-            navigationSplitCoordinator.setSheetCoordinator(eventDetailsStackCoordinator, animated: true) { [weak self] in
-                self?.stateMachine.processEvent(.dismissedEventDetails)
-            }
+        eventDetailsScreenCoordinator = coordinator
+            
+        // Set detail coordinator if not already set
+        if navigationSplitCoordinator.detailCoordinator !== detailNavigationStackCoordinator {
+            navigationSplitCoordinator.setDetailCoordinator(detailNavigationStackCoordinator, animated: true)
         }
+        
+        detailNavigationStackCoordinator.setRootCoordinator(coordinator)
+    }
+
+    func dismissEventDetails() {
+        AppLogger.shared.info("[BookmarksFlowCoordinator] Dismissing event details")
+        
+        eventDetailsScreenCoordinator = nil
+        navigationSplitCoordinator.setDetailCoordinator(nil, animated: true)
     }
 }
