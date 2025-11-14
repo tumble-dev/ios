@@ -56,20 +56,20 @@ struct WeeklyCalendarView: View {
         HStack {
             Button(action: previousWeek) {
                 Image(systemName: "chevron.left")
-                    .foregroundColor(.onSurface)
+                    .foregroundColor(.tumbleOnSurface)
             }
             
             Spacer()
             
             Text(weekRangeText)
                 .font(.headline)
-                .foregroundColor(.onSurface)
+                .foregroundColor(.tumbleOnSurface)
             
             Spacer()
             
             Button(action: nextWeek) {
                 Image(systemName: "chevron.right")
-                    .foregroundColor(.onSurface)
+                    .foregroundColor(.tumbleOnSurface)
             }
         }
     }
@@ -97,7 +97,7 @@ struct WeeklyCalendarView: View {
             ForEach(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], id: \.self) { day in
                 Text(day)
                     .font(.caption)
-                    .foregroundColor(.onSurface.opacity(0.7))
+                    .foregroundColor(.tumbleOnSurface.opacity(0.7))
                     .frame(maxWidth: .infinity)
             }
         }
@@ -171,17 +171,17 @@ struct WeeklyCalendarView: View {
         return VStack(spacing: 4) {
             Text("\(dayNumber)")
                 .font(.system(size: 16, weight: isSelected ? .bold : .regular))
-                .foregroundColor(isSelected ? .onPrimary : (isToday ? .primary : .onSurface))
+                .foregroundColor(isSelected ? .tumbleOnPrimary : (isToday ? .tumblePrimary : .tumbleOnSurface))
                 .frame(width: 36, height: 36)
                 .background(
                     Circle()
-                        .fill(isSelected ? Color.primary : (isToday ? Color.primary.opacity(0.1) : Color.clear))
+                        .fill(isSelected ? Color.tumblePrimary : (isToday ? Color.tumblePrimary.opacity(0.1) : Color.clear))
                 )
             
             // Event indicator
             if hasEvents {
                 Circle()
-                    .fill(Color.primary)
+                    .fill(Color.tumblePrimary)
                     .frame(width: 4, height: 4)
             } else {
                 Color.clear

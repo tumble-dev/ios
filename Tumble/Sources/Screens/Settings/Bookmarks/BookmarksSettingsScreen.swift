@@ -14,7 +14,7 @@ struct BookmarksSettingsScreen: View {
             .padding(.horizontal, .spacingM)
             .padding(.vertical, .spacingL)
         }
-        .background(Color.background)
+        .background(Color.tumbleBackground)
         .navigationTitle("Bookmarked Programmes")
         .navigationBarTitleDisplayMode(.inline)
         .alert("Remove All Bookmarks", isPresented: $showingDeleteAlert) {
@@ -35,10 +35,10 @@ struct BookmarksSettingsScreen: View {
                     HStack {
                         Text(programme.key)
                             .font(.body)
-                            .foregroundColor(.onSurface)
+                            .foregroundColor(.tumbleOnSurface)
                         Spacer()
                         Toggle("", isOn: context.viewState.bindings.programmeBinding(for: programme.key))
-                            .tint(.primary)
+                            .tint(.tumblePrimary)
                     }
                     .padding(.vertical, .spacingM)
                     

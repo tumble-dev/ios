@@ -108,10 +108,10 @@ extension View {
     func cardStyle() -> some View {
         background(
             RoundedRectangle(cornerRadius: .radiusL)
-                .fill(Color.surface)
+                .fill(Color.tumbleSurface)
                 .background(
                     RoundedRectangle(cornerRadius: .radiusL)
-                        .stroke(Color.onSurface.opacity(0.3), lineWidth: 0.5)
+                        .stroke(Color.tumbleOnSurface.opacity(0.3), lineWidth: 0.5)
                 )
         )
     }
@@ -122,7 +122,7 @@ extension View {
             .cornerRadius(.radiusL)
             .background(
                 RoundedRectangle(cornerRadius: .radiusL)
-                    .stroke(Color.onSurface.opacity(0.3), lineWidth: 0.5)
+                    .stroke(Color.tumbleOnSurface.opacity(0.3), lineWidth: 0.5)
             )
     }
     

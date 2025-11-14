@@ -41,12 +41,12 @@ struct EventWidgetView: View {
                     Text("Next Event")
                         .font(.caption2)
                         .fontWeight(.semibold)
-                        .foregroundColor(.onSurface.opacity(0.7))
+                        .foregroundColor(.tumbleOnSurface.opacity(0.7))
                     
                     Text(eventDate)
                         .font(.caption2)
                         .fontWeight(.medium)
-                        .foregroundColor(.onSurface.opacity(0.5))
+                        .foregroundColor(.tumbleOnSurface.opacity(0.5))
                 }
                 
                 Spacer()
@@ -56,13 +56,13 @@ struct EventWidgetView: View {
             VStack(alignment: .leading, spacing: 5) {
                 Text(event.title)
                     .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(.onSurface)
+                    .foregroundColor(.tumbleOnSurface)
                     .lineLimit(2)
                     .multilineTextAlignment(.leading)
                 
                 Text(event.courseName)
                     .font(.system(size: 12, weight: .regular))
-                    .foregroundColor(.onSurface.opacity(0.7))
+                    .foregroundColor(.tumbleOnSurface.opacity(0.7))
                     .lineLimit(1)
             }
             
@@ -90,11 +90,11 @@ struct EventWidgetView: View {
                     Text("Next Event")
                         .font(.caption)
                         .fontWeight(.semibold)
-                        .foregroundColor(.onSurface.opacity(0.7))
+                        .foregroundColor(.tumbleOnSurface)
                     
                     Text(eventDate)
                         .font(.caption2)
-                        .foregroundColor(.onSurface.opacity(0.5))
+                        .foregroundColor(.tumbleOnSurface)
                 }
                 
                 Spacer()
@@ -115,14 +115,14 @@ struct EventWidgetView: View {
                 VStack(alignment: .leading, spacing: 5) {
                     Text(event.title)
                         .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(.onSurface)
+                        .foregroundColor(.tumbleOnSurface)
                         .lineLimit(2)
                         .multilineTextAlignment(.leading)
                     
                     Text(event.courseName)
                         .font(.system(size: 14, weight: .regular))
-                        .foregroundColor(.onSurface.opacity(0.7))
-                        .lineLimit(2)
+                        .foregroundColor(.tumbleOnSurface.opacity(0.7))
+                        .lineLimit(1)
                         .multilineTextAlignment(.leading)
                 }
                 
@@ -136,11 +136,11 @@ struct EventWidgetView: View {
                         HStack(spacing: 6) {
                             Image(systemName: "mappin.and.ellipse")
                                 .font(.system(size: 14))
-                                .foregroundColor(.onSurface.opacity(0.7))
+                                .foregroundColor(.tumbleOnSurface.opacity(0.7))
                             
                             Text(event.locations.first?.id.capitalized ?? NSLocalizedString("Unknown", comment: ""))
                                 .font(.system(size: 12, weight: .regular))
-                                .foregroundColor(.onSurface.opacity(0.7))
+                                .foregroundColor(.tumbleOnSurface.opacity(0.7))
                                 .lineLimit(1)
                         }
                         
@@ -148,11 +148,11 @@ struct EventWidgetView: View {
                         HStack(spacing: 6) {
                             Image(systemName: "person")
                                 .font(.system(size: 14))
-                                .foregroundColor(.onSurface.opacity(0.7))
+                                .foregroundColor(.tumbleOnSurface.opacity(0.7))
                             
                             Text(teacherDisplayName)
                                 .font(.system(size: 12, weight: .regular))
-                                .foregroundColor(.onSurface.opacity(0.7))
+                                .foregroundColor(.tumbleOnSurface.opacity(0.7))
                                 .lineLimit(1)
                         }
                     }
@@ -161,7 +161,6 @@ struct EventWidgetView: View {
                 }
             }
         }
-        .padding(16)
     }
     
     private var startTime: String {

@@ -12,7 +12,7 @@ struct ResourceBookingScreen: View {
     
     var body: some View {
         ZStack {
-            Color.background
+            Color.tumbleBackground
                 .ignoresSafeArea()
             
             switch context.viewState.userState {
@@ -213,7 +213,7 @@ private struct TimeslotDropdown: View {
         } label: {
             HStack {
                 Image(systemName: "clock")
-                    .foregroundColor(.accentColor)
+                    .foregroundColor(.tumblePrimary)
                     .frame(width: 20, height: 20)
                 
                 Spacer()
@@ -226,7 +226,7 @@ private struct TimeslotDropdown: View {
                 Spacer()
                 
                 Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                    .foregroundColor(.accentColor)
+                    .foregroundColor(.tumblePrimary)
                     .frame(width: 24, height: 24)
             }
             .padding(16)
@@ -256,15 +256,15 @@ private struct TimeslotSelectionView: View {
                     VStack(spacing: 16) {
                         Image(systemName: "calendar.badge.exclamationmark")
                             .font(.system(size: 48))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(.tumbleSecondary)
                         
                         Text("No Time Slots")
                             .font(.title3.weight(.semibold))
-                            .foregroundColor(.primary)
+                            .foregroundColor(.tumblePrimary)
                         
                         Text("No time slots are available for this time period")
                             .font(.body)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(.tumbleSecondary)
                             .multilineTextAlignment(.center)
                     }
                     .padding(32)
@@ -272,15 +272,15 @@ private struct TimeslotSelectionView: View {
                     VStack(spacing: 16) {
                         Image(systemName: "calendar.badge.exclamationmark")
                             .font(.system(size: 48))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(.tumbleSecondary)
                         
                         Text("All Slots Booked")
                             .font(.title3.weight(.semibold))
-                            .foregroundColor(.primary)
+                            .foregroundColor(.tumblePrimary)
                         
                         Text("All time slots are currently booked for this time period")
                             .font(.body)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(.tumbleSecondary)
                             .multilineTextAlignment(.center)
                     }
                     .padding(32)
@@ -351,15 +351,15 @@ private struct AvailabilitySlotRow: View {
                         .foregroundColor(.white)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 8)
-                        .background(Color.accentColor)
+                        .background(Color.tumblePrimary)
                         .cornerRadius(8)
                 } else {
                     Text("Booked")
                         .font(.system(size: 14, weight: .semibold))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.tumbleSecondary)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 8)
-                        .background(Color.secondary.opacity(0.2))
+                        .background(Color.tumbleSecondary.opacity(0.2))
                         .cornerRadius(8)
                 }
             }

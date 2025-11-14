@@ -8,6 +8,12 @@
 import MijickPopupView
 import SwiftUI
 
+
+/// 1. account screen should have navigation to settings -> login
+/// 2. filter for events should not be there until events actually exist
+/// 3. saving a programme/course could dismiss the sheet?
+/// 4. fix open event from widget
+
 @main
 struct Application: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
@@ -20,6 +26,7 @@ struct Application: App {
             appDelegate: appDelegate
         )
         SceneDelegate.windowManager = applicationCoordinator.windowManager
+        SceneDelegate.applicationCoordinator = applicationCoordinator as? ApplicationCoordinator
     }
 
     var body: some Scene {

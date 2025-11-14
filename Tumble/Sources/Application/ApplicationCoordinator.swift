@@ -156,7 +156,27 @@ class ApplicationCoordinator: ApplicationCoordinatorProtocol, NotificationManage
     }
 
     func handleDeepLink(_ url: URL, isExternalURL: Bool) -> Bool {
-        // TODO: Implement
+        AppLogger.shared.info("[ApplicationCoordinator] Handling deep link: \(url.absoluteString)")
+        
+        // Handle widget deep links (tumble://event/{eventId})
+        if url.scheme == "tumble" && url.host == "event" {
+            let pathComponents = url.pathComponents.filter { $0 != "/" }
+            
+            if let eventId = pathComponents.first {
+                AppLogger.shared.info("[ApplicationCoordinator] Opening event details from widget for event ID: \(eventId)")
+                
+                // Check if the event exists in storage before trying to open it
+                if ServiceLocator.shared.eventStorageService.eventExists(id: eventId) {
+                    handleAppRoute(.eventDetails(eventId: eventId))
+                    return true
+                } else {
+                    AppLogger.shared.warning("[ApplicationCoordinator] Event with ID \(eventId) not found in storage")
+                }
+            }
+        }
+        
+        // Handle other deep links here if needed in the future
+        
         return false
     }
 

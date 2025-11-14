@@ -57,7 +57,7 @@ struct ResourceSelectionScreen: View {
                 EmptyView()
             }
         }
-        .background(Color.background)
+        .background(Color.tumbleBackground)
         .navigationTitle("Select a Resource")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
@@ -157,12 +157,12 @@ private struct ResourceLocationItem: View {
                 
                 ZStack {
                     Circle()
-                        .fill(Color.accentColor.opacity(0.1))
+                        .fill(Color.tumblePrimary.opacity(0.1))
                         .frame(width: 40, height: 40)
                     
                     Image(systemName: "arrow.forward")
                         .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(.accentColor)
+                        .foregroundColor(.tumblePrimary)
                 }
             }
             .padding(16)

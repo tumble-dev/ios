@@ -23,6 +23,9 @@ struct TumbleWidget: Widget {
 
 struct TumbleWidgetEntryView: View {
     var entry: Provider.Entry
+    @State private var shouldOpenEvent: Bool = false
+    
+    private let appSettings = AppSettings()
 
     var body: some View {
         Group {
@@ -36,16 +39,10 @@ struct TumbleWidgetEntryView: View {
                 ErrorWidgetView(message: message)
             }
         }
-    }
-    
-    private var shouldOpenEvent: Bool {
-        // Check if the openEventFromWidget setting is enabled
-        let appSettings = AppSettings()
-        return appSettings.openEventFromWidget
+        .widgetBackground(Color.tumbleBackground)
     }
     
     private func createEventURL(for eventId: String) -> URL? {
-        // Create a URL scheme for opening the specific event
         // Format: tumble://event/{eventId}
         return URL(string: "tumble://event/\(eventId)")
     }
@@ -84,6 +81,22 @@ struct TumbleWidget_Previews: PreviewProvider {
             ))
             .previewContext(WidgetPreviewContext(family: .systemMedium))
             .previewDisplayName("Error State")
+        }
+    }
+}
+
+// Source - https://stackoverflow.com/a
+// Posted by William T., modified by community. See post 'Timeline' for change history
+// Retrieved 2025-11-14, License - CC BY-SA 4.0
+
+extension View {
+    func widgetBackground(_ backgroundView: some View) -> some View {
+        if #available(iOS 17.0, *) {
+            return containerBackground(for: .widget) {
+                backgroundView
+            }
+        } else {
+            return background(backgroundView)
         }
     }
 }

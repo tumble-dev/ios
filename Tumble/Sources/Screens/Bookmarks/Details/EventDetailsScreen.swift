@@ -26,7 +26,7 @@ struct EventDetailsScreen: View {
                             .font(.largeTitle)
                             .foregroundColor(.red)
                         Text(message)
-                            .foregroundColor(.primary)
+                            .foregroundColor(.tumblePrimary)
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
@@ -37,7 +37,7 @@ struct EventDetailsScreen: View {
             context.send(viewAction: .loadEvent)
         }
         .toolbar { toolbar }
-        .background(Color.background)
+        .background(Color.tumbleBackground)
     }
     
     // MARK: - Private
@@ -68,7 +68,7 @@ struct EventInfo: View {
                     Text("Event Details")
                         .font(.title2)
                         .fontWeight(.semibold)
-                        .foregroundColor(.onBackground)
+                        .foregroundColor(.tumbleOnBackground)
                     Spacer()
                 }
                 .padding(.top, 8)
@@ -81,7 +81,7 @@ struct EventInfo: View {
                     Text(event.courseName)
                         .font(.body)
                         .fontWeight(.medium)
-                        .foregroundColor(.onSurface)
+                        .foregroundColor(.tumbleOnSurface)
                 }
                 
                 // Teachers
@@ -95,7 +95,7 @@ struct EventInfo: View {
                                 Text("\(teacher.firstName) \(teacher.lastName)")
                                     .font(.body)
                                     .fontWeight(.medium)
-                                    .foregroundColor(.onSurface)
+                                    .foregroundColor(.tumbleOnSurface)
                             }
                         }
                     }
@@ -109,7 +109,7 @@ struct EventInfo: View {
                     Text(formatDateOnly(event.from))
                         .font(.body)
                         .fontWeight(.medium)
-                        .foregroundColor(.onSurface)
+                        .foregroundColor(.tumbleOnSurface)
                 }
                 
                 // Time
@@ -121,16 +121,16 @@ struct EventInfo: View {
                         Text(formatTimeOnly(event.from))
                             .font(.body)
                             .fontWeight(.medium)
-                            .foregroundColor(.onSurface)
+                            .foregroundColor(.tumbleOnSurface)
                         
                         Text(" - ")
                             .font(.body)
-                            .foregroundColor(.onSurface)
+                            .foregroundColor(.tumbleOnSurface)
                         
                         Text(formatTimeOnly(event.to))
                             .font(.body)
                             .fontWeight(.medium)
-                            .foregroundColor(.onSurface)
+                            .foregroundColor(.tumbleOnSurface)
                     }
                 }
                 
@@ -145,11 +145,11 @@ struct EventInfo: View {
                                 Text(location.id)
                                     .font(.body)
                                     .fontWeight(.medium)
-                                    .foregroundColor(.onSurface)
+                                    .foregroundColor(.tumbleOnSurface)
                                 
                                 Text("Capacity: \(location.maxSeats) seats")
                                     .font(.caption)
-                                    .foregroundColor(.onSurface)
+                                    .foregroundColor(.tumbleOnSurface)
                             }
                         }
                     }
@@ -174,7 +174,7 @@ struct EventInfo: View {
                         Text("Notification Settings")
                             .font(.title2)
                             .fontWeight(.semibold)
-                            .foregroundColor(.onBackground)
+                            .foregroundColor(.tumbleOnBackground)
                         Spacer()
                     }
                     .padding(.top, 8)
@@ -221,7 +221,7 @@ struct EventHeaderCard: View {
                     Text(event.title)
                         .font(.title)
                         .fontWeight(.bold)
-                        .foregroundColor(.onSurface)
+                        .foregroundColor(.tumbleOnSurface)
                     
                     HStack(spacing: 8) {
                         Circle()
@@ -230,7 +230,7 @@ struct EventHeaderCard: View {
                         
                         Text(event.courseName)
                             .font(.subheadline)
-                            .foregroundColor(.onSurface.opacity(0.8))
+                            .foregroundColor(.tumbleOnSurface.opacity(0.8))
                     }
                 }
                 Spacer()
@@ -257,12 +257,12 @@ struct DetailCard<Content: View>: View {
             // Icon container
             ZStack {
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(Color.primary.opacity(0.1))
+                    .fill(Color.tumblePrimary.opacity(0.1))
                     .frame(width: 40, height: 40)
                 
                 Image(systemName: icon)
                     .font(.system(size: 20))
-                    .foregroundColor(.primary)
+                    .foregroundColor(.tumblePrimary)
             }
             
             // Content
@@ -270,7 +270,7 @@ struct DetailCard<Content: View>: View {
                 Text(title)
                     .font(.caption2)
                     .fontWeight(.medium)
-                    .foregroundColor(.onSurface)
+                    .foregroundColor(.tumbleOnSurface)
                     .textCase(.uppercase)
                 
                 content
@@ -330,12 +330,12 @@ struct NotificationToggleRow: View {
             // Icon container
             ZStack {
                 RoundedRectangle(cornerRadius: 8)
-                    .fill(isEnabled ? Color.blue.opacity(0.2) : Color.primary.opacity(0.1))
+                    .fill(isEnabled ? Color.blue.opacity(0.2) : Color.tumblePrimary.opacity(0.1))
                     .frame(width: 32, height: 32)
                 
                 Image(systemName: icon)
                     .font(.system(size: 16))
-                    .foregroundColor(isEnabled ? .blue : .primary)
+                    .foregroundColor(isEnabled ? .blue : .tumblePrimary)
             }
             
             // Content
@@ -343,11 +343,11 @@ struct NotificationToggleRow: View {
                 Text(title)
                     .font(.body)
                     .fontWeight(.medium)
-                    .foregroundColor(.onSurface)
+                    .foregroundColor(.tumbleOnSurface)
                 
                 Text(subtitle)
                     .font(.caption)
-                    .foregroundColor(.onSurface.opacity(0.7))
+                    .foregroundColor(.tumbleOnSurface.opacity(0.7))
                     .lineLimit(2)
             }
             
@@ -359,7 +359,7 @@ struct NotificationToggleRow: View {
                 set: onToggle
             ))
             .labelsHidden()
-            .tint(.primary)
+            .tint(.tumblePrimary)
         }
     }
 }

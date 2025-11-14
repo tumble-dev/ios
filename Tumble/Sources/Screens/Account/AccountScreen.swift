@@ -43,7 +43,7 @@ struct AccountScreen: View {
                 Button("Done") {
                     context.send(viewAction: .close)
                 }
-                .foregroundColor(.onSurface)
+                .foregroundColor(.tumbleOnSurface)
             }
         }
     }
@@ -81,7 +81,7 @@ struct AccountContentView: View {
             .padding(.horizontal, 16)
             .padding(.bottom, 32)
         }
-        .background(Color.background)
+        .background(Color.tumbleBackground)
     }
 }
 
@@ -95,23 +95,23 @@ struct UserInfoCard: View {
                 Text(user.name)
                     .font(.title2)
                     .fontWeight(.semibold)
-                    .foregroundColor(.onSurface)
+                    .foregroundColor(.tumbleOnSurface)
                 
                 Text("@\(user.username)")
                     .font(.subheadline)
-                    .foregroundColor(.onSurface)
+                    .foregroundColor(.tumbleOnSurface)
                 
                 HStack(spacing: 4) {
                     Image(systemName: "building.2")
                         .font(.caption)
                     Text(user.school.uppercased(with: .autoupdatingCurrent))
                         .font(.caption)
-                        .foregroundColor(.onBackground)
+                        .foregroundColor(.tumbleOnBackground)
                 }
-                .foregroundColor(.onSurface)
+                .foregroundColor(.tumbleOnSurface)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 4)
-                .background(Color.background)
+                .background(Color.tumbleBackground)
                 .clipShape(Capsule())
             }
         }
@@ -131,7 +131,7 @@ struct AccountDataView: View {
                 title: "Active Bookings",
                 count: bookings.count,
                 systemImage: "calendar.badge.clock",
-                color: .primary,
+                color: .tumblePrimary,
                 onTap: { onAction(.showResources) }
             ) {
                 if bookings.isEmpty {
@@ -181,7 +181,7 @@ struct SectionCard<Content: View>: View {
                             .frame(width: 32, height: 32)
                         
                         Image(systemName: systemImage)
-                            .foregroundColor(.onPrimary)
+                            .foregroundColor(.tumbleOnPrimary)
                             .font(.system(size: 16, weight: .semibold))
                     }
                     
@@ -189,12 +189,12 @@ struct SectionCard<Content: View>: View {
                         Text(title)
                             .font(.headline)
                             .fontWeight(.semibold)
-                            .foregroundColor(.onSurface)
+                            .foregroundColor(.tumbleOnSurface)
                         
                         if count > 0 {
                             Text("\(count) active")
                                 .font(.caption)
-                                .foregroundColor(.onSurface.opacity(0.7))
+                                .foregroundColor(.tumbleOnSurface.opacity(0.7))
                         }
                     }
                 }
@@ -209,7 +209,7 @@ struct SectionCard<Content: View>: View {
                         Image(systemName: "chevron.right")
                             .font(.caption)
                     }
-                    .foregroundColor(.primary)
+                    .foregroundColor(.tumblePrimary)
                 }
             }
             
@@ -251,7 +251,7 @@ struct BookingRowView: View {
                         Text("Resource \(booking.resourceId)")
                             .font(.subheadline)
                             .fontWeight(.medium)
-                            .foregroundColor(.onSurface)
+                            .foregroundColor(.tumbleOnSurface)
                     
                         Spacer()
                     
@@ -259,17 +259,17 @@ struct BookingRowView: View {
                             Text(timeSlot.timeString())
                                 .font(.caption)
                                 .fontWeight(.medium)
-                                .foregroundColor(.onPrimary)
+                                .foregroundColor(.tumbleOnPrimary)
                                 .padding(.horizontal, 8)
                                 .padding(.vertical, 2)
-                                .background(Color.primary.opacity(0.7))
+                                .background(Color.tumblePrimary.opacity(0.7))
                                 .clipShape(Capsule())
                         }
                     }
                 
                     Text("Location: \(booking.locationId)")
                         .font(.caption)
-                        .foregroundColor(.onSurface)
+                        .foregroundColor(.tumbleOnSurface)
                 
                     if needsConfirmation {
                         HStack(spacing: 4) {
@@ -284,7 +284,7 @@ struct BookingRowView: View {
             
                 Image(systemName: "chevron.right")
                     .font(.caption)
-                    .foregroundColor(.onSurface)
+                    .foregroundColor(.tumbleOnSurface)
             }
             .padding(.spacingM)
             .cardStyle()
@@ -505,16 +505,16 @@ struct ErrorDataView: View {
         VStack(spacing: 16) {
             Image(systemName: "exclamationmark.triangle.fill")
                 .font(.system(size: 40))
-                .foregroundColor(.orange)
+                .foregroundColor(.tumblePrimary)
             
             Text("Error Loading Data")
                 .font(.headline)
                 .fontWeight(.semibold)
-                .foregroundColor(.onBackground)
+                .foregroundColor(.tumbleOnBackground)
             
             Text(message)
                 .font(.subheadline)
-                .foregroundColor(.onBackground)
+                .foregroundColor(.tumbleOnBackground)
                 .multilineTextAlignment(.center)
         }
         .padding(.vertical, 40)

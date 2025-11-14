@@ -48,7 +48,7 @@ struct InfoView: View {
         .multilineTextAlignment(.center)
         .padding(.horizontal, 32)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.background)
+        .background(Color.tumbleBackground)
     }
     
     // MARK: - Icon View
@@ -62,12 +62,12 @@ struct InfoView: View {
             
             if type.isLoading {
                 ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle(tint: .onBackground))
+                    .progressViewStyle(CircularProgressViewStyle(tint: .tumbleOnBackground))
                     .scaleEffect(1.2)
             } else {
                 Image(systemName: iconName)
                     .font(.system(size: 32, weight: .medium))
-                    .foregroundColor(Color.onBackground)
+                    .foregroundColor(Color.tumbleOnBackground)
             }
         }
     }
@@ -80,13 +80,13 @@ struct InfoView: View {
             if let title = type.title {
                 Text(title)
                     .font(.system(size: 20, weight: .semibold, design: .default))
-                    .foregroundColor(.onBackground)
+                    .foregroundColor(.tumbleOnBackground)
             }
             
             if let subtitle = type.subtitle {
                 Text(subtitle)
                     .font(.system(size: 14, weight: .regular, design: .default))
-                    .foregroundColor(.onBackground)
+                    .foregroundColor(.tumbleOnBackground)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
@@ -135,15 +135,15 @@ struct InfoView: View {
     }
     
     private var iconBackgroundColor: Color {
-        Color.onBackground.opacity(0.1)
+        Color.tumbleOnBackground.opacity(0.1)
     }
     
     private func buttonBackgroundColor(for style: InfoViewActionStyle) -> Color {
         switch style {
         case .primary:
-            return .primary
+            return .tumblePrimary
         case .secondary:
-            return .surface
+            return .tumbleSurface
         case .destructive:
             return .red
         }
@@ -152,9 +152,9 @@ struct InfoView: View {
     private func buttonForegroundColor(for style: InfoViewActionStyle) -> Color {
         switch style {
         case .primary, .destructive:
-            return .onPrimary
+            return .tumbleOnPrimary
         case .secondary:
-            return .primary
+            return .tumblePrimary
         }
     }
 }

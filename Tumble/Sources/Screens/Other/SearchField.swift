@@ -31,14 +31,14 @@ struct SearchField: View {
                 HStack(spacing: 5) {
                     Button(action: searchAction) {
                         Image(systemName: "magnifyingglass")
-                            .foregroundColor(.onPrimary)
+                            .foregroundColor(.tumbleOnPrimary)
                             .font(.system(size: 16, weight: .semibold))
                             .frame(width: 18, height: 18)
                     }
                     .buttonStyle(SearchMenuActionStyle())
                     Button(action: searchFieldAction) {
                         Image(systemName: "xmark")
-                            .foregroundColor(.onPrimary)
+                            .foregroundColor(.tumbleOnPrimary)
                             .font(.system(size: 16, weight: .semibold))
                             .frame(width: 18, height: 18)
                     }

@@ -31,11 +31,11 @@ struct ErrorWidgetView: View {
             
             Text("Error")
                 .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(.primary)
+                .foregroundColor(.tumblePrimary)
             
             Text("Unable to load events")
                 .font(.caption2)
-                .foregroundStyle(.secondary)
+                .foregroundColor(.tumbleSecondary)
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
         }
@@ -51,11 +51,11 @@ struct ErrorWidgetView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Unable to Load Events")
                     .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(.primary)
+                    .foregroundColor(.tumblePrimary)
                 
                 Text("There was an error loading your events. Please try opening the Tumble app to refresh your data.")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundColor(.tumbleSecondary)
                     .lineLimit(3)
             }
             

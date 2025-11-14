@@ -187,7 +187,7 @@ private struct LegacyNavigationStackView: View {
                 }
             } else {
                 Text("No root view configured")
-                    .foregroundColor(.secondary)
+                    .foregroundColor(.tumbleSecondary)
             }
         }
     }

@@ -28,7 +28,7 @@ struct AnalyticsPermissionsScreen: View {
             // Bottom action area
             bottomActionArea
         }
-        .background(Color.background.ignoresSafeArea(.all))
+        .background(Color.tumbleBackground.ignoresSafeArea(.all))
         .navigationBarHidden(true)
         .navigationBarBackButtonHidden(true)
         .interactiveDismissDisabled()
@@ -51,12 +51,12 @@ struct AnalyticsPermissionsScreen: View {
             VStack(spacing: 16) {
                 Text("Help Us Improve")
                     .font(.system(.largeTitle))
-                    .foregroundColor(.onBackground)
+                    .foregroundColor(.tumbleOnBackground)
                     .multilineTextAlignment(.center)
                 
                 Text("Share anonymous usage data to help us build better features and fix issues faster.")
                     .font(.system(.body, design: .rounded))
-                    .foregroundColor(.onBackground)
+                    .foregroundColor(.tumbleOnBackground)
                     .multilineTextAlignment(.center)
                     .lineLimit(nil)
                     .fixedSize(horizontal: false, vertical: true)
@@ -71,8 +71,8 @@ struct AnalyticsPermissionsScreen: View {
                 .fill(
                     RadialGradient(
                         gradient: Gradient(colors: [
-                            Color.primary.opacity(0.3),
-                            Color.primary.opacity(0.1),
+                            Color.tumblePrimary.opacity(0.3),
+                            Color.tumblePrimary.opacity(0.1),
                             Color.clear
                         ]),
                         center: .center,
@@ -88,18 +88,18 @@ struct AnalyticsPermissionsScreen: View {
             Circle()
                 .fill(
                     LinearGradient(
-                        gradient: Gradient(colors: [Color.primary, Color.primary.opacity(0.8)]),
+                        gradient: Gradient(colors: [Color.tumblePrimary, Color.tumblePrimary.opacity(0.8)]),
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     )
                 )
                 .frame(width: 100, height: 100)
-                .shadow(color: Color.primary.opacity(0.4), radius: 20, x: 0, y: 10)
+                .shadow(color: Color.tumblePrimary.opacity(0.4), radius: 20, x: 0, y: 10)
             
             // Chart icon with subtle animation
             Image(systemName: "chart.line.uptrend.xyaxis")
                 .font(.system(size: 36, weight: .medium))
-                .foregroundColor(.onPrimary)
+                .foregroundColor(.tumbleOnPrimary)
                 .scaleEffect(isAnimated ? 1.0 : 0.9)
                 .animation(
                     Animation.easeInOut(duration: 1.5)
@@ -111,7 +111,7 @@ struct AnalyticsPermissionsScreen: View {
             // Animated data points
             ForEach(0..<3, id: \.self) { index in
                 Circle()
-                    .fill(Color.onPrimary.opacity(0.8))
+                    .fill(Color.tumbleOnPrimary.opacity(0.8))
                     .frame(width: 4, height: 4)
                     .offset(
                         x: CGFloat([15, -10, 20][index]),
@@ -146,23 +146,23 @@ struct AnalyticsPermissionsScreen: View {
             // Icon container
             ZStack {
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(Color.primary.opacity(0.15))
+                    .fill(Color.tumblePrimary.opacity(0.15))
                     .frame(width: 48, height: 48)
                 
                 Image(systemName: icon)
                     .font(.system(size: 20, weight: .medium))
-                    .foregroundColor(.primary)
+                    .foregroundColor(.tumblePrimary)
             }
             
             // Text content
             VStack(alignment: .leading, spacing: 6) {
                 Text(title)
                     .font(.system(.headline))
-                    .foregroundColor(.onBackground)
+                    .foregroundColor(.tumbleOnBackground)
                 
                 Text(description)
                     .font(.system(.subheadline))
-                    .foregroundColor(.onBackground.opacity(0.8))
+                    .foregroundColor(.tumbleOnBackground.opacity(0.8))
                     .fixedSize(horizontal: false, vertical: true)
             }
             
@@ -183,10 +183,10 @@ struct AnalyticsPermissionsScreen: View {
                     Text("Help Improve Tumble")
                         .font(.system(.headline))
                 }
-                .foregroundColor(.onPrimary)
+                .foregroundColor(.tumbleOnPrimary)
                 .frame(maxWidth: .infinity)
                 .frame(height: 56)
-                .background(Color.primary)
+                .background(Color.tumblePrimary)
                 .clipShape(RoundedRectangle(cornerRadius: .radiusL))
             }
             .buttonStyle(PrimaryButtonStyle())
@@ -195,7 +195,7 @@ struct AnalyticsPermissionsScreen: View {
             Button(action: { context.send(viewAction: .notNow) }) {
                 Text("No Thanks")
                     .font(.system(.body))
-                    .foregroundColor(.onBackground.opacity(0.7))
+                    .foregroundColor(.tumbleOnBackground.opacity(0.7))
                     .frame(height: 48)
             }
             .buttonStyle(SecondaryButtonStyle())
@@ -204,11 +204,11 @@ struct AnalyticsPermissionsScreen: View {
             VStack(spacing: 8) {
                 Text("All data is anonymous and secure")
                     .font(.system(.caption))
-                    .foregroundColor(.onBackground.opacity(0.8))
+                    .foregroundColor(.tumbleOnBackground.opacity(0.8))
                 
                 Text("You can change this in Settings at any time")
                     .font(.system(.caption))
-                    .foregroundColor(.onBackground.opacity(0.6))
+                    .foregroundColor(.tumbleOnBackground.opacity(0.6))
             }
             .multilineTextAlignment(.center)
         }

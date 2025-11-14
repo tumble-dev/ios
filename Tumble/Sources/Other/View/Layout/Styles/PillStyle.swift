@@ -11,7 +11,7 @@ import SwiftUI
 struct PillStyle: ButtonStyle {
     let color: Color
     
-    init(color: Color = .surface) {
+    init(color: Color = .tumbleSurface) {
         self.color = color
     }
     

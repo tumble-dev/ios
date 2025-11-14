@@ -64,8 +64,8 @@ struct BookmarksScreen: View {
         .toolbar { toolbar }
         .navigationTitle("Bookmarks")
         .navigationBarTitleDisplayMode(UIDevice.current.userInterfaceIdiom == .pad ? .large : .inline)
-        .background(Color.background)
-        .tint(.primary)
+        .background(Color.tumbleBackground)
+        .tint(.tumblePrimary)
     }
     
     private func bookmarksWeeklyView(events: [Response.Event]) -> some View {
@@ -309,10 +309,10 @@ struct BookmarksScreen: View {
             }
         } label: {
             Image(systemName: viewTypeIcon)
-                .foregroundStyle(Color.onSurface)
+                .foregroundStyle(Color.tumbleOnSurface)
         }
         .buttonStyle(.borderedProminent)
-        .tint(.primary)
+        .tint(.tumblePrimary)
         .clipShape(Circle())
         .accessibilityLabel("Change view type")
     }
@@ -335,10 +335,10 @@ struct BookmarksScreen: View {
     ) -> some View {
         Button(action: action) {
             Image(systemName: systemName)
-                .foregroundStyle(Color.onSurface)
+                .foregroundStyle(Color.tumbleOnSurface)
         }
         .buttonStyle(.borderedProminent)
-        .tint(Color.surface)
+        .tint(Color.tumbleSurface)
         .clipShape(Circle())
         .accessibilityLabel(accessibilityLabel)
     }

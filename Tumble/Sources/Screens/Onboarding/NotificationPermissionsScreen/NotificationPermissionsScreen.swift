@@ -29,7 +29,7 @@ struct NotificationPermissionsScreen: View {
             // Bottom action area
             bottomActionArea
         }
-        .background(Color.background.ignoresSafeArea(.all))
+        .background(Color.tumbleBackground.ignoresSafeArea(.all))
         .navigationBarHidden(true)
         .navigationBarBackButtonHidden(true)
         .interactiveDismissDisabled()
@@ -53,12 +53,12 @@ struct NotificationPermissionsScreen: View {
                 Text("Stay in the Loop")
                     .font(.system(.largeTitle))
                     .bold()
-                    .foregroundColor(.onBackground)
+                    .foregroundColor(.tumbleOnBackground)
                     .multilineTextAlignment(.center)
                 
                 Text("Get notified about important updates, deadlines, and events so you never miss what matters most.")
                     .font(.system(.body, design: .rounded))
-                    .foregroundColor(.onBackground)
+                    .foregroundColor(.tumbleOnBackground)
                     .multilineTextAlignment(.center)
                     .lineLimit(nil)
                     .fixedSize(horizontal: false, vertical: true)
@@ -73,8 +73,8 @@ struct NotificationPermissionsScreen: View {
                 .fill(
                     RadialGradient(
                         gradient: Gradient(colors: [
-                            Color.primary.opacity(0.3),
-                            Color.primary.opacity(0.1),
+                            Color.tumblePrimary.opacity(0.3),
+                            Color.tumblePrimary.opacity(0.1),
                             Color.clear
                         ]),
                         center: .center,
@@ -90,17 +90,17 @@ struct NotificationPermissionsScreen: View {
             Circle()
                 .fill(
                     LinearGradient(
-                        gradient: Gradient(colors: [Color.primary, Color.primary.opacity(0.8)]),
+                        gradient: Gradient(colors: [Color.tumblePrimary, Color.tumblePrimary.opacity(0.8)]),
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     )
                 )
                 .frame(width: 100, height: 100)
-                .shadow(color: Color.primary.opacity(0.4), radius: 20, x: 0, y: 10)
+                .shadow(color: Color.tumblePrimary.opacity(0.4), radius: 20, x: 0, y: 10)
             
             Image(systemName: "bell.fill")
                 .font(.system(size: 36, weight: .medium))
-                .foregroundColor(.onPrimary)
+                .foregroundColor(.tumbleOnPrimary)
                 .rotationEffect(.degrees(isAnimated ? 15 : -15))
                 .animation(
                     Animation.easeInOut(duration: 2.0)
@@ -130,23 +130,23 @@ struct NotificationPermissionsScreen: View {
             // Icon container
             ZStack {
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(Color.primary.opacity(0.15))
+                    .fill(Color.tumblePrimary.opacity(0.15))
                     .frame(width: 48, height: 48)
                 
                 Image(systemName: icon)
                     .font(.system(size: 20, weight: .medium))
-                    .foregroundColor(.primary)
+                    .foregroundColor(.tumblePrimary)
             }
             
             // Text content
             VStack(alignment: .leading, spacing: 6) {
                 Text(title)
                     .font(.system(.headline))
-                    .foregroundColor(.onBackground)
+                    .foregroundColor(.tumbleOnBackground)
                 
                 Text(description)
                     .font(.system(.subheadline))
-                    .foregroundColor(.onBackground.opacity(0.8))
+                    .foregroundColor(.tumbleOnBackground.opacity(0.8))
                     .fixedSize(horizontal: false, vertical: true)
             }
             
@@ -164,7 +164,7 @@ struct NotificationPermissionsScreen: View {
                     if context.viewState.isProcessing {
                         ProgressView()
                             .scaleEffect(0.8)
-                            .progressViewStyle(CircularProgressViewStyle(tint: .onPrimary))
+                            .progressViewStyle(CircularProgressViewStyle(tint: .tumbleOnPrimary))
                         
                         Text("Setting up...")
                             .font(.system(.headline))
@@ -176,10 +176,10 @@ struct NotificationPermissionsScreen: View {
                             .font(.system(.headline))
                     }
                 }
-                .foregroundColor(.onPrimary)
+                .foregroundColor(.tumbleOnPrimary)
                 .frame(maxWidth: .infinity)
                 .frame(height: 56)
-                .background(Color.primary)
+                .background(Color.tumblePrimary)
                 .clipShape(RoundedRectangle(cornerRadius: .radiusL))
             }
             .buttonStyle(PrimaryButtonStyle())
@@ -190,7 +190,7 @@ struct NotificationPermissionsScreen: View {
                 Button(action: { context.send(viewAction: .notNow) }) {
                     Text("Maybe Later")
                         .font(.system(.body))
-                        .foregroundColor(.onBackground.opacity(0.7))
+                        .foregroundColor(.tumbleOnBackground.opacity(0.7))
                         .frame(height: 48)
                 }
                 .buttonStyle(SecondaryButtonStyle())
@@ -199,7 +199,7 @@ struct NotificationPermissionsScreen: View {
             // Privacy note
             Text("You can change this in Settings at any time")
                 .font(.system(.caption))
-                .foregroundColor(.onBackground.opacity(0.6))
+                .foregroundColor(.tumbleOnBackground.opacity(0.6))
                 .multilineTextAlignment(.center)
         }
         .padding(.horizontal, 24)

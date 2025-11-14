@@ -26,7 +26,7 @@ struct PlaceHolderScreen: View {
         VStack(spacing: 24) {
             Image(systemName: "calendar.badge.clock")
                 .font(.system(size: 64))
-                .foregroundStyle(Color.onBackground)
+                .foregroundStyle(Color.tumbleOnBackground)
             
             VStack(spacing: 8) {
                 Text("Select an event")
@@ -35,12 +35,12 @@ struct PlaceHolderScreen: View {
                 
                 Text("Choose an event from your bookmarks to view details")
                     .font(.subheadline)
-                    .foregroundStyle(Color.onBackground)
+                    .foregroundStyle(Color.tumbleOnBackground)
                     .multilineTextAlignment(.center)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.background)
+        .background(Color.tumbleBackground)
         .ignoresSafeArea(edges: .top)
         .ignoresSafeArea(.keyboard)
     }

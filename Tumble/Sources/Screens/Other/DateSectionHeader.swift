@@ -39,10 +39,10 @@ struct DateSectionHeader: View {
         HStack {
             Text(headerText)
                 .font(.system(size: 16, weight: .semibold))
-                .foregroundColor(.onSurface)
+                .foregroundColor(.tumbleOnSurface)
             
             Rectangle()
-                .fill(Color.onSurface.opacity(0.3))
+                .fill(Color.tumbleOnSurface.opacity(0.3))
                 .frame(height: 1)
                 .padding(.leading, 12)
         }

@@ -25,7 +25,7 @@ struct AccountSettingsScreen: View {
                 VStack(spacing: 16) {
                     Image(systemName: "person.crop.circle.badge.plus")
                         .font(.system(size: 60))
-                        .foregroundColor(.onBackground)
+                        .foregroundColor(.tumbleOnBackground)
                     
                     VStack(spacing: 8) {
                         Text("Add Account")
@@ -34,7 +34,7 @@ struct AccountSettingsScreen: View {
                         
                         Text("Sign in to book resources and register for events at your university")
                             .font(.subheadline)
-                            .foregroundColor(.onBackground)
+                            .foregroundColor(.tumbleOnBackground)
                             .multilineTextAlignment(.center)
                     }
                 }
@@ -44,7 +44,7 @@ struct AccountSettingsScreen: View {
                     HStack {
                         Image(systemName: "person")
                             .font(.system(size: 18, weight: .semibold))
-                            .foregroundColor(.onSurface.opacity(0.75))
+                            .foregroundColor(.tumbleOnSurface.opacity(0.75))
                             .padding(.trailing, 5)
                         
                         TextField("Username", text: .init(
@@ -52,7 +52,7 @@ struct AccountSettingsScreen: View {
                             set: { context.send(viewAction: .updateUsername($0)) }
                         ))
                         .font(.bodyMedium)
-                        .foregroundColor(.onSurface)
+                        .foregroundColor(.tumbleOnSurface)
                         .textContentType(.username)
                         .autocorrectionDisabled()
                         .textInputAutocapitalization(.never)
@@ -66,7 +66,7 @@ struct AccountSettingsScreen: View {
                     HStack {
                         Image(systemName: "lock")
                             .font(.bodyMedium)
-                            .foregroundColor(.onSurface.opacity(0.75))
+                            .foregroundColor(.tumbleOnSurface.opacity(0.75))
                             .padding(.trailing, .spacingXS)
                         
                         SecureField("Password", text: .init(
@@ -74,7 +74,7 @@ struct AccountSettingsScreen: View {
                             set: { context.send(viewAction: .updatePassword($0)) }
                         ))
                         .font(.bodyMedium)
-                        .foregroundColor(.onSurface)
+                        .foregroundColor(.tumbleOnSurface)
                         .textContentType(.password)
                         .focused($focusedField, equals: .password)
                         
@@ -92,7 +92,7 @@ struct AccountSettingsScreen: View {
                         }
                     }
                     .font(.bodyMedium)
-                    .foregroundColor(.onSurface)
+                    .foregroundColor(.tumbleOnSurface)
                     
                     // Sign in button
                     Button {
@@ -112,10 +112,10 @@ struct AccountSettingsScreen: View {
                         .frame(height: 50)
                         .background(
                             canSignIn
-                                ? Color.primary
-                                : Color.surface.opacity(0.5)
+                                ? Color.tumblePrimary
+                            : Color.tumbleSurface.opacity(0.5)
                         )
-                        .foregroundColor(canSignIn ? .onPrimary : .onSurface)
+                        .foregroundColor(canSignIn ? .tumbleOnPrimary : .tumbleOnSurface)
                         .clipShape(RoundedRectangle(cornerRadius: .radiusL))
                     }
                     .disabled(!context.viewState.isFormValid || context.viewState.isLoading)
@@ -126,7 +126,7 @@ struct AccountSettingsScreen: View {
                 Spacer()
             }
         }
-        .background(Color.background)
+        .background(Color.tumbleBackground)
         .alert("Sign In Failed", isPresented: .constant(context.viewState.error != nil)) {
             Button("OK") {
                 context.send(viewAction: .dismissError)

@@ -34,7 +34,7 @@ struct BookingDetailsScreen: View {
                                 .font(.largeTitle)
                                 .foregroundColor(.red)
                             Text(message)
-                                .foregroundColor(.primary)
+                                .foregroundColor(.tumblePrimary)
                         }
                         .padding()
                     }
@@ -46,7 +46,7 @@ struct BookingDetailsScreen: View {
             context.send(viewAction: .loadBooking)
         }
         .toolbar { toolbar }
-        .background(Color.background)
+        .background(Color.tumbleBackground)
         .alert("Confirm Action", isPresented: .constant(context.viewState.showConfirmationAlert)) {
             Button("Cancel", role: .cancel) {
                 context.send(viewAction: .dismissAlert)
@@ -93,7 +93,7 @@ struct BookingInfo: View {
                     Text("Booking Details")
                         .font(.title2)
                         .fontWeight(.semibold)
-                        .foregroundColor(.onSurface)
+                        .foregroundColor(.tumbleOnSurface)
                     Spacer()
                 }
                 .padding(.top, 8)
@@ -106,7 +106,7 @@ struct BookingInfo: View {
                     Text("Resource \(booking.resourceId)")
                         .font(.body)
                         .fontWeight(.medium)
-                        .foregroundColor(.onSurface)
+                        .foregroundColor(.tumbleOnSurface)
                 }
                 
                 // Location
@@ -117,7 +117,7 @@ struct BookingInfo: View {
                     Text(booking.locationId)
                         .font(.body)
                         .fontWeight(.medium)
-                        .foregroundColor(.onSurface)
+                        .foregroundColor(.tumbleOnSurface)
                 }
                 
                 // Time Slot
@@ -129,7 +129,7 @@ struct BookingInfo: View {
                         Text(timeSlot.timeString())
                             .font(.body)
                             .fontWeight(.medium)
-                            .foregroundColor(.onSurface)
+                            .foregroundColor(.tumbleOnSurface)
                     }
                 }
                 
@@ -163,10 +163,10 @@ struct BookingInfo: View {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Opens: \(formatDateTime(confirmationOpen))")
                                 .font(.body)
-                                .foregroundColor(.onSurface)
+                                .foregroundColor(.tumbleOnSurface)
                             Text("Closes: \(formatDateTime(confirmationClosed))")
                                 .font(.body)
-                                .foregroundColor(.onSurface)
+                                .foregroundColor(.tumbleOnSurface)
                         }
                     }
                 }
@@ -182,7 +182,7 @@ struct BookingInfo: View {
                             .frame(maxWidth: .infinity)
                             .padding()
                             .background(Color.green)
-                            .foregroundColor(.onSurface)
+                            .foregroundColor(.tumbleOnSurface)
                             .cornerRadius(12)
                             .font(.headline)
                         }
@@ -230,7 +230,7 @@ struct BookingHeaderCard: View {
                     Text("Resource \(booking.resourceId)")
                         .font(.title)
                         .fontWeight(.bold)
-                        .foregroundColor(.onSurface)
+                        .foregroundColor(.tumbleOnSurface)
                     
                     HStack(spacing: 8) {
                         Circle()
@@ -239,12 +239,12 @@ struct BookingHeaderCard: View {
                         
                         Text(booking.locationId)
                             .font(.subheadline)
-                            .foregroundColor(.onSurface.opacity(0.8))
+                            .foregroundColor(.tumbleOnSurface.opacity(0.8))
                         
                         if let timeSlot = booking.timeSlot {
                             Text("• \(timeSlot.timeString())")
                                 .font(.subheadline)
-                                .foregroundColor(.onSurface.opacity(0.8))
+                                .foregroundColor(.tumbleOnSurface.opacity(0.8))
                         }
                     }
                 }

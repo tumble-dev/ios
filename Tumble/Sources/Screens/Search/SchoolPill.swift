@@ -59,11 +59,11 @@ struct SchoolPill: View, Pill {
                     .cornerRadius(50)
                 Text(title)
                     .font(.system(size: fontSize, weight: isSelected() ? .semibold : .regular))
-                    .foregroundColor(isSelected() ? .onPrimary : .onSurface)
+                    .foregroundColor(isSelected() ? .tumbleOnPrimary : .tumbleOnSurface)
             }
             .padding(2)
         })
-        .buttonStyle(PillStyle(color: isSelected() ? .primary : .surface))
+        .buttonStyle(PillStyle(color: isSelected() ? .tumblePrimary : .tumbleSurface))
     }
     
     var fontSize: CGFloat {

@@ -23,13 +23,13 @@ struct EventCard: View {
             VStack(alignment: .leading, spacing: 5) {
                 Text(event.title)
                     .font(.system(size: 16, weight: .semibold))
-                    .foregroundColor(.onSurface)
+                    .foregroundColor(.tumbleOnSurface)
                     .lineLimit(2)
                     .multilineTextAlignment(.leading)
                 
                 Text(event.courseName)
                     .font(.system(size: 14, weight: .regular))
-                    .foregroundColor(.onSurface.opacity(0.7))
+                    .foregroundColor(.tumbleOnSurface.opacity(0.7))
                     .lineLimit(2)
                     .multilineTextAlignment(.leading)
             }
@@ -44,11 +44,11 @@ struct EventCard: View {
                     HStack(spacing: 6) {
                         Image(systemName: "mappin.and.ellipse")
                             .font(.system(size: 14))
-                            .foregroundColor(.onSurface.opacity(0.7))
+                            .foregroundColor(.tumbleOnSurface.opacity(0.7))
                         
                         Text(event.locations.first?.id.capitalized ?? NSLocalizedString("Unknown", comment: ""))
                             .font(.system(size: 12, weight: .regular))
-                            .foregroundColor(.onSurface.opacity(0.7))
+                            .foregroundColor(.tumbleOnSurface.opacity(0.7))
                             .lineLimit(1)
                     }
                     
@@ -56,11 +56,11 @@ struct EventCard: View {
                     HStack(spacing: 6) {
                         Image(systemName: "person")
                             .font(.system(size: 14))
-                            .foregroundColor(.onSurface.opacity(0.7))
+                            .foregroundColor(.tumbleOnSurface.opacity(0.7))
                         
                         Text(teacherDisplayName)
                             .font(.system(size: 12, weight: .regular))
-                            .foregroundColor(.onSurface.opacity(0.7))
+                            .foregroundColor(.tumbleOnSurface.opacity(0.7))
                             .lineLimit(1)
                     }
                 }

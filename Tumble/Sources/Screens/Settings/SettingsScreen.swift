@@ -16,7 +16,7 @@ struct SettingsScreen: View {
             .padding(.horizontal, .spacingM)
             .padding(.vertical, .spacingL)
         }
-        .background(Color.background)
+        .background(Color.tumbleBackground)
         .navigationTitle("Settings")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -51,7 +51,7 @@ struct SettingsScreen: View {
                     if context.viewState.bindings.allUsers.count == 0 {
                         HStack {
                             Image(systemName: "person.crop.circle.badge.exclam")
-                                .foregroundColor(.onSurface)
+                                .foregroundColor(.tumbleOnSurface)
                                 .font(.title2)
                             
                             VStack(alignment: .leading, spacing: 2) {
@@ -59,7 +59,7 @@ struct SettingsScreen: View {
                                     .font(.headline)
                                 Text("Sign in to sync your data")
                                     .font(.caption)
-                                    .foregroundColor(.onSurface)
+                                    .foregroundColor(.tumbleOnSurface)
                             }
                             
                             Spacer()
@@ -90,13 +90,13 @@ struct SettingsScreen: View {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(user.name)
                                 .font(.headline)
-                                .foregroundColor(.onSurface)
+                                .foregroundColor(.tumbleOnSurface)
                             Text(user.username)
                                 .font(.caption)
-                                .foregroundColor(.onSurface)
+                                .foregroundColor(.tumbleOnSurface)
                             Text(user.school.uppercased())
                                 .font(.caption2)
-                                .foregroundColor(.onSurface.opacity(0.8))
+                                .foregroundColor(.tumbleOnSurface.opacity(0.8))
                         }
                         
                         Spacer()
@@ -161,7 +161,7 @@ struct SettingsScreen: View {
                     Text("Open Event from Widget")
                     Spacer()
                     Toggle("", isOn: context.viewState.bindings.binding(for: \.openEventFromWidget))
-                        .tint(.primary)
+                        .tint(.tumblePrimary)
                 }
                 .padding(.vertical, .spacingM)
                 
@@ -191,7 +191,7 @@ struct SettingsScreen: View {
                 
                 SettingsRow(
                     icon: "bookmark",
-                    iconColor: .primary,
+                    iconColor: .tumblePrimary,
                     title: "Bookmarked Programmes",
                     subtitle: "You have \(context.viewState.bindings.bookmarkedProgrammes.count) bookmarked programmes"
                 ) {
@@ -275,11 +275,11 @@ struct SettingsScreen: View {
         VStack(alignment: .center, spacing: 8) {
             Text("Version \(Config.appVersion) (Build \(Config.bundleVersion))")
                 .font(.caption)
-                .foregroundColor(.onBackground)
+                .foregroundColor(.tumbleOnBackground)
             
             Text("© 2025 Tumble Studios")
                 .font(.caption2)
-                .foregroundColor(.onBackground)
+                .foregroundColor(.tumbleOnBackground)
         }
         .frame(maxWidth: .infinity)
         .padding(.top, 16)
@@ -301,7 +301,7 @@ struct SettingsCard<Content: View>: View {
         VStack(alignment: .leading, spacing: 12) {
             Text(title.uppercased())
                 .font(.caption)
-                .foregroundColor(.onBackground)
+                .foregroundColor(.tumbleOnBackground)
                 .padding(.leading, 4)
             
             VStack {
@@ -327,7 +327,7 @@ struct SettingsButton: View {
         Button(action: action) {
             Text(title)
                 .font(.body)
-                .foregroundColor(style == .destructive ? .red : .primary)
+                .foregroundColor(style == .destructive ? .red : .tumblePrimary)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
         .buttonStyle(PlainButtonStyle())
@@ -363,12 +363,12 @@ struct SettingsRow: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title)
                         .font(.body)
-                        .foregroundColor(.onSurface)
+                        .foregroundColor(.tumbleOnSurface)
                     
                     if let subtitle = subtitle {
                         Text(subtitle)
                             .font(.caption)
-                            .foregroundColor(.onSurface)
+                            .foregroundColor(.tumbleOnSurface)
                     }
                 }
                 
@@ -376,7 +376,7 @@ struct SettingsRow: View {
                 
                 Image(systemName: "chevron.right")
                     .font(.caption)
-                    .foregroundColor(.onSurface)
+                    .foregroundColor(.tumbleOnSurface)
             }
             .padding(.vertical, .spacingM)
         }

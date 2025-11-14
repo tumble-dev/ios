@@ -13,12 +13,12 @@ struct UserAvatar: View {
     var body: some View {
         ZStack {
             Circle()
-                .fill(Color.primary)
+                .fill(Color.tumblePrimary)
                 .frame(width: .spacing5XL, height: .spacing5XL)
             
             Text(String(username.prefix(1)))
                 .font(.system(size: 28, weight: .semibold))
-                .foregroundColor(.onPrimary)
+                .foregroundColor(.tumbleOnPrimary)
         }
     }
 }

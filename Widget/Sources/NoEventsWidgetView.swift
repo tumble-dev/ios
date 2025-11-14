@@ -26,15 +26,15 @@ struct NoEventsWidgetView: View {
         VStack(spacing: 8) {
             Image(systemName: "calendar.badge.exclamationmark")
                 .font(.title2)
-                .foregroundStyle(.secondary)
+                .foregroundColor(.tumbleSecondary)
             
             Text("No Events")
                 .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(.primary)
+                .foregroundColor(.tumblePrimary)
             
             Text("No upcoming events found")
                 .font(.caption2)
-                .foregroundStyle(.secondary)
+                .foregroundColor(.tumbleSecondary)
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
         }
@@ -45,16 +45,16 @@ struct NoEventsWidgetView: View {
         HStack(spacing: 12) {
             Image(systemName: "calendar.badge.exclamationmark")
                 .font(.title)
-                .foregroundStyle(.secondary)
+                .foregroundColor(.tumbleSecondary)
             
             VStack(alignment: .leading, spacing: 4) {
                 Text("No Upcoming Events")
                     .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(.primary)
+                    .foregroundColor(.tumblePrimary)
                 
                 Text("You don't have any bookmarked events coming up. Check the app to bookmark events you're interested in.")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundColor(.tumbleSecondary)
                     .lineLimit(3)
             }
             

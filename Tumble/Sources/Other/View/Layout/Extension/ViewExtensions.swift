@@ -36,7 +36,7 @@ extension View {
     
     func sectionDividerEmpty() -> some View {
         font(.system(size: 16))
-            .foregroundColor(.onBackground)
+            .foregroundColor(.tumbleOnBackground)
             .padding(.top, 5)
     }
     

@@ -34,6 +34,7 @@ protocol EventStorageServiceProtocol {
     func getSpecialEvents() -> [Response.Event]
     func getAllEventsSorted() -> [Response.Event]
     func getAllEvents(completion: @escaping ([Response.Event]) -> Void)
+    func getAllEventIds() -> [String]
     func getEventsGroupedByDate() -> [String: [Response.Event]]
     
     func updateColor(forCourse courseId: String, withColor colorHex: String)

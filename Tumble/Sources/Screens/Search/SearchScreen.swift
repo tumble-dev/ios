@@ -36,7 +36,7 @@ struct SearchScreen: View {
                 }
             }
         }
-        .background(Color.background)
+        .background(Color.tumbleBackground)
     }
     
     private var contentView: some View {
@@ -85,10 +85,10 @@ struct SearchScreen: View {
                     Spacer()
                     Text("No programmes found")
                         .font(.title3)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.tumbleSecondary)
                     Text("Try different search terms")
                         .font(.body)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.tumbleSecondary)
                     Spacer()
                 }
                 
@@ -97,10 +97,10 @@ struct SearchScreen: View {
                     Spacer()
                     Text("Search failed")
                         .font(.title3)
-                        .foregroundColor(.onBackground)
+                        .foregroundColor(.tumbleOnBackground)
                     Text(message)
                         .font(.body)
-                        .foregroundColor(.onBackground)
+                        .foregroundColor(.tumbleOnBackground)
                         .multilineTextAlignment(.center)
                     Button("Try again") {
                         performSearch()
@@ -191,14 +191,14 @@ struct ProgrammeCard: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(programme.title)
                         .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(.onSurface)
+                        .foregroundColor(.tumbleOnSurface)
                         .multilineTextAlignment(.leading)
                         .lineLimit(2)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
                     Text(programme.subtitle.trimmingCharacters(in: .whitespaces))
                         .font(.system(size: 14))
-                        .foregroundColor(.onSurface)
+                        .foregroundColor(.tumbleOnSurface)
                         .lineLimit(1)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
@@ -208,7 +208,7 @@ struct ProgrammeCard: View {
                     {
                         Text(programme.id)
                             .font(.system(size: 12))
-                            .foregroundColor(.onSurface.opacity(0.9))
+                            .foregroundColor(.tumbleOnSurface.opacity(0.9))
                             .lineLimit(1)
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
@@ -217,7 +217,7 @@ struct ProgrammeCard: View {
                 // Chevron Icon
                 Image(systemName: "chevron.right")
                     .font(.system(size: 14, weight: .medium))
-                    .foregroundColor(.onSurface.opacity(0.6))
+                    .foregroundColor(.tumbleOnSurface.opacity(0.6))
                     .frame(width: 20, height: 20)
             }
             .padding(16)

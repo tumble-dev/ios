@@ -17,7 +17,7 @@ struct NotificationsSettingsScreen: View {
             .padding(.horizontal, .spacingM)
             .padding(.vertical, .spacingL)
         }
-        .background(Color.background)
+        .background(Color.tumbleBackground)
         .navigationTitle("Notification Settings")
         .navigationBarTitleDisplayMode(.inline)
         .alert("Reset All Settings", isPresented: $showingResetAlert) {
@@ -38,14 +38,14 @@ struct NotificationsSettingsScreen: View {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Local Notifications")
                             .font(.body)
-                            .foregroundColor(.onSurface)
+                            .foregroundColor(.tumbleOnSurface)
                         Text("Event reminders and course notifications")
                             .font(.caption)
-                            .foregroundColor(.onSurface.opacity(0.7))
+                            .foregroundColor(.tumbleOnSurface.opacity(0.7))
                     }
                     Spacer()
                     Toggle("", isOn: context.viewState.bindings.binding(for: \.inAppMessagingEnabled))
-                        .tint(.primary)
+                        .tint(.tumblePrimary)
                 }
                 .padding(.vertical, .spacingM)
                 
@@ -55,14 +55,14 @@ struct NotificationsSettingsScreen: View {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Push Notifications")
                             .font(.body)
-                            .foregroundColor(.onSurface)
+                            .foregroundColor(.tumbleOnSurface)
                         Text("Updates and announcements from server")
                             .font(.caption)
-                            .foregroundColor(.onSurface.opacity(0.7))
+                            .foregroundColor(.tumbleOnSurface.opacity(0.7))
                     }
                     Spacer()
                     Toggle("", isOn: context.viewState.bindings.binding(for: \.pushNotificationsEnabled))
-                        .tint(.primary)
+                        .tint(.tumblePrimary)
                 }
                 .padding(.vertical, .spacingM)
             }
@@ -75,7 +75,7 @@ struct NotificationsSettingsScreen: View {
             HStack {
                 Text("Notification Offset")
                     .font(.body)
-                    .foregroundColor(.onSurface)
+                    .foregroundColor(.tumbleOnSurface)
                 Spacer()
                 Picker("Notification Offset", selection: context.viewState.bindings.binding(for: \.notificationOffset)) {
                     ForEach(NotificationOffset.allCases, id: \.self) { offset in

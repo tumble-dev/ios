@@ -16,7 +16,7 @@ class SplashScreenCoordinator: CoordinatorProtocol {
 struct SplashScreen: View {
     var body: some View {
         ZStack {
-            Color.background
+            Color.tumbleBackground
                 .ignoresSafeArea(.all)
             
             VStack {
@@ -33,7 +33,7 @@ struct SplashScreen: View {
                 // Simple text at bottom
                 Text("Tumble")
                     .font(.titleLarge)
-                    .foregroundColor(.primary)
+                    .foregroundColor(.tumblePrimary)
                     .padding(.bottom, .spacingL)
             }
         }

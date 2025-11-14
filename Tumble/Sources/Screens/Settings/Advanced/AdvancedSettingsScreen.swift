@@ -18,7 +18,7 @@ struct AdvancedSettingsScreen: View {
             .padding(.horizontal, .spacingM)
             .padding(.vertical, .spacingL)
         }
-        .background(Color.background)
+        .background(Color.tumbleBackground)
         .navigationTitle("Advanced Settings")
         .navigationBarTitleDisplayMode(.inline)
         .alert("Clear Cache", isPresented: $showingClearCacheAlert) {
@@ -46,11 +46,11 @@ struct AdvancedSettingsScreen: View {
                 HStack {
                     Text("Cache Size")
                         .font(.body)
-                        .foregroundColor(.onSurface)
+                        .foregroundColor(.tumbleOnSurface)
                     Spacer()
                     Text(context.viewState.bindings.cacheSize)
                         .font(.body)
-                        .foregroundColor(.onSurface)
+                        .foregroundColor(.tumbleOnSurface)
                 }
                 .padding(.vertical, .spacingM)
                 
@@ -66,10 +66,10 @@ struct AdvancedSettingsScreen: View {
                 HStack {
                     Text("WiFi Only Mode")
                         .font(.body)
-                        .foregroundColor(.onSurface)
+                        .foregroundColor(.tumbleOnSurface)
                     Spacer()
                     Toggle("", isOn: context.viewState.bindings.binding(for: \.wifiOnlyMode))
-                        .tint(.primary)
+                        .tint(.tumblePrimary)
                 }
                 .padding(.vertical, .spacingM)
                 
@@ -78,10 +78,10 @@ struct AdvancedSettingsScreen: View {
                 HStack {
                     Text("Background App Refresh")
                         .font(.body)
-                        .foregroundColor(.onSurface)
+                        .foregroundColor(.tumbleOnSurface)
                     Spacer()
                     Toggle("", isOn: context.viewState.bindings.binding(for: \.backgroundRefreshEnabled))
-                        .tint(.primary)
+                        .tint(.tumblePrimary)
                 }
                 .padding(.vertical, .spacingM)
                 
@@ -90,7 +90,7 @@ struct AdvancedSettingsScreen: View {
                 HStack {
                     Text("Sync Frequency")
                         .font(.body)
-                        .foregroundColor(.onSurface)
+                        .foregroundColor(.tumbleOnSurface)
                     Spacer()
                     Picker("Sync Frequency", selection: context.viewState.bindings.binding(for: \.syncFrequency)) {
                         ForEach(SyncFrequency.allCases, id: \.self) { frequency in
@@ -110,10 +110,10 @@ struct AdvancedSettingsScreen: View {
             HStack {
                 Text("Analytics & Crash Reports")
                     .font(.body)
-                    .foregroundColor(.onSurface)
+                    .foregroundColor(.tumbleOnSurface)
                 Spacer()
                 Toggle("", isOn: context.viewState.bindings.binding(for: \.analyticsEnabled))
-                    .tint(.primary)
+                    .tint(.tumblePrimary)
             }
             .padding(.vertical, .spacingM)
         }
@@ -126,11 +126,11 @@ struct AdvancedSettingsScreen: View {
                 HStack {
                     Text("Connection Timeout")
                         .font(.body)
-                        .foregroundColor(.onSurface)
+                        .foregroundColor(.tumbleOnSurface)
                     Spacer()
                     Text("\(Int(context.viewState.bindings.connectionTimeout))s")
                         .font(.body)
-                        .foregroundColor(.onSurface)
+                        .foregroundColor(.tumbleOnSurface)
                 }
                 .padding(.vertical, .spacingM)
                 
@@ -139,7 +139,7 @@ struct AdvancedSettingsScreen: View {
                     in: 5...60,
                     step: 5
                 )
-                .tint(.primary)
+                .tint(.tumblePrimary)
                 .padding(.bottom, .spacingM)
                 
                 Divider()
@@ -149,7 +149,7 @@ struct AdvancedSettingsScreen: View {
                             value: context.viewState.bindings.binding(for: \.retryAttempts),
                             in: 1...10)
                         .font(.body)
-                        .foregroundColor(.onSurface)
+                        .foregroundColor(.tumbleOnSurface)
                 }
                 .padding(.vertical, .spacingM)
             }
@@ -163,10 +163,10 @@ struct AdvancedSettingsScreen: View {
                 HStack {
                     Text("Storage Optimization")
                         .font(.body)
-                        .foregroundColor(.onSurface)
+                        .foregroundColor(.tumbleOnSurface)
                     Spacer()
                     Toggle("", isOn: context.viewState.bindings.binding(for: \.storageOptimizationEnabled))
-                        .tint(.primary)
+                        .tint(.tumblePrimary)
                 }
                 .padding(.vertical, .spacingM)
                 
@@ -194,10 +194,10 @@ struct AdvancedSettingsScreen: View {
                 HStack {
                     Text("Debug Mode")
                         .font(.body)
-                        .foregroundColor(.onSurface)
+                        .foregroundColor(.tumbleOnSurface)
                     Spacer()
                     Toggle("", isOn: context.viewState.bindings.binding(for: \.debugModeEnabled))
-                        .tint(.primary)
+                        .tint(.tumblePrimary)
                 }
                 .padding(.vertical, .spacingM)
                 
@@ -207,7 +207,7 @@ struct AdvancedSettingsScreen: View {
                     HStack {
                         Text("Logging Level")
                             .font(.body)
-                            .foregroundColor(.onSurface)
+                            .foregroundColor(.tumbleOnSurface)
                         Spacer()
                         Picker("Logging Level", selection: context.viewState.bindings.binding(for: \.loggingLevel)) {
                             ForEach(LoggingLevel.allCases, id: \.self) { level in
@@ -223,10 +223,10 @@ struct AdvancedSettingsScreen: View {
                     HStack {
                         Text("Performance Monitoring")
                             .font(.body)
-                            .foregroundColor(.onSurface)
+                            .foregroundColor(.tumbleOnSurface)
                         Spacer()
                         Toggle("", isOn: context.viewState.bindings.binding(for: \.performanceMonitoringEnabled))
-                            .tint(.primary)
+                            .tint(.tumblePrimary)
                     }
                     .padding(.vertical, .spacingM)
                 }
@@ -236,10 +236,10 @@ struct AdvancedSettingsScreen: View {
                 HStack {
                     Text("Beta Features")
                         .font(.body)
-                        .foregroundColor(.onSurface)
+                        .foregroundColor(.tumbleOnSurface)
                     Spacer()
                     Toggle("", isOn: context.viewState.bindings.binding(for: \.betaFeaturesEnabled))
-                        .tint(.primary)
+                        .tint(.tumblePrimary)
                 }
                 .padding(.vertical, .spacingM)
             }

@@ -8,6 +8,7 @@
 import Combine
 import Foundation
 import Logging
+import WidgetKit
 
 // MARK: - Event Storage Change Types
 
@@ -232,6 +233,13 @@ class EventStorageService: EventStorageServiceProtocol, ObservableObject {
         }
     }
     
+    /// Get all event IDs for debugging
+    func getAllEventIds() -> [String] {
+        return queue.sync {
+            Array(events.keys)
+        }
+    }
+    
     /// Clear all events
     func clearAllEvents() throws {
         try queue.sync(flags: .barrier) {
@@ -271,6 +279,7 @@ class EventStorageService: EventStorageServiceProtocol, ObservableObject {
                 self.lastChangeEvent = changeEvent
                 self.changeSubject.send(changeEvent)
                 self.publishEvents()
+                WidgetCenter.shared.reloadAllTimelines()
             }
         }
     }
@@ -304,6 +313,7 @@ class EventStorageService: EventStorageServiceProtocol, ObservableObject {
                     let changeEvent = EventStorageEvent.eventRemoved(eventId: event.id, removedEvent: event)
                     self.changeSubject.send(changeEvent)
                     self.publishEvents()
+                    WidgetCenter.shared.reloadAllTimelines()
                 }
             }
         }

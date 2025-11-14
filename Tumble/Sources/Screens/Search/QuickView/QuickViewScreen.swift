@@ -44,7 +44,7 @@ struct QuickViewScreen: View {
                 )
             }
         }
-        .background(Color.background)
+        .background(Color.tumbleBackground)
         .navigationTitle("Events")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -52,7 +52,7 @@ struct QuickViewScreen: View {
                 saveButton
             }
         }
-        .background(Color.background)
+        .background(Color.tumbleBackground)
     }
     
     private var saveButton: some View {

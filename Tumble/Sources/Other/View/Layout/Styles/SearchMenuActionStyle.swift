@@ -14,10 +14,10 @@ struct SearchMenuActionStyle: ButtonStyle {
             .padding(.spacingS)
             .apply {
                 if #available(iOS 26.0, *) {
-                    $0.glassEffect(.regular.interactive().tint(Color.primary))
+                    $0.glassEffect(.regular.interactive().tint(Color.tumblePrimary))
                 } else {
                     $0
-                        .background(Color.primary)
+                        .background(Color.tumblePrimary)
                         .cornerRadius(15)
                         .scaleEffect(configuration.isPressed ? 0.9 : 1)
                         .animation(.easeOut(duration: 0.2), value: configuration.isPressed)

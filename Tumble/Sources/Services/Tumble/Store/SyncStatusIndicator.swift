@@ -57,11 +57,11 @@ struct SyncStatusIndicator: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Event Sync")
                         .font(.body)
-                        .foregroundColor(.onSurface)
+                        .foregroundColor(.tumbleOnSurface)
                     
                     Text(statusText)
                         .font(.caption)
-                        .foregroundColor(.onSurface.opacity(0.7))
+                        .foregroundColor(.tumbleOnSurface.opacity(0.7))
                 }
                 
                 Spacer()
@@ -73,7 +73,7 @@ struct SyncStatusIndicator: View {
                             if remainingCooldownSeconds > 0 {
                                 Text("\(remainingCooldownSeconds)")
                                     .font(.caption2)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(.tumbleSecondary)
                             } else {
                                 Image(systemName: "arrow.clockwise")
                                     .font(.caption)
@@ -86,7 +86,7 @@ struct SyncStatusIndicator: View {
                                     )
                             }
                         }
-                        .foregroundColor(canPerformManualSync ? .primary : .secondary)
+                        .foregroundColor(canPerformManualSync ? .tumblePrimary : .tumbleSecondary)
                     }
                     .disabled(!canPerformManualSync || isManualSyncing)
                 }
@@ -94,7 +94,7 @@ struct SyncStatusIndicator: View {
                 // Details chevron
                 Image(systemName: "chevron.right")
                     .font(.caption)
-                    .foregroundColor(.onSurface.opacity(0.5))
+                    .foregroundColor(.tumbleOnSurface.opacity(0.5))
             }
             .padding(.vertical, .spacingM)
             .contentShape(Rectangle())
@@ -112,11 +112,11 @@ struct SyncStatusIndicator: View {
                         HStack {
                             Text("Last sync:")
                                 .font(.caption)
-                                .foregroundColor(.onSurface.opacity(0.7))
+                                .foregroundColor(.tumbleOnSurface.opacity(0.7))
                             Spacer()
                             Text(formatSyncDate(lastSync))
                                 .font(.caption)
-                                .foregroundColor(.onSurface.opacity(0.9))
+                                .foregroundColor(.tumbleOnSurface.opacity(0.9))
                         }
                     }
                     
@@ -125,11 +125,11 @@ struct SyncStatusIndicator: View {
                         HStack {
                             Text("Manual sync available in:")
                                 .font(.caption)
-                                .foregroundColor(.onSurface.opacity(0.7))
+                                .foregroundColor(.tumbleOnSurface.opacity(0.7))
                             Spacer()
                             Text("\(remainingCooldownSeconds)s")
                                 .font(.caption)
-                                .foregroundColor(.orange)
+                                .foregroundColor(.primary)
                         }
                     }
                     
@@ -138,11 +138,11 @@ struct SyncStatusIndicator: View {
                         HStack {
                             Text("Frequency:")
                                 .font(.caption)
-                                .foregroundColor(.onSurface.opacity(0.7))
+                                .foregroundColor(.tumbleOnSurface.opacity(0.7))
                             Spacer()
                             Text(settings.syncFrequency.displayName)
                                 .font(.caption)
-                                .foregroundColor(.onSurface.opacity(0.9))
+                                .foregroundColor(.tumbleOnSurface.opacity(0.9))
                         }
                     }
                     
@@ -151,11 +151,11 @@ struct SyncStatusIndicator: View {
                         HStack {
                             Text("Next sync:")
                                 .font(.caption)
-                                .foregroundColor(.onSurface.opacity(0.7))
+                                .foregroundColor(.tumbleOnSurface.opacity(0.7))
                             Spacer()
                             Text(nextSync, style: .relative)
                                 .font(.caption)
-                                .foregroundColor(.onSurface.opacity(0.9))
+                                .foregroundColor(.tumbleOnSurface.opacity(0.9))
                         }
                     }
                     
@@ -163,7 +163,7 @@ struct SyncStatusIndicator: View {
                     HStack {
                         Text("Network:")
                             .font(.caption)
-                            .foregroundColor(.onSurface.opacity(0.7))
+                            .foregroundColor(.tumbleOnSurface.opacity(0.7))
                         Spacer()
                         HStack(spacing: 4) {
                             let isOnline = eventSyncManager.isOnline
@@ -172,7 +172,7 @@ struct SyncStatusIndicator: View {
                                 .frame(width: 6, height: 6)
                             Text(isOnline ? "Connected" : "Offline")
                                 .font(.caption)
-                                .foregroundColor(.onSurface.opacity(0.9))
+                                .foregroundColor(.tumbleOnSurface.opacity(0.9))
                         }
                     }
                 }
@@ -370,6 +370,6 @@ struct SyncStatusIndicator_Previews: PreviewProvider {
             }
         }
         .padding()
-        .background(Color.background)
+        .background(Color.tumbleBackground)
     }
 }
