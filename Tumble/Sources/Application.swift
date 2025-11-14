@@ -56,6 +56,14 @@ struct Application: App {
             url,
             isExternalURL: isExternalURL
         ) {
+            // Don't try to open custom scheme URLs (like tumble://) externally
+            // These should only be handled internally by the app
+            if url.scheme == "tumble" {
+                // Custom scheme URLs that weren't handled should be ignored
+                return
+            }
+            
+            // Only open actual web URLs externally
             openURLInSystemBrowser(url)
         }
     }
@@ -67,20 +75,28 @@ struct Application: App {
                 resolvingAgainstBaseURL: true
             )
         else {
-            openURL(originalURL)
+            // If we can't parse the URL, open it directly with UIApplication
+            UIApplication.shared.open(originalURL)
             return
         }
 
         var queryItems = urlComponents.queryItems ?? []
-        queryItems.append(.init(name: "no_universal_links", value: "true"))
-
-        urlComponents.queryItems = queryItems
+        
+        // Check if no_universal_links is already present to avoid infinite recursion
+        let hasNoUniversalLinks = queryItems.contains { $0.name == "no_universal_links" }
+        
+        if !hasNoUniversalLinks {
+            queryItems.append(.init(name: "no_universal_links", value: "true"))
+            urlComponents.queryItems = queryItems
+        }
 
         guard let url = urlComponents.url else {
-            openURL(originalURL)
+            // If we can't construct the URL, open the original directly with UIApplication
+            UIApplication.shared.open(originalURL)
             return
         }
 
-        openURL(url)
+        // Open with UIApplication instead of calling openURL again to avoid recursion
+        UIApplication.shared.open(url)
     }
 }

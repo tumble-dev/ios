@@ -163,6 +163,14 @@ class ApplicationCoordinator: ApplicationCoordinatorProtocol, NotificationManage
             let pathComponents = url.pathComponents.filter { $0 != "/" }
             
             if let eventId = pathComponents.first {
+                AppLogger.shared.info("[ApplicationCoordinator] Widget event link detected for event ID: \(eventId)")
+                
+                // Check if opening events from widgets is enabled in user preferences
+                guard appSettings.openEventFromWidget else {
+                    AppLogger.shared.info("[ApplicationCoordinator] Opening events from widget is disabled in preferences")
+                    return false
+                }
+                
                 AppLogger.shared.info("[ApplicationCoordinator] Opening event details from widget for event ID: \(eventId)")
                 
                 // Check if the event exists in storage before trying to open it
