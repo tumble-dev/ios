@@ -19,10 +19,27 @@ struct SplashScreen: View {
             Color.background
                 .ignoresSafeArea(.all)
             
-            Image("AppIconOpaque")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 100, height: 100)
+            VStack {
+                Spacer()
+                
+                // App logo in center
+                Image("AppIconOpaque")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 120, height: 120)
+                
+                Spacer()
+                
+                // Simple text at bottom
+                Text("Tumble")
+                    .font(.titleLarge)
+                    .foregroundColor(.primary)
+                    .padding(.bottom, .spacingL)
+            }
         }
     }
+}
+
+#Preview {
+    SplashScreen()
 }
