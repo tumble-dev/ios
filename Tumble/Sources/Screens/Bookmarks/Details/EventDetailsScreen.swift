@@ -85,13 +85,13 @@ struct EventInfo: View {
                 }
                 
                 // Teachers
-                if !event.teachers.isEmpty {
+                if hasValidTeachers(event.teachers) {
                     DetailCard(
                         icon: "person.fill",
-                        title: event.teachers.count == 1 ? "Teacher" : "Teachers"
+                        title: validTeachers(event.teachers).count == 1 ? "Teacher" : "Teachers"
                     ) {
                         VStack(alignment: .leading, spacing: 4) {
-                            ForEach(event.teachers, id: \.id) { teacher in
+                            ForEach(validTeachers(event.teachers), id: \.id) { teacher in
                                 Text("\(teacher.firstName) \(teacher.lastName)")
                                     .font(.body)
                                     .fontWeight(.medium)
@@ -135,20 +135,22 @@ struct EventInfo: View {
                 }
                 
                 // Locations
-                DetailCard(
-                    icon: "location.fill",
-                    title: event.locations.count == 1 ? "Location" : "Locations"
-                ) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        ForEach(event.locations, id: \.id) { location in
-                            Text(location.id)
-                                .font(.body)
-                                .fontWeight(.medium)
-                                .foregroundColor(.onSurface)
-                            
-                            Text("Capacity: \(location.maxSeats) seats")
-                                .font(.caption)
-                                .foregroundColor(.onSurface)
+                if !event.locations.isEmpty {
+                    DetailCard(
+                        icon: "location.fill",
+                        title: event.locations.count == 1 ? "Location" : "Locations"
+                    ) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            ForEach(event.locations, id: \.id) { location in
+                                Text(location.id)
+                                    .font(.body)
+                                    .fontWeight(.medium)
+                                    .foregroundColor(.onSurface)
+                                
+                                Text("Capacity: \(location.maxSeats) seats")
+                                    .font(.caption)
+                                    .foregroundColor(.onSurface)
+                            }
                         }
                     }
                 }
@@ -193,6 +195,19 @@ struct EventInfo: View {
         let formatter = DateFormatter()
         formatter.timeStyle = .short
         return formatter.string(from: date)
+    }
+    
+    private func hasValidTeachers(_ teachers: [Response.Teacher]) -> Bool {
+        return !validTeachers(teachers).isEmpty
+    }
+    
+    private func validTeachers(_ teachers: [Response.Teacher]) -> [Response.Teacher] {
+        return teachers.filter { teacher in
+            let fullName = [teacher.firstName, teacher.lastName]
+                .filter { !$0.isEmpty }
+                .joined(separator: " ")
+            return !fullName.trimmingCharacters(in: .whitespaces).isEmpty
+        }
     }
 }
 
