@@ -44,11 +44,6 @@ struct EventDetailsScreen: View {
     
     @ToolbarContentBuilder
     private var toolbar: some ToolbarContent {
-        ToolbarItem(placement: .primaryAction) {
-            Button("Done") {
-                context.send(viewAction: .close)
-            }
-        }
         ToolbarItem(placement: .topBarLeading) {
             Button {} label: {
                 ColorPicker("Color", selection: context.colorPickerSelection)
