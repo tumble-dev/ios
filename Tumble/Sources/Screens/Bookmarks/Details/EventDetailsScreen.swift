@@ -44,7 +44,7 @@ struct EventDetailsScreen: View {
     
     @ToolbarContentBuilder
     private var toolbar: some ToolbarContent {
-        ToolbarItem(placement: .topBarLeading) {
+        ToolbarItem(placement: .topBarTrailing) {
             Button {} label: {
                 ColorPicker("Color", selection: context.colorPickerSelection)
             }
