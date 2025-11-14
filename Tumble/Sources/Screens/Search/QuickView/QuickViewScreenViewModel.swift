@@ -15,6 +15,7 @@ class QuickViewScreenViewModel: QuickViewScreenViewModelType {
     let tumbleApiService: TumbleApiServiceProtocol
     let eventStorageService: EventStorageServiceProtocol
     let programmeId: String
+    let school: String
     
     private var actionsSubject: PassthroughSubject<QuickViewScreenViewModelAction, Never> = .init()
     var actions: AnyPublisher<QuickViewScreenViewModelAction, Never> {
@@ -32,6 +33,7 @@ class QuickViewScreenViewModel: QuickViewScreenViewModelType {
         self.tumbleApiService = tumbleApiService
         self.eventStorageService = eventStorageService
         self.programmeId = programmeId
+        self.school = school
         super.init(initialViewState: .init())
         
         Task {
@@ -51,9 +53,9 @@ class QuickViewScreenViewModel: QuickViewScreenViewModelType {
     private func setupListeners() {
         // Listen to appSettings changes to update button state
         appSettings.$bookmarkedProgrammes
-            .sink { [weak self] savedIds in
+            .sink { [weak self] savedData in
                 guard let self else { return }
-                let isBookmarked = savedIds.keys.contains(self.programmeId)
+                let isBookmarked = savedData[self.programmeId]?.isVisible ?? false
                 self.updateSaveButtonState(isBookmarked ? .saved : .notSaved)
             }
             .store(in: &cancellables)
@@ -62,31 +64,33 @@ class QuickViewScreenViewModel: QuickViewScreenViewModelType {
     private func toggleBookmark(events: [Response.Event]) {
         updateSaveButtonState(.loading)
         
-        let isCurrentlyBookmarked = appSettings.bookmarkedProgrammes.keys.contains(programmeId)
+        let isCurrentlyBookmarked = appSettings.isBookmarked(programmeId)
         
         if isCurrentlyBookmarked {
             // Remove from saved programmes and event storage
-            appSettings.bookmarkedProgrammes.removeValue(forKey: programmeId)
+            appSettings.removeBookmarkedProgramme(programmeId)
             do {
                 try eventStorageService.removeEvents(forProgrammeId: programmeId)
             } catch {
                 // Revert if removal fails
-                appSettings.bookmarkedProgrammes.updateValue(true, forKey: programmeId)
+                appSettings.addBookmarkedProgramme(programmeId, schoolId: school, isVisible: true)
                 updateSaveButtonState(.saved)
                 return
             }
         } else {
             // Add to saved programmes and save events
-            appSettings.bookmarkedProgrammes.updateValue(true, forKey: programmeId)
+            appSettings.addBookmarkedProgramme(programmeId, schoolId: school, isVisible: true)
             do {
                 try eventStorageService.saveEvents(events)
             } catch {
                 // Revert if saving events fails
-                appSettings.bookmarkedProgrammes.removeValue(forKey: programmeId)
+                appSettings.removeBookmarkedProgramme(programmeId)
                 updateSaveButtonState(.notSaved)
                 return
             }
         }
+        
+        updateSaveButtonState(isCurrentlyBookmarked ? .notSaved : .saved)
     }
 
     @MainActor

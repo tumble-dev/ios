@@ -47,4 +47,10 @@ class ServiceLocator {
     func register(networkMonitor: NetworkMonitorProtocol) {
         self.networkMonitor = networkMonitor
     }
+    
+    private(set) var eventSyncService: EventSyncManager!
+    
+    func register(eventSyncService: EventSyncManager) {
+        self.eventSyncService = eventSyncService
+    }
 }

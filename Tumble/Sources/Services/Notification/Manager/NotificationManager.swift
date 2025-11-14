@@ -419,7 +419,7 @@ final class NotificationManager: NSObject, NotificationManagerProtocol {
         let pendingRequests = await notificationCenter.pendingNotificationRequests()
         
         // Find all booking notifications (main reminders, not confirmation reminders)
-        let bookingNotifications = pendingRequests.filter { 
+        let bookingNotifications = pendingRequests.filter {
             $0.identifier.hasPrefix("booking_") && !$0.identifier.hasPrefix("booking_confirmation_")
         }
         
@@ -515,7 +515,7 @@ final class NotificationManager: NSObject, NotificationManagerProtocol {
             offsetMinutes = -60
             offsetText = "confirmation opens in 45 minutes"
         case .threeHours:
-            // User wants 3 hours notice, but confirmation opens at 15 minutes  
+            // User wants 3 hours notice, but confirmation opens at 15 minutes
             // Give them early warning, but mention when they can actually confirm
             offsetMinutes = -180
             offsetText = "confirmation opens in 2 hours 45 minutes"

@@ -87,7 +87,7 @@ struct SettingsScreenViewStateBindings {
 protocol SettingsProtocol: AnyObject {
     var openEventFromWidget: Bool { get set }
     var appearance: AppAppearance { get set }
-    var bookmarkedProgrammes: [String: Bool] { get set }
+    var bookmarkedProgrammes: [String: BookmarkedProgrammeData] { get set }
     var activeUsername: String? { get set }
 }
 

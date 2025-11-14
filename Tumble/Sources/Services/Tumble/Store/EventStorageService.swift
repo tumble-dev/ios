@@ -444,7 +444,8 @@ class EventStorageService: EventStorageServiceProtocol, ObservableObject {
         
         // Check if we've already cleaned up today
         if let lastCleanup = UserDefaults.standard.object(forKey: lastCleanupKey) as? Date,
-           calendar.isDate(lastCleanup, inSameDayAs: now) {
+           calendar.isDate(lastCleanup, inSameDayAs: now)
+        {
             return
         }
         
@@ -610,5 +611,15 @@ class EventStorageService: EventStorageServiceProtocol, ObservableObject {
     func getStorageFileSize() -> Int64? {
         let currentURL = appSettings.storageOptimizationEnabled ? optimizedFileURL : standardFileURL
         return getFileSize(currentURL)
+    }
+    
+    /// Get all events asynchronously (for sync service compatibility)
+    func getAllEvents(completion: @escaping ([Response.Event]) -> Void) {
+        queue.async {
+            let allEvents = Array(self.events.values)
+            DispatchQueue.main.async {
+                completion(allEvents)
+            }
+        }
     }
 }

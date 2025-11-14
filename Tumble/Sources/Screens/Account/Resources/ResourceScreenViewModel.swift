@@ -54,8 +54,8 @@ class ResourceSelectionScreenViewModel: ResourceSelectionScreenViewModelType, Re
                 resourceLoadingTask?.cancel()
                 
                 // Create a new task for loading resources
-                resourceLoadingTask = Task { 
-                    await loadResources(from: user.school, for: date) 
+                resourceLoadingTask = Task {
+                    await loadResources(from: user.school, for: date)
                 }
             }
         }
@@ -79,8 +79,8 @@ class ResourceSelectionScreenViewModel: ResourceSelectionScreenViewModelType, Re
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd"
             let resources: [Response.Resource] = try await tumbleApiService.getAllResources(
-                school: school, 
-                date: dateFormatter.string(from: date), 
+                school: school,
+                date: dateFormatter.string(from: date),
                 authToken: authToken
             )
             
@@ -119,8 +119,8 @@ class ResourceSelectionScreenViewModel: ResourceSelectionScreenViewModelType, Re
                     resourceLoadingTask?.cancel()
                     
                     // Create a new task for loading resources
-                    resourceLoadingTask = Task { 
-                        await self.loadResources(from: user.school, for: Date.now) 
+                    resourceLoadingTask = Task {
+                        await self.loadResources(from: user.school, for: Date.now)
                     }
                 case .disconnected:
                     // Cancel any ongoing resource loading task when disconnected

@@ -209,7 +209,7 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
     private func clearPresentedSheets(animated: Bool) async {
         guard navigationSplitCoordinator.sheetCoordinator != nil else { return }
         navigationSplitCoordinator.setSheetCoordinator(nil, animated: animated)
-        try? await Task.sleep(nanoseconds: 200_000)
+        try? await Task.sleep(nanoseconds: 200000)
     }
 }
 

@@ -20,9 +20,9 @@ class BookmarksScreenViewModel: BookmarksScreenViewModelType, ObservableObject {
     @Published private var historicalDaysLoaded: Int = 0 // Track how many days back we've loaded
     
     // Configuration for incremental loading
-    private let initialHistoricalDays = 3  // Load 3 days back initially
-    private let incrementalDays = 7        // Then load 7 more days each time
-    private let maxHistoricalDays = 90     // Maximum 90 days back
+    private let initialHistoricalDays = 3 // Load 3 days back initially
+    private let incrementalDays = 7 // Then load 7 more days each time
+    private let maxHistoricalDays = 90 // Maximum 90 days back
     
     var actions: AnyPublisher<BookmarksScreenViewModelAction, Never> {
         actionsSubject.eraseToAnyPublisher()
@@ -64,7 +64,7 @@ class BookmarksScreenViewModel: BookmarksScreenViewModelType, ObservableObject {
         
         Task.detached { [weak self] in
             // Small delay to show refresh animation
-            try? await Task.sleep(nanoseconds: 500_000_000)
+            try? await Task.sleep(nanoseconds: 500000000)
             
             await MainActor.run { [weak self] in
                 guard let self = self else { return }
@@ -97,12 +97,13 @@ class BookmarksScreenViewModel: BookmarksScreenViewModelType, ObservableObject {
                 return
             }
             
-            let enabledProgrammeIds = Set(bookmarkedProgrammes.compactMap { key, value in
-                value ? key : nil
+            // Get visible bookmarked programme IDs using the new structure
+            let visibleProgrammeIds = Set(bookmarkedProgrammes.compactMap { key, data in
+                data.isVisible ? key : nil
             })
             
             let visibleEvents = allEvents.filter { event in
-                enabledProgrammeIds.contains(event.scheduleId)
+                visibleProgrammeIds.contains(event.scheduleId)
             }
             
             guard !visibleEvents.isEmpty else {

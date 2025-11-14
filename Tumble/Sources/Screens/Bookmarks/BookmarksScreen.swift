@@ -179,7 +179,7 @@ struct BookmarksScreen: View {
         context.send(viewAction: .loadHistoricalEvents)
         
         // Give a small delay to show the refresh animation
-        try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 seconds
+        try? await Task.sleep(nanoseconds: 500000000) // 0.5 seconds
     }
     
     private func filterEvents(_ events: [Response.Event]) -> [Response.Event] {

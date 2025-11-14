@@ -42,8 +42,17 @@ class ApplicationCoordinator: ApplicationCoordinatorProtocol, NotificationManage
 
         windowManager = WindowManager(appDelegate: appDelegate)
         let networkMonitor = NetworkMonitor()
+        let tumbleApiService = TumbleAPIService(appSettings: appSettings, networkMonitor: networkMonitor)
+        let eventStorageService = EventStorageService(appSettings: appSettings)
         appMediator = AppMediator(windowManager: windowManager, networkMonitor: networkMonitor)
-        Self.setupServiceLocator(appSettings: appSettings, appHooks: appHooks, networkMonitor: networkMonitor)
+        
+        Self.setupServiceLocator(
+            appSettings: appSettings,
+            appHooks: appHooks,
+            networkMonitor: networkMonitor,
+            tumbleApiService: tumbleApiService,
+            eventStorageService: eventStorageService
+        )
 
         // MARK: - Services, Managers & Controllers
 
@@ -389,14 +398,23 @@ private extension ApplicationCoordinator {
     private static func setupServiceLocator(
         appSettings: AppSettings,
         appHooks: AppHooks,
-        networkMonitor: NetworkMonitorProtocol
+        networkMonitor: NetworkMonitorProtocol,
+        tumbleApiService: TumbleApiServiceProtocol,
+        eventStorageService: EventStorageServiceProtocol
     ) {
         ServiceLocator.shared.register(appSettings: appSettings)
         ServiceLocator.shared.register(networkMonitor: networkMonitor)
-        ServiceLocator.shared.register(tumbleApiService: TumbleAPIService(appSettings: appSettings, networkMonitor: networkMonitor))
+        ServiceLocator.shared.register(tumbleApiService: tumbleApiService)
+        ServiceLocator.shared.register(eventStorageService: eventStorageService)
         ServiceLocator.shared.register(analytics: AnalyticsService(appSettings: appSettings))
-        ServiceLocator.shared.register(eventStorageService: EventStorageService(appSettings: appSettings))
+        
         ServiceLocator.shared.register(userDataStorageService: UserDataStorageService(appSettings: appSettings))
+        ServiceLocator.shared.register(eventSyncService: EventSyncManager(
+            apiService: tumbleApiService,
+            storageService: eventStorageService,
+            appSettings: appSettings
+        )
+        )
     }
 }
 

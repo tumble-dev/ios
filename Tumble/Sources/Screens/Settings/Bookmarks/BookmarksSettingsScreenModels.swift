@@ -10,7 +10,7 @@ import SwiftUI
 import UIKit
 
 struct BookmarksSettingsScreenViewState: BindableState {
-    var bookmarkedProgrammes: [String: Bool]
+    var bookmarkedProgrammes: [String: BookmarkedProgrammeData]
     var bindings: BookmarksSettingsScreenViewStateBindings
 }
 
@@ -25,7 +25,7 @@ struct BookmarksSettingsScreenViewStateBindings {
         self.onToggleAction = onToggleAction
     }
 
-    var bookmarkedProgrammes: [String: Bool] {
+    var bookmarkedProgrammes: [String: BookmarkedProgrammeData] {
         get { appSettings.bookmarkedProgrammes }
         set { appSettings.bookmarkedProgrammes = newValue }
     }
@@ -33,12 +33,20 @@ struct BookmarksSettingsScreenViewStateBindings {
     func programmeBinding(for programmeId: String) -> Binding<Bool> {
         Binding(
             get: {
-                self.appSettings.bookmarkedProgrammes[programmeId] ?? false
+                self.appSettings.isVisible(programmeId)
             },
             set: { newValue in
                 self.onToggleAction(programmeId, newValue)
             }
         )
+    }
+    
+    func isBookmarked(_ programmeId: String) -> Bool {
+        return appSettings.isBookmarked(programmeId)
+    }
+    
+    func getSchoolId(for programmeId: String) -> String? {
+        return appSettings.getSchoolId(for: programmeId)
     }
 }
 

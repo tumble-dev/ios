@@ -31,10 +31,13 @@ class BookmarksSettingsScreenViewModel: BookmarksSettingsScreenViewModelType, Bo
             onToggleAction: { [weak appSettings] programmeId, isEnabled in
                 guard let appSettings = appSettings else { return }
                 
-                // Simply update the visibility flag - don't touch the stored events
-                var updatedProgrammes = appSettings.bookmarkedProgrammes
-                updatedProgrammes[programmeId] = isEnabled
-                appSettings.bookmarkedProgrammes = updatedProgrammes
+                // Update visibility while preserving school ID
+                if let existingData = appSettings.bookmarkedProgrammes[programmeId] {
+                    appSettings.bookmarkedProgrammes[programmeId] = BookmarkedProgrammeData(
+                        isVisible: isEnabled,
+                        schoolId: existingData.schoolId
+                    )
+                }
             }
         )
         
@@ -65,9 +68,12 @@ class BookmarksSettingsScreenViewModel: BookmarksSettingsScreenViewModelType, Bo
     }
     
     private func handleToggleProgramme(id: String, isEnabled: Bool) {
-        var updatedProgrammes = appSettings.bookmarkedProgrammes
-        updatedProgrammes[id] = isEnabled
-        appSettings.bookmarkedProgrammes = updatedProgrammes
+        if let existingData = appSettings.bookmarkedProgrammes[id] {
+            appSettings.bookmarkedProgrammes[id] = BookmarkedProgrammeData(
+                isVisible: isEnabled,
+                schoolId: existingData.schoolId
+            )
+        }
     }
     
     private func handleRemoveAllBookmarks() {

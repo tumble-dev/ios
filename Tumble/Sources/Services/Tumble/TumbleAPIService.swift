@@ -5,8 +5,8 @@
 //  Created by Adis Veletanlic on 2025-09-17.
 //
 
-import Foundation
 import Combine
+import Foundation
 
 // MARK: - Network Swift.Error
 
@@ -100,12 +100,12 @@ struct EmptyResponse: Codable {
 // MARK: - Tumble API Service
 
 /// A service that handles all HTTP requests to the Tumble API.
-/// 
+///
 /// This service automatically respects user-configured network settings including:
 /// - Connection timeout from AppSettings.connectionTimeout
 /// - Retry attempts from AppSettings.retryAttempts
 /// - Wi-Fi only mode from AppSettings.wifiOnlyMode
-/// 
+///
 /// The service listens for changes to these settings and updates its configuration accordingly.
 final class TumbleAPIService: TumbleApiServiceProtocol {
     private var session: URLSession
@@ -121,7 +121,7 @@ final class TumbleAPIService: TumbleApiServiceProtocol {
     init(appSettings: AppSettings, networkMonitor: NetworkMonitorProtocol) {
         self.appSettings = appSettings
         self.networkMonitor = networkMonitor
-        self.config = RequestConfig(
+        config = RequestConfig(
             timeout: appSettings.connectionTimeout,
             retryCount: appSettings.retryAttempts,
             retryDelay: 1.0
@@ -133,7 +133,7 @@ final class TumbleAPIService: TumbleApiServiceProtocol {
         sessionConfig.timeoutIntervalForRequest = config.timeout
         sessionConfig.timeoutIntervalForResource = config.timeout * 2
         sessionConfig.waitsForConnectivity = true
-        self.session = URLSession(configuration: sessionConfig)
+        session = URLSession(configuration: sessionConfig)
         
         decoder = JSONDecoder()
         let dateFormatter = DateFormatter()

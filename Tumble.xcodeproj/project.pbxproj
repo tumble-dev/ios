@@ -168,6 +168,8 @@
 		0BE9F46B2EB3D6C700CC3E5D /* ResourceScreenViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BE9F46A2EB3D6C200CC3E5D /* ResourceScreenViewModelProtocol.swift */; };
 		0BE9F46D2EB3D6CE00CC3E5D /* ResourceScreenModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BE9F46C2EB3D6CB00CC3E5D /* ResourceScreenModels.swift */; };
 		0BE9F46F2EB3D6D600CC3E5D /* ResourceScreenCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BE9F46E2EB3D6D100CC3E5D /* ResourceScreenCoordinator.swift */; };
+		0BEEC44E2EC75957007E16A9 /* EventSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BEEC44D2EC75957007E16A9 /* EventSyncManager.swift */; };
+		0BEEC45A2EC76387007E16A9 /* SyncStatusIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BEEC4592EC76387007E16A9 /* SyncStatusIndicator.swift */; };
 		D42BAC1C298D3D590025EAA9 /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = D42BAC1B298D3D590025EAA9 /* Logging */; };
 		D42BAC1E298D3D6A0025EAA9 /* AppLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = D42BAC1D298D3D6A0025EAA9 /* AppLogger.swift */; };
 		D430F74329C615DC00E30E48 /* FSCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = D430F74229C615DC00E30E48 /* FSCalendar */; };
@@ -357,6 +359,8 @@
 		0BE9F46A2EB3D6C200CC3E5D /* ResourceScreenViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceScreenViewModelProtocol.swift; sourceTree = "<group>"; };
 		0BE9F46C2EB3D6CB00CC3E5D /* ResourceScreenModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceScreenModels.swift; sourceTree = "<group>"; };
 		0BE9F46E2EB3D6D100CC3E5D /* ResourceScreenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceScreenCoordinator.swift; sourceTree = "<group>"; };
+		0BEEC44D2EC75957007E16A9 /* EventSyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSyncManager.swift; sourceTree = "<group>"; };
+		0BEEC4592EC76387007E16A9 /* SyncStatusIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncStatusIndicator.swift; sourceTree = "<group>"; };
 		1CB1962C2CA598A300B747BF /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D42554332A2C9A4700256550 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D42BAC1D298D3D6A0025EAA9 /* AppLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLogger.swift; sourceTree = "<group>"; };
@@ -926,6 +930,8 @@
 				0BDE19812E8005F0004C6A51 /* UserDataStorageServiceProtocol.swift */,
 				0B30CA3B2E7F29630002D799 /* UserDataStorageService.swift */,
 				0B19F7EE2E7C44B90037E29E /* EventStorageService.swift */,
+				0BEEC44D2EC75957007E16A9 /* EventSyncManager.swift */,
+				0BEEC4592EC76387007E16A9 /* SyncStatusIndicator.swift */,
 			);
 			path = Store;
 			sourceTree = "<group>";
@@ -1175,6 +1181,7 @@
 				0BAEDF0B2E7B177800EA6796 /* Config.swift in Sources */,
 				0BAEDF292E7B23B200EA6796 /* CurrentValuePublisher.swift in Sources */,
 				0BAEDF052E7B176400EA6796 /* KeychainController.swift in Sources */,
+				0BEEC45A2EC76387007E16A9 /* SyncStatusIndicator.swift in Sources */,
 				0BAEDF062E7B176400EA6796 /* AuthenticationService.swift in Sources */,
 				0B30C8FC2E7E2BC30002D799 /* BookmarksSettingsScreenViewModel.swift in Sources */,
 				0BAEE2042E7B5CB400EA6796 /* ApplicationCoordinatorProtocol.swift in Sources */,
@@ -1205,6 +1212,7 @@
 				0BAEE2122E7B66C600EA6796 /* OnboardingFlowCoordinator.swift in Sources */,
 				0B19F95C2E7D78900037E29E /* SettingsScreenModels.swift in Sources */,
 				0B30CA3C2E7F29630002D799 /* UserDataStorageService.swift in Sources */,
+				0BEEC44E2EC75957007E16A9 /* EventSyncManager.swift in Sources */,
 				0BAEE1EE2E7B476F00EA6796 /* CoordinatorProtocol.swift in Sources */,
 				0BAEE1F82E7B497F00EA6796 /* WindowManagerDelegate.swift in Sources */,
 				0B19F94F2E7CB3B20037E29E /* EventDetailsScreenViewModel.swift in Sources */,

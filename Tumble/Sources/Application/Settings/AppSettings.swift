@@ -14,6 +14,18 @@ enum BookmarksViewType: Int, Codable {
     case monthly = 2
 }
 
+// MARK: - Bookmarked Programme Data
+
+struct BookmarkedProgrammeData: Codable, Equatable {
+    let isVisible: Bool
+    let schoolId: String
+    
+    init(isVisible: Bool, schoolId: String) {
+        self.isVisible = isVisible
+        self.schoolId = schoolId
+    }
+}
+
 final class AppSettings: ObservableObject {
     private enum UserDefaultsKeys: String {
         // Internal
@@ -103,7 +115,7 @@ final class AppSettings: ObservableObject {
     var onboarded: Bool
     
     @UserPreference(key: UserDefaultsKeys.bookmarkedProgrammes, defaultValue: [:], storageType: .userDefaults(store))
-    var bookmarkedProgrammes: [String: Bool]
+    var bookmarkedProgrammes: [String: BookmarkedProgrammeData]
     
     @UserPreference(key: UserDefaultsKeys.openEventFromWidget, defaultValue: false, storageType: .userDefaults(store))
     var openEventFromWidget: Bool
@@ -153,6 +165,36 @@ final class AppSettings: ObservableObject {
     
     @UserPreference(key: UserDefaultsKeys.betaFeaturesEnabled, defaultValue: false, storageType: .userDefaults(store))
     var betaFeaturesEnabled: Bool
+    
+    // MARK: - Convenience Methods for Bookmarked Programmes
+    
+    func addBookmarkedProgramme(_ programmeId: String, schoolId: String, isVisible: Bool = true) {
+        bookmarkedProgrammes[programmeId] = BookmarkedProgrammeData(isVisible: isVisible, schoolId: schoolId)
+    }
+    
+    func removeBookmarkedProgramme(_ programmeId: String) {
+        bookmarkedProgrammes.removeValue(forKey: programmeId)
+    }
+    
+    func isBookmarked(_ programmeId: String) -> Bool {
+        return bookmarkedProgrammes[programmeId] != nil
+    }
+    
+    func isVisible(_ programmeId: String) -> Bool {
+        return bookmarkedProgrammes[programmeId]?.isVisible ?? false
+    }
+    
+    func getSchoolId(for programmeId: String) -> String? {
+        return bookmarkedProgrammes[programmeId]?.schoolId
+    }
+    
+    func getVisibleBookmarkedProgrammes() -> [String: BookmarkedProgrammeData] {
+        return bookmarkedProgrammes.filter { $0.value.isVisible }
+    }
+    
+    func getBookmarkedProgrammesForSchool(_ schoolId: String) -> [String: BookmarkedProgrammeData] {
+        return bookmarkedProgrammes.filter { $0.value.schoolId == schoolId }
+    }
 }
 
 // MARK: - Protocol Extensions for Settings

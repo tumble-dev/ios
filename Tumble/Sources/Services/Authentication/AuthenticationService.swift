@@ -607,7 +607,7 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
     
     // MARK: - Private Methods
     
-    private func updateAuthState(_ newState: AuthState) async {        
+    private func updateAuthState(_ newState: AuthState) async {
         await MainActor.run {
             AppLogger.shared.debug("AuthenticationService: On MainActor, updating authState from \(authState) to \(newState)")
             authState = newState

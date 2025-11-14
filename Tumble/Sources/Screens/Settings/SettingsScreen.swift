@@ -245,6 +245,10 @@ struct SettingsScreen: View {
     private var advancedSection: some View {
         SettingsCard(title: "Advanced") {
             VStack(spacing: 0) {
+                SyncStatusIndicator()
+                
+                Divider()
+                
                 SettingsRow(
                     icon: "gearshape.2.fill",
                     iconColor: .gray,
