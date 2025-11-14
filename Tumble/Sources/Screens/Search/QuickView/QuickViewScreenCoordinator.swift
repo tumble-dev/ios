@@ -18,6 +18,7 @@ struct QuickViewScreenCoordinatorParameters {
 
 enum QuickViewScreenCoordinatorAction {
     case dismiss
+    case bookmarkToggled
 }
 
 @MainActor
@@ -47,6 +48,8 @@ class QuickViewScreenCoordinator: CoordinatorProtocol {
                 switch action {
                 case .dismiss:
                     actionsSubject.send(.dismiss)
+                case .bookmarkToggled:
+                    actionsSubject.send(.bookmarkToggled)
                 }
             }
             .store(in: &cancellables)

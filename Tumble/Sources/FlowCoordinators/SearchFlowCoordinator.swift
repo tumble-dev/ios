@@ -113,6 +113,22 @@ class SearchFlowCoordinator: FlowCoordinatorProtocol {
                 school: school
             )
         )
+        
+        // Listen for QuickView actions to dismiss sheet after saving
+        coordinator.actions
+            .sink { [weak self] action in
+                guard let self else { return }
+                
+                switch action {
+                case .bookmarkToggled: // Dismiss sheet after successful bookmark toggle
+                    parameters.navigationSplitCoordinator.setSheetCoordinator(nil)
+                    actionsSubject.send(.dismissedSearch)
+                case .dismiss:
+                    navigationStackCoordinator.pop(animated: true)
+                }
+            }
+            .store(in: &cancellables)
+        
         navigationStackCoordinator.push(coordinator)
     }
 }

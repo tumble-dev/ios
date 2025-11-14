@@ -160,6 +160,8 @@ class BookmarksFlowCoordinator: FlowCoordinatorProtocol {
                     stateMachine.processEvent(.showAccountScreen)
                 case .dismissedAccount:
                     stateMachine.processEvent(.dismissedAccountScreen)
+                case .navigateToSettings:
+                    settingsFlowCoordinator.handleAppRoute(.settings, animated: true)
                 }
             }
             .store(in: &cancellables)

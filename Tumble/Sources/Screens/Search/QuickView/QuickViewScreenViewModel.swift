@@ -91,6 +91,9 @@ class QuickViewScreenViewModel: QuickViewScreenViewModelType {
         }
         
         updateSaveButtonState(isCurrentlyBookmarked ? .notSaved : .saved)
+        
+        // Emit action to indicate bookmark was toggled successfully
+        actionsSubject.send(.bookmarkToggled)
     }
 
     @MainActor

@@ -20,6 +20,7 @@ enum AccountScreenCoordinatorAction {
     case resourceSelectionScreen
     case resourceBookingDetails(Response.Booking)
     case dismiss
+    case navigateToSettings
 }
 
 final class AccountScreenCoordinator: CoordinatorProtocol {
@@ -53,6 +54,8 @@ final class AccountScreenCoordinator: CoordinatorProtocol {
                     actionsSubject.send(.resourceBookingDetails(booking))
                 case .dismiss:
                     actionsSubject.send(.dismiss)
+                case .navigateToSettings:
+                    actionsSubject.send(.navigateToSettings)
                 }
             }
             .store(in: &cancellables)

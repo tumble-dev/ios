@@ -253,10 +253,12 @@ struct BookmarksScreen: View {
             }
         }
         
-        // Only show search in daily view
+        // Only show search in daily view when there are events to filter
         ToolbarItem(placement: .bottomBar) {
             Group {
-                if context.viewState.bookmarksViewType == .daily {
+                if context.viewState.bookmarksViewType == .daily,
+                   case .loaded(let events) = context.viewState.dataState,
+                   !events.isEmpty {
                     TextField("Filter events..", text: $searchText)
                         .textFieldStyle(.automatic)
                         .padding(.horizontal, 10)

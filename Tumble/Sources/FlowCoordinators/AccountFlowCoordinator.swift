@@ -11,6 +11,7 @@ import SwiftUI
 enum AccountFlowCoordinatorAction {
     case presentedAccount
     case dismissedAccount
+    case navigateToSettings
 }
 
 struct AccountFlowCoordinatorParameters {
@@ -95,6 +96,11 @@ class AccountFlowCoordinator: FlowCoordinatorProtocol {
                     presentBookingDetailsScreen(booking: booking)
                 case .dismiss:
                     parameters.navigationSplitCoordinator.setSheetCoordinator(nil)
+                case .navigateToSettings:
+                    // Dismiss the account sheet and navigate to settings
+                    parameters.navigationSplitCoordinator.setSheetCoordinator(nil)
+                    // Add navigation to settings by adding a new action to the flow coordinator
+                    actionsSubject.send(.navigateToSettings)
                 }
             }
             .store(in: &cancellables)

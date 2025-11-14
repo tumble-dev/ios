@@ -18,6 +18,7 @@ enum QuickViewScreenViewAction: Equatable {
 
 enum QuickViewScreenViewModelAction: Equatable {
     case dismiss
+    case bookmarkToggled
 }
 
 struct QuickViewScreenViewState: BindableState {

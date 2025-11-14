@@ -23,7 +23,12 @@ struct AccountScreen: View {
             case .missing:
                 InfoView.empty(
                     title: "You have no connected accounts",
-                    subtitle: "Connect one or more accounts from the settings screen",
+                    subtitle: "Connect one or more accounts to get started",
+                    action: InfoViewAction(
+                        title: "Go to Settings",
+                        action: { context.send(viewAction: .navigateToSettings) },
+                        style: .primary
+                    ),
                     icon: "person.crop.circle.fill.badge.xmark"
                 )
             case .loaded(let user):

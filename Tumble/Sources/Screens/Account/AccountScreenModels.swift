@@ -1,32 +1,32 @@
 //
 //  AccountScreenModels.swift
-//  App
+//  Tumble
 //
-//  Created by Adis Veletanlic on 2025-09-20.
+//  Created by Assistant on 11/14/25.
 //
 
 import Foundation
-import UIKit
 
-enum AccountScreenViewAction: Equatable {
+// MARK: - View Actions
+
+enum AccountScreenViewAction {
     case close
-    case refreshBookings
-    // Navigation
     case showResources
-    // Sheets
     case showResourceBookingDetails(Response.Booking)
+    case refreshBookings
+    case navigateToSettings
 }
 
-enum AccountScreenViewModelAction: Equatable {
+// MARK: - View Model Actions
+
+enum AccountScreenViewModelAction {
+    case dismiss
     case resourceSelectionScreen
     case resourceBookingDetails(Response.Booking)
-    case dismiss
+    case navigateToSettings
 }
 
-struct AccountScreenViewState: BindableState {
-    var userState: AccountScreenUserState = .loading
-    var dataState: AccountScreenDataState = .loading
-}
+// MARK: - View States
 
 enum AccountScreenUserState {
     case loading
@@ -39,11 +39,11 @@ enum AccountScreenDataState {
     case loading
     case loaded(bookings: [Response.Booking])
     case empty
-    case hidden
     case error(String)
-    
-    var isLoading: Bool {
-        if case .loading = self { return true }
-        return false
-    }
+    case hidden
+}
+
+struct AccountScreenViewState: BindableState {
+    var userState: AccountScreenUserState = .loading
+    var dataState: AccountScreenDataState = .loading
 }

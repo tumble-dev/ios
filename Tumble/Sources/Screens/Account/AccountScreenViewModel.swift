@@ -50,6 +50,8 @@ class AccountScreenViewModel: AccountScreenViewModelType, AccountScreenViewModel
             actionsSubject.send(.resourceBookingDetails(booking))
         case .refreshBookings:
             refreshBookings()
+        case .navigateToSettings:
+            actionsSubject.send(.navigateToSettings)
         }
     }
     

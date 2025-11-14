@@ -23,7 +23,6 @@ struct TumbleWidget: Widget {
 
 struct TumbleWidgetEntryView: View {
     var entry: Provider.Entry
-    @State private var shouldOpenEvent: Bool = false
     
     private let appSettings = AppSettings()
 
@@ -34,7 +33,7 @@ struct TumbleWidgetEntryView: View {
                 NoEventsWidgetView()
             case .event(let event):
                 EventWidgetView(event: event)
-                    .widgetURL(shouldOpenEvent ? createEventURL(for: event.id) : nil)
+                    .widgetURL(appSettings.openEventFromWidget ? createEventURL(for: event.id) : nil)
             case .error(let message):
                 ErrorWidgetView(message: message)
             }
