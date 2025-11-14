@@ -53,7 +53,6 @@ struct SearchField: View {
         if let search = search {
             search()
         }
-        hideKeyboard()
     }
     
     func searchFieldAction() {
@@ -64,7 +63,6 @@ struct SearchField: View {
             clearSearch()
         }
         searchBarText = ""
-        hideKeyboard()
     }
     
     func getFocus(focused: Bool) {

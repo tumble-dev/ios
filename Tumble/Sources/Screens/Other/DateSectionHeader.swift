@@ -8,12 +8,6 @@
 import Foundation
 import SwiftUI
 
-struct DateGroup: Identifiable {
-    let id = UUID() // Add this
-    let date: Date
-    let events: [Response.Event]
-}
-
 struct DateSectionHeader: View {
     let date: Date
     

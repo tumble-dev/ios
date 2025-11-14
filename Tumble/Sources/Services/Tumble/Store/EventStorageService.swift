@@ -7,6 +7,7 @@
 
 import Combine
 import Foundation
+import Logging
 
 // MARK: - Event Storage Change Types
 
@@ -89,7 +90,9 @@ class EventStorageService: EventStorageServiceProtocol, ObservableObject {
     init(filename: String = "events_storage", appSettings: AppSettings) {
         self.appSettings = appSettings
         
-        let documentsPath = FileManager.default.urls(for: .documentDirectory,
+        // Use shared App Group container so both main app and widget can access the same data
+        let sharedContainerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: Config.appGroupIdentifier)
+        let documentsPath = sharedContainerURL ?? FileManager.default.urls(for: .documentDirectory,
                                                      in: .userDomainMask).first!
         standardFileURL = documentsPath.appendingPathComponent("\(filename).json")
         optimizedFileURL = documentsPath.appendingPathComponent("\(filename)_compressed.json")

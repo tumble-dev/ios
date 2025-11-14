@@ -9,13 +9,6 @@ import Combine
 import Foundation
 import UIKit
 
-enum AuthState {
-    case connected(user: TumbleUser)
-    case disconnected
-    case error(msg: String)
-    case loading
-}
-
 enum AuthError: Error, LocalizedError {
     case autoLoginError(username: String)
     case httpResponseError(statusCode: Int)
