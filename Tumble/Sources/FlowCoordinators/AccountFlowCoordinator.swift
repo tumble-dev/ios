@@ -251,7 +251,7 @@ class AccountFlowCoordinator: FlowCoordinatorProtocol {
             throw BookingError.noAuthenticatedUser
         }
         
-        AppLogger.shared.debug("[AccountFlowCoordinator] Retrieved user school: \(currentUser.school) for user: \(currentUser.username)")
+        AppLogger.shared.info("[AccountFlowCoordinator] Retrieved user school: \(currentUser.school) for user: \(currentUser.username)")
         return currentUser.school
     }
 }

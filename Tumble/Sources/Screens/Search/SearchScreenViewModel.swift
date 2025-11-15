@@ -30,7 +30,7 @@ class SearchScreenViewModel: SearchScreenViewModelType {
     deinit {
         // Cancel any ongoing search tasks when the view model is deallocated
         searchTask?.cancel()
-        AppLogger.shared.debug("[SearchScreenViewModel] Deallocated and cancelled ongoing tasks")
+        AppLogger.shared.info("[SearchScreenViewModel] Deallocated and cancelled ongoing tasks")
     }
     
     override func process(viewAction: SearchScreenViewAction) {
@@ -67,7 +67,7 @@ class SearchScreenViewModel: SearchScreenViewModelType {
     private func search(for query: String) async {
         // Check if the task was cancelled before starting
         guard !Task.isCancelled else {
-            AppLogger.shared.debug("[SearchScreenViewModel] Search task was cancelled")
+            AppLogger.shared.info("[SearchScreenViewModel] Search task was cancelled")
             return
         }
         
@@ -77,7 +77,7 @@ class SearchScreenViewModel: SearchScreenViewModelType {
             }
             
             guard !Task.isCancelled else {
-                AppLogger.shared.debug("[SearchScreenViewModel] Search task cancelled before checking school")
+                AppLogger.shared.info("[SearchScreenViewModel] Search task cancelled before checking school")
                 return
             }
             
@@ -93,7 +93,7 @@ class SearchScreenViewModel: SearchScreenViewModelType {
             
             // Check cancellation before updating UI
             guard !Task.isCancelled else {
-                AppLogger.shared.debug("[SearchScreenViewModel] Search task cancelled after API call")
+                AppLogger.shared.info("[SearchScreenViewModel] Search task cancelled after API call")
                 return
             }
             
@@ -104,10 +104,10 @@ class SearchScreenViewModel: SearchScreenViewModelType {
             AppLogger.shared.info("[SearchScreenViewModel] Successfully searched for programmes using query '\(query)'")
             
         } catch is CancellationError {
-            AppLogger.shared.debug("[SearchScreenViewModel] Search task was cancelled")
+            AppLogger.shared.info("[SearchScreenViewModel] Search task was cancelled")
         } catch (let error) {
             guard !Task.isCancelled else {
-                AppLogger.shared.debug("[SearchScreenViewModel] Search task cancelled during error handling")
+                AppLogger.shared.info("[SearchScreenViewModel] Search task cancelled during error handling")
                 return
             }
             

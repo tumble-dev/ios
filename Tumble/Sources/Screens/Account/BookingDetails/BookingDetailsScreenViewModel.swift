@@ -43,7 +43,7 @@ class BookingDetailsScreenViewModel: BookingDetailsScreenViewModelType, BookingD
         // Cancel any ongoing network tasks when the view model is deallocated
         confirmBookingTask?.cancel()
         cancelBookingTask?.cancel()
-        AppLogger.shared.debug("[BookingDetailsScreenViewModel] Deallocated and cancelled ongoing tasks")
+        AppLogger.shared.info("[BookingDetailsScreenViewModel] Deallocated and cancelled ongoing tasks")
     }
     
     override func process(viewAction: BookingDetailsScreenViewAction) {
@@ -77,7 +77,7 @@ class BookingDetailsScreenViewModel: BookingDetailsScreenViewModelType, BookingD
     private func confirmBooking() async {
         // Check if the task was cancelled before starting
         guard !Task.isCancelled else {
-            AppLogger.shared.debug("[BookingDetailsScreenViewModel] Confirm booking task was cancelled")
+            AppLogger.shared.info("[BookingDetailsScreenViewModel] Confirm booking task was cancelled")
             return
         }
         
@@ -88,14 +88,14 @@ class BookingDetailsScreenViewModel: BookingDetailsScreenViewModelType, BookingD
         do {
             // Check cancellation before each async operation
             guard !Task.isCancelled else {
-                AppLogger.shared.debug("[BookingDetailsScreenViewModel] Confirm booking task cancelled during token fetch")
+                AppLogger.shared.info("[BookingDetailsScreenViewModel] Confirm booking task cancelled during token fetch")
                 return
             }
             
             let token = try await authenticationService.getCurrentSessionToken()
             
             guard !Task.isCancelled else {
-                AppLogger.shared.debug("[BookingDetailsScreenViewModel] Confirm booking task cancelled after token fetch")
+                AppLogger.shared.info("[BookingDetailsScreenViewModel] Confirm booking task cancelled after token fetch")
                 return
             }
             
@@ -107,7 +107,7 @@ class BookingDetailsScreenViewModel: BookingDetailsScreenViewModelType, BookingD
             
             // Check cancellation before updating UI
             guard !Task.isCancelled else {
-                AppLogger.shared.debug("[BookingDetailsScreenViewModel] Confirm booking task cancelled after API call")
+                AppLogger.shared.info("[BookingDetailsScreenViewModel] Confirm booking task cancelled after API call")
                 return
             }
             
@@ -131,10 +131,10 @@ class BookingDetailsScreenViewModel: BookingDetailsScreenViewModelType, BookingD
             AppLogger.shared.info("[BookingDetailsScreenViewModel] Successfully confirmed booking \(originalBooking.id)")
             
         } catch is CancellationError {
-            AppLogger.shared.debug("[BookingDetailsScreenViewModel] Confirm booking task was cancelled")
+            AppLogger.shared.info("[BookingDetailsScreenViewModel] Confirm booking task was cancelled")
         } catch {
             guard !Task.isCancelled else {
-                AppLogger.shared.debug("[BookingDetailsScreenViewModel] Confirm booking task cancelled during error handling")
+                AppLogger.shared.info("[BookingDetailsScreenViewModel] Confirm booking task cancelled during error handling")
                 return
             }
             
@@ -148,7 +148,7 @@ class BookingDetailsScreenViewModel: BookingDetailsScreenViewModelType, BookingD
     private func cancelBooking() async {
         // Check if the task was cancelled before starting
         guard !Task.isCancelled else {
-            AppLogger.shared.debug("[BookingDetailsScreenViewModel] Cancel booking task was cancelled")
+            AppLogger.shared.info("[BookingDetailsScreenViewModel] Cancel booking task was cancelled")
             return
         }
         
@@ -159,14 +159,14 @@ class BookingDetailsScreenViewModel: BookingDetailsScreenViewModelType, BookingD
         do {
             // Check cancellation before each async operation
             guard !Task.isCancelled else {
-                AppLogger.shared.debug("[BookingDetailsScreenViewModel] Cancel booking task cancelled during token fetch")
+                AppLogger.shared.info("[BookingDetailsScreenViewModel] Cancel booking task cancelled during token fetch")
                 return
             }
             
             let token = try await authenticationService.getCurrentSessionToken()
             
             guard !Task.isCancelled else {
-                AppLogger.shared.debug("[BookingDetailsScreenViewModel] Cancel booking task cancelled after token fetch")
+                AppLogger.shared.info("[BookingDetailsScreenViewModel] Cancel booking task cancelled after token fetch")
                 return
             }
             
@@ -178,7 +178,7 @@ class BookingDetailsScreenViewModel: BookingDetailsScreenViewModelType, BookingD
             
             // Check cancellation before sending success action
             guard !Task.isCancelled else {
-                AppLogger.shared.debug("[BookingDetailsScreenViewModel] Cancel booking task cancelled after API call")
+                AppLogger.shared.info("[BookingDetailsScreenViewModel] Cancel booking task cancelled after API call")
                 return
             }
             
@@ -190,10 +190,10 @@ class BookingDetailsScreenViewModel: BookingDetailsScreenViewModelType, BookingD
             AppLogger.shared.info("[BookingDetailsScreenViewModel] Successfully cancelled booking \(originalBooking.id)")
             
         } catch is CancellationError {
-            AppLogger.shared.debug("[BookingDetailsScreenViewModel] Cancel booking task was cancelled")
+            AppLogger.shared.info("[BookingDetailsScreenViewModel] Cancel booking task was cancelled")
         } catch {
             guard !Task.isCancelled else {
-                AppLogger.shared.debug("[BookingDetailsScreenViewModel] Cancel booking task cancelled during error handling")
+                AppLogger.shared.info("[BookingDetailsScreenViewModel] Cancel booking task cancelled during error handling")
                 return
             }
             

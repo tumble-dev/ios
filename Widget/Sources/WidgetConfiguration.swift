@@ -9,8 +9,8 @@ import Foundation
 
 struct TumbleWidgetConfiguration {
     /// App Group identifier for sharing data between main app and widget
-    /// This should match the App Group created in Apple Developer Portal
-    static let appGroupIdentifier = "group.com.tumble.app.shared"
+    /// This should match the App Group created in Apple Developer Portal and Config
+    static let appGroupIdentifier = Config.appGroupIdentifier
     
     /// Shared UserDefaults suite for app-widget communication
     static var sharedUserDefaults: UserDefaults? {

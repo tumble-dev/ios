@@ -336,7 +336,7 @@ extension ApplicationCoordinator {
             throw BookingError.noAuthenticatedUser
         }
         
-        AppLogger.shared.debug("[ApplicationCoordinator] Retrieved user school: \(currentUser.school) for user: \(currentUser.username)")
+        AppLogger.shared.info("[ApplicationCoordinator] Retrieved user school: \(currentUser.school) for user: \(currentUser.username)")
         return currentUser.school
     }
     

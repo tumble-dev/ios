@@ -48,7 +48,7 @@ class ResourceBookingScreenViewModel: ResourceBookingScreenViewModelType, Resour
     deinit {
         // Cancel any ongoing network tasks when the view model is deallocated
         bookingTask?.cancel()
-        AppLogger.shared.debug("[ResourceBookingScreenViewModel] Deallocated and cancelled ongoing tasks")
+        AppLogger.shared.info("[ResourceBookingScreenViewModel] Deallocated and cancelled ongoing tasks")
     }
     
     override func process(viewAction: ResourceBookingScreenViewAction) {
@@ -71,7 +71,7 @@ class ResourceBookingScreenViewModel: ResourceBookingScreenViewModelType, Resour
     private func bookResource(resourceId: String, date: Date, slot: Response.AvailabilitySlot) async {
         // Check if the task was cancelled before starting
         guard !Task.isCancelled else {
-            AppLogger.shared.debug("[ResourceBookingScreenViewModel] Book resource task was cancelled")
+            AppLogger.shared.info("[ResourceBookingScreenViewModel] Book resource task was cancelled")
             return
         }
         
@@ -82,14 +82,14 @@ class ResourceBookingScreenViewModel: ResourceBookingScreenViewModelType, Resour
         do {
             // Check cancellation before each async operation
             guard !Task.isCancelled else {
-                AppLogger.shared.debug("[ResourceBookingScreenViewModel] Book resource task cancelled during token fetch")
+                AppLogger.shared.info("[ResourceBookingScreenViewModel] Book resource task cancelled during token fetch")
                 return
             }
             
             let authToken = try await authenticationService.getCurrentSessionToken()
             
             guard !Task.isCancelled else {
-                AppLogger.shared.debug("[ResourceBookingScreenViewModel] Book resource task cancelled after token fetch")
+                AppLogger.shared.info("[ResourceBookingScreenViewModel] Book resource task cancelled after token fetch")
                 return
             }
             
@@ -113,7 +113,7 @@ class ResourceBookingScreenViewModel: ResourceBookingScreenViewModelType, Resour
             
             // Check cancellation before updating UI
             guard !Task.isCancelled else {
-                AppLogger.shared.debug("[ResourceBookingScreenViewModel] Book resource task cancelled after API call")
+                AppLogger.shared.info("[ResourceBookingScreenViewModel] Book resource task cancelled after API call")
                 return
             }
             
@@ -130,10 +130,10 @@ class ResourceBookingScreenViewModel: ResourceBookingScreenViewModelType, Resour
             }
             
         } catch is CancellationError {
-            AppLogger.shared.debug("[ResourceBookingScreenViewModel] Book resource task was cancelled")
+            AppLogger.shared.info("[ResourceBookingScreenViewModel] Book resource task was cancelled")
         } catch let error as NetworkError {
             guard !Task.isCancelled else {
-                AppLogger.shared.debug("[ResourceBookingScreenViewModel] Book resource task cancelled during error handling")
+                AppLogger.shared.info("[ResourceBookingScreenViewModel] Book resource task cancelled during error handling")
                 return
             }
             
@@ -144,7 +144,7 @@ class ResourceBookingScreenViewModel: ResourceBookingScreenViewModelType, Resour
             actionsSubject.send(.bookingFailed(error.errorDescription ?? "Booking failed"))
         } catch {
             guard !Task.isCancelled else {
-                AppLogger.shared.debug("[ResourceBookingScreenViewModel] Book resource task cancelled during error handling")
+                AppLogger.shared.info("[ResourceBookingScreenViewModel] Book resource task cancelled during error handling")
                 return
             }
             

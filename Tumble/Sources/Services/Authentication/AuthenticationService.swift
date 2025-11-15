@@ -47,7 +47,7 @@ enum AuthError: Error, LocalizedError {
     }
 }
 
-final class AuthenticationService: AuthenticationServiceProtocol, ObservableObject {
+final class AuthenticationService: AuthenticationServiceProtocol, ObservableObject, WebSocketSessionManagerDelegate {
     @Published private(set) var authState: AuthState = .loading
     
     private let keychainController: KeychainControllerProtocol
@@ -81,6 +81,10 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
     
     private func setupWebSocketCallbacks() {
         if let wsManager = webSocketSessionManager as? WebSocketSessionManager {
+            // Set the authentication service as the delegate
+            wsManager.delegate = self
+            
+            // Keep the existing callback-based approach for session expired as it's still useful
             wsManager.onSessionExpired = { [weak self] in
                 Task { [weak self] in
                     await self?.handleSessionExpiry()
@@ -136,38 +140,10 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
     // MARK: - App Lifecycle Handling
     
     private func handleAppWillEnterForeground() async {
-        AppLogger.shared.info("App entering foreground - checking WebSocket connection")
+        AppLogger.shared.info("AuthenticationService: App entering foreground - checking WebSocket connection")
         
+        // Connect WebSocket if needed - it will handle its own re-authentication through the delegate
         await webSocketSessionManager.connect()
-        
-        guard case .connected(let currentUser) = authState else {
-            AppLogger.shared.info("Not in authenticated state, skipping WebSocket re-auth")
-            return
-        }
-        
-        guard webSocketSessionManager.connectionState != .authenticated else {
-            AppLogger.shared.info("WebSocket already authenticated, skipping re-authentication")
-            return
-        }
-        
-        guard let credentials = keychainController.getLoginCredentials(forUsername: currentUser.username) else {
-            AppLogger.shared.warning("No stored credentials for WebSocket re-authentication")
-            return
-        }
-        
-        AppLogger.shared.info("Re-authenticating WebSocket for user: \(currentUser.username)")
-        
-        do {
-            _ = try await webSocketSessionManager.authenticate(
-                username: credentials.username,
-                password: credentials.password,
-                schoolCode: currentUser.school
-            )
-            AppLogger.shared.debug("WebSocket re-authentication successful")
-        } catch {
-            AppLogger.shared.error("Failed to authenticate WebSocket session: \(error)")
-            await updateAuthState(.error(msg: "Failed to restore session. Please log in again."))
-        }
     }
     
     private func handleAppDidEnterBackground() {
@@ -234,7 +210,7 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
     /// - Returns: The authenticated user
     func addAccount(username: String, password: String, school: String) async throws -> TumbleUser {
         let startTime = Date()
-        AppLogger.shared.debug("Attempting to add account for user: \(username)")
+        AppLogger.shared.info("Attempting to add account for user: \(username)")
         
         // Log login attempt
         ServiceLocator.shared.analytics.logEvent("login_attempt", parameters: [
@@ -355,13 +331,13 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
     /// lifecycle.
     private func attemptAutoReLogin(for username: String) async {
         let startTime = Date()
-        AppLogger.shared.debug("Attempting auto re-login for user: \(username)")
+        AppLogger.shared.info("Attempting auto re-login for user: \(username)")
         
         ServiceLocator.shared.analytics.logEvent("auto_login_attempt", parameters: nil)
                 
         do {
             guard let credentials = keychainController.getLoginCredentials(forUsername: username) else {
-                AppLogger.shared.debug("No stored credentials for auto re-login")
+                AppLogger.shared.info("No stored credentials for auto re-login")
                 await updateAuthState(.disconnected)
                 
                 ServiceLocator.shared.analytics.logEvent("auto_login_failed", parameters: [
@@ -371,7 +347,7 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
             }
             
             guard let existingUser = userDataStorage.getUserProfile(username: username) else {
-                AppLogger.shared.debug("No user profile found for auto re-login")
+                AppLogger.shared.info("No user profile found for auto re-login")
                 await updateAuthState(.disconnected)
                 
                 ServiceLocator.shared.analytics.logEvent("auto_login_failed", parameters: [
@@ -444,7 +420,7 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
         // Check against the stored activeUsername instead of the current auth state
         // because the auth state might not be .connected when this is called
         let isActive = appSettings.activeUsername == username
-        AppLogger.shared.debug("AuthenticationService: isActiveUser(\(username)) = \(isActive), activeUsername = \(appSettings.activeUsername ?? "nil")")
+        AppLogger.shared.info("AuthenticationService: isActiveUser(\(username)) = \(isActive), activeUsername = \(appSettings.activeUsername ?? "nil")")
         return isActive
     }
     
@@ -453,7 +429,7 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
     /// - Parameter username: Username to remove
     /// - Returns: Array of remaining users
     func removeAccount(username: String) async throws -> [TumbleUser] {
-        AppLogger.shared.debug("Logging out user \(username)")
+        AppLogger.shared.info("Logging out user \(username)")
         
         ServiceLocator.shared.analytics.logEvent("account_removed", parameters: nil)
         
@@ -479,17 +455,17 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
             }
             
             if isActiveUser(username: username) {
-                AppLogger.shared.debug("AuthenticationService: User \(username) IS the active user, will update auth state")
+                AppLogger.shared.info("AuthenticationService: User \(username) IS the active user, will update auth state")
                 webSocketSessionManager.disconnect()
                 
                 // TODO: Switch user, if there are any
                 let remainingUsersBeforeUpdate = userDataStorage.getAllUsers()
-                AppLogger.shared.debug("Before state update - remaining users: \(remainingUsersBeforeUpdate.count)")
+                AppLogger.shared.info("Before state update - remaining users: \(remainingUsersBeforeUpdate.count)")
                 await updateAuthState(.disconnected)
                 let remainingUsersAfterUpdate = userDataStorage.getAllUsers()
-                AppLogger.shared.debug("After state update - remaining users: \(remainingUsersAfterUpdate.count)")
+                AppLogger.shared.info("After state update - remaining users: \(remainingUsersAfterUpdate.count)")
             } else {
-                AppLogger.shared.debug("AuthenticationService: User \(username) is NOT the active user, skipping auth state update")
+                AppLogger.shared.info("AuthenticationService: User \(username) is NOT the active user, skipping auth state update")
             }
             
             let remainingUsers = userDataStorage.getAllUsers()
@@ -513,7 +489,7 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
     
     func switchToUser(username: String) async throws -> TumbleUser {
         let startTime = Date()
-        AppLogger.shared.debug("Switching to user: \(username)")
+        AppLogger.shared.info("Switching to user: \(username)")
         
         await updateAuthState(.loading)
         
@@ -598,11 +574,65 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
         }
     }
     
+    // MARK: - WebSocketSessionManagerDelegate
+    
+    func webSocketSessionManager(_ manager: WebSocketSessionManager, shouldReauthenticateOnForeground user: Response.User) -> Bool {
+        // Only re-authenticate if we have a current authenticated user and they match
+        guard let currentUser = getCurrentUser() else {
+            AppLogger.shared.info("AuthenticationService: No current user, skipping WebSocket re-auth")
+            return false
+        }
+        
+        // Check if we're in an authenticated state
+        guard case .connected = authState else {
+            AppLogger.shared.info("AuthenticationService: Not in authenticated state, skipping WebSocket re-auth")
+            return false
+        }
+        
+        let shouldReauth = currentUser.username == user.username
+        AppLogger.shared.info("AuthenticationService: Should re-authenticate WebSocket for \(user.username): \(shouldReauth)")
+        return shouldReauth
+    }
+    
+    func webSocketSessionManager(_ manager: WebSocketSessionManager, credentialsForReauthentication user: Response.User) -> (username: String, password: String, schoolCode: String)? {
+        guard let currentUser = getCurrentUser(),
+              currentUser.username == user.username else {
+            AppLogger.shared.warning("AuthenticationService: User mismatch for credential request")
+            return nil
+        }
+        
+        guard let credentials = keychainController.getLoginCredentials(forUsername: user.username) else {
+            AppLogger.shared.warning("AuthenticationService: No stored credentials for user: \(user.username)")
+            return nil
+        }
+        
+        AppLogger.shared.info("AuthenticationService: Providing credentials for WebSocket re-authentication")
+        return (username: credentials.username, password: credentials.password, schoolCode: currentUser.school)
+    }
+    
+    func webSocketSessionManager(_ manager: WebSocketSessionManager, didFailReauthenticationWithError error: Error) {
+        AppLogger.shared.error("AuthenticationService: WebSocket re-authentication failed: \(error)")
+        
+        // Update auth state to indicate session issues
+        Task {
+            await updateAuthState(.error(msg: "Session authentication failed. Please log in again."))
+        }
+    }
+    
+    func webSocketSessionManager(_ manager: WebSocketSessionManager, didSucceedReauthentication user: Response.User) {
+        AppLogger.shared.info("AuthenticationService: WebSocket re-authentication succeeded for: \(user.username)")
+        
+        // Update the session token if needed
+        Task {
+            await updateSessionToken(user)
+        }
+    }
+    
     // MARK: - Private Methods
     
     private func updateAuthState(_ newState: AuthState) async {
         await MainActor.run {
-            AppLogger.shared.debug("AuthenticationService: On MainActor, updating authState from \(authState) to \(newState)")
+            AppLogger.shared.info("AuthenticationService: On MainActor, updating authState from \(authState) to \(newState)")
             authState = newState
             
             switch newState {
@@ -611,26 +641,26 @@ final class AuthenticationService: AuthenticationServiceProtocol, ObservableObje
                 /// this has adverse side effects which could cause
                 /// the websocket to break
                 appSettings.activeUsername = user.username
-                AppLogger.shared.debug("AuthenticationService: Set activeUsername to: \(user.username)")
+                AppLogger.shared.info("AuthenticationService: Set activeUsername to: \(user.username)")
             case .disconnected:
                 // Only clear activeUsername if there are no users left
                 let usersCount = getAllUsers().count
-                AppLogger.shared.debug("AuthenticationService: Disconnected state - users count: \(usersCount)")
+                AppLogger.shared.info("AuthenticationService: Disconnected state - users count: \(usersCount)")
                 if usersCount == 0 {
-                    AppLogger.shared.debug("AuthenticationService: Clearing activeUsername - no users remaining")
+                    AppLogger.shared.info("AuthenticationService: Clearing activeUsername - no users remaining")
                     appSettings.activeUsername = nil
                 } else {
-                    AppLogger.shared.debug("AuthenticationService: Keeping activeUsername - users still remain: \(usersCount)")
+                    AppLogger.shared.info("AuthenticationService: Keeping activeUsername - users still remain: \(usersCount)")
                 }
             default:
-                AppLogger.shared.debug("AuthenticationService: No special handling for state: \(newState)")
+                AppLogger.shared.info("AuthenticationService: No special handling for state: \(newState)")
             }
             
-            AppLogger.shared.debug("AuthenticationService: Final authState: \(authState)")
-            AppLogger.shared.debug("AuthenticationService: Final activeUsername: \(appSettings.activeUsername ?? "nil")")
+            AppLogger.shared.info("AuthenticationService: Final authState: \(authState)")
+            AppLogger.shared.info("AuthenticationService: Final activeUsername: \(appSettings.activeUsername ?? "nil")")
         }
         
-        AppLogger.shared.debug("AuthenticationService: updateAuthState completed")
+        AppLogger.shared.info("AuthenticationService: updateAuthState completed")
     }
     
     func getCurrentAuthState() -> AuthState {

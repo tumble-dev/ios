@@ -47,7 +47,7 @@ class SettingsScreenViewModel: SettingsScreenViewModelType, SettingsScreenViewMo
         authenticationService.authStatePublisher
             .sink { [weak self] authState in
                 guard let self else { return }
-                AppLogger.shared.debug("SettingsScreenViewModel: Received auth state update via publisher: \(authState)")
+                AppLogger.shared.info("SettingsScreenViewModel: Received auth state update via publisher: \(authState)")
                 state.authState = authState
             }
             .store(in: &cancellables)
@@ -142,19 +142,19 @@ class SettingsScreenViewModel: SettingsScreenViewModelType, SettingsScreenViewMo
     }
     
     private func handleRemoveAccount() {
-        AppLogger.shared.debug("SettingsScreenViewModel: handleRemoveAccount started")
+        AppLogger.shared.info("SettingsScreenViewModel: handleRemoveAccount started")
         Task {
             do {
                 if let currentUser = authenticationService.getCurrentUser() {
-                    AppLogger.shared.debug("SettingsScreenViewModel: Removing user: \(currentUser.username)")
+                    AppLogger.shared.info("SettingsScreenViewModel: Removing user: \(currentUser.username)")
                     let remainingAccounts = try await authenticationService.removeAccount(username: currentUser.username)
                     AppLogger.shared.info("Available remaining accounts: \(remainingAccounts) ")
                     
                     // Force a UI refresh after account removal
                     await MainActor.run {
-                        AppLogger.shared.debug("SettingsScreenViewModel: Forcing UI refresh after account removal")
+                        AppLogger.shared.info("SettingsScreenViewModel: Forcing UI refresh after account removal")
                         let currentAuthState = authenticationService.getCurrentAuthState()
-                        AppLogger.shared.debug("SettingsScreenViewModel: Current auth state after removal: \(currentAuthState)")
+                        AppLogger.shared.info("SettingsScreenViewModel: Current auth state after removal: \(currentAuthState)")
                         
                         self.state.authState = currentAuthState
                         self.state.bindings = SettingsScreenViewStateBindings(
@@ -165,7 +165,7 @@ class SettingsScreenViewModel: SettingsScreenViewModelType, SettingsScreenViewMo
                             }
                         )
                         
-                        AppLogger.shared.debug("SettingsScreenViewModel: UI refresh completed")
+                        AppLogger.shared.info("SettingsScreenViewModel: UI refresh completed")
                         actionsSubject.send(.removeAccount)
                     }
                 }

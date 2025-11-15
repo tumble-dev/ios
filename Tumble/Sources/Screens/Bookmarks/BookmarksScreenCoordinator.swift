@@ -38,7 +38,7 @@ final class BookmarksScreenCoordinator: CoordinatorProtocol {
     
     func start() {
         viewModel.actions.sink { [weak self] action in
-            AppLogger.shared.debug("Coordinator: received view model action: \(action)")
+            AppLogger.shared.info("Coordinator: received view model action: \(action)")
             
             guard let self else { return }
             switch action {

@@ -7,6 +7,7 @@
 
 import Combine
 import Foundation
+import UIKit
 
 // MARK: - WebSocket Message Types
 
@@ -48,16 +49,27 @@ enum WebSocketState: Equatable {
     }
 }
 
+// MARK: - WebSocket Session Manager Delegate
+
+protocol WebSocketSessionManagerDelegate: AnyObject {
+    func webSocketSessionManager(_ manager: WebSocketSessionManager, shouldReauthenticateOnForeground user: Response.User) -> Bool
+    func webSocketSessionManager(_ manager: WebSocketSessionManager, credentialsForReauthentication user: Response.User) -> (username: String, password: String, schoolCode: String)?
+    func webSocketSessionManager(_ manager: WebSocketSessionManager, didFailReauthenticationWithError error: Error)
+    func webSocketSessionManager(_ manager: WebSocketSessionManager, didSucceedReauthentication user: Response.User)
+}
+
 // MARK: - WebSocket Session Manager Protocol
 
 protocol WebSocketSessionManagerProtocol {
     var connectionState: WebSocketState { get }
     var connectionStatePublisher: Published<WebSocketState>.Publisher { get }
+    var delegate: WebSocketSessionManagerDelegate? { get set }
     
     func connect() async
     func disconnect()
     func authenticate(username: String, password: String, schoolCode: String) async throws -> Response.User
     func isConnected() -> Bool
+    func clearStoredAuthentication()
 }
 
 // MARK: - WebSocket Session Manager Implementation
@@ -67,11 +79,21 @@ final class WebSocketSessionManager: NSObject, WebSocketSessionManagerProtocol, 
     
     var connectionStatePublisher: Published<WebSocketState>.Publisher { $connectionState }
     
+    // Delegate for app lifecycle events
+    weak var delegate: WebSocketSessionManagerDelegate?
+    
     private var webSocketTask: URLSessionWebSocketTask?
     private var urlSession: URLSession
     private let webSocketURL: URL
     private var isReconnecting = false
     private var reconnectTimer: Timer?
+    
+    // Store last successful authentication details for re-authentication
+    private var lastAuthenticatedUser: Response.User?
+    
+    // App lifecycle management
+    private var cancellables = Set<AnyCancellable>()
+    private var isInBackground = false
     
     // Callbacks for authentication events
     var onSessionExpired: (() -> Void)?
@@ -87,10 +109,86 @@ final class WebSocketSessionManager: NSObject, WebSocketSessionManagerProtocol, 
         urlSession = URLSession(configuration: config)
         
         super.init()
+        
+        setupAppLifecycleNotifications()
     }
     
     deinit {
         disconnect()
+        cancellables.removeAll()
+    }
+    
+    // MARK: - App Lifecycle Management
+    
+    private func setupAppLifecycleNotifications() {
+        NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
+            .sink { [weak self] _ in
+                Task { [weak self] in
+                    await self?.handleAppWillEnterForeground()
+                }
+            }
+            .store(in: &cancellables)
+        
+        NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)
+            .sink { [weak self] _ in
+                self?.handleAppDidEnterBackground()
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func handleAppWillEnterForeground() async {
+        AppLogger.shared.info("WebSocketSessionManager: App entering foreground")
+        isInBackground = false
+        
+        // Re-establish connection if needed
+        if connectionState == .disconnected {
+            await connect()
+        }
+        
+        // Check if we need to re-authenticate
+        guard let lastUser = lastAuthenticatedUser else {
+            AppLogger.shared.info("WebSocketSessionManager: No stored user for re-authentication")
+            return
+        }
+        
+        // Check with delegate if we should re-authenticate
+        guard delegate?.webSocketSessionManager(self, shouldReauthenticateOnForeground: lastUser) != false else {
+            AppLogger.shared.info("WebSocketSessionManager: Delegate declined re-authentication")
+            return
+        }
+        
+        // Only re-authenticate if we're connected but not authenticated
+        if connectionState == .connected {
+            AppLogger.shared.info("WebSocketSessionManager: Re-authenticating after foreground transition")
+            
+            // Get fresh credentials from delegate
+            guard let credentials = delegate?.webSocketSessionManager(self, credentialsForReauthentication: lastUser) else {
+                AppLogger.shared.warning("WebSocketSessionManager: No credentials available for re-authentication")
+                return
+            }
+            
+            do {
+                let user = try await authenticate(
+                    username: credentials.username,
+                    password: credentials.password,
+                    schoolCode: credentials.schoolCode
+                )
+                delegate?.webSocketSessionManager(self, didSucceedReauthentication: user)
+                AppLogger.shared.info("WebSocketSessionManager: Re-authentication successful")
+            } catch {
+                AppLogger.shared.error("WebSocketSessionManager: Re-authentication failed: \(error)")
+                delegate?.webSocketSessionManager(self, didFailReauthenticationWithError: error)
+            }
+        }
+    }
+    
+    private func handleAppDidEnterBackground() {
+        AppLogger.shared.info("WebSocketSessionManager: App entering background")
+        isInBackground = true
+        
+        // Note: We don't disconnect here as the system will handle WebSocket lifecycle
+        // The connection will be terminated by iOS when the app is backgrounded
+        // and we'll handle reconnection when the app returns to foreground
     }
     
     // MARK: - Connection Management
@@ -125,6 +223,12 @@ final class WebSocketSessionManager: NSObject, WebSocketSessionManagerProtocol, 
         webSocketTask?.cancel(with: .goingAway, reason: nil)
         webSocketTask = nil
         
+        // Clear stored authentication details when explicitly disconnecting
+        // (but not during background transitions)
+        if !isInBackground {
+            lastAuthenticatedUser = nil
+        }
+        
         Task { @MainActor in
             connectionState = .disconnected
         }
@@ -132,6 +236,11 @@ final class WebSocketSessionManager: NSObject, WebSocketSessionManagerProtocol, 
     
     func isConnected() -> Bool {
         return connectionState == .connected || connectionState == .authenticated
+    }
+    
+    func clearStoredAuthentication() {
+        AppLogger.shared.info("WebSocketSessionManager: Clearing stored authentication details")
+        lastAuthenticatedUser = nil
     }
     
     // MARK: - Authentication
@@ -152,6 +261,7 @@ final class WebSocketSessionManager: NSObject, WebSocketSessionManagerProtocol, 
         
         isAuthenticating = true
         defer { isAuthenticating = false }
+        
         let authData = [
             "username": username,
             "password": password,
@@ -202,9 +312,7 @@ final class WebSocketSessionManager: NSObject, WebSocketSessionManagerProtocol, 
         }
     }
     
-    private func handleTextMessage(_ text: String) {
-        AppLogger.shared.debug("Received WebSocket message: \(text)")
-        
+    private func handleTextMessage(_ text: String) {        
         guard let data = text.data(using: .utf8),
               let wsMessage = try? JSONDecoder().decode(WSMessage.self, from: data)
         else {
@@ -234,6 +342,9 @@ final class WebSocketSessionManager: NSObject, WebSocketSessionManagerProtocol, 
                     sessionId: sessionId,
                     username: username
                 )
+                
+                // Store the authenticated user for potential re-authentication
+                lastAuthenticatedUser = user
                 
                 if let authContinuation = authContinuation {
                     self.authContinuation = nil
@@ -272,10 +383,10 @@ final class WebSocketSessionManager: NSObject, WebSocketSessionManagerProtocol, 
             onSessionExpired?()
             
         case WSMessage.MessageType.pong:
-            AppLogger.shared.debug("Received WebSocket pong")
+            AppLogger.shared.info("Received WebSocket pong")
             
         default:
-            AppLogger.shared.debug("Unhandled WebSocket message type: \(message.type)")
+            AppLogger.shared.info("Unhandled WebSocket message type: \(message.type)")
         }
     }
     
@@ -313,7 +424,7 @@ final class WebSocketSessionManager: NSObject, WebSocketSessionManagerProtocol, 
         
         do {
             try await sendMessage(pingMessage)
-            AppLogger.shared.debug("Sent WebSocket ping")
+            AppLogger.shared.info("Sent WebSocket ping")
         } catch {
             AppLogger.shared.error("Failed to send WebSocket ping: \(error)")
             await handleConnectionError(error)
@@ -397,3 +508,43 @@ struct AnyCodable: Codable {
         }
     }
 }
+
+// MARK: - Example WebSocket Delegate Implementation
+
+/*
+class ExampleWebSocketDelegate: WebSocketSessionManagerDelegate {
+    private let authService: AuthenticationServiceProtocol
+    
+    init(authService: AuthenticationServiceProtocol) {
+        self.authService = authService
+    }
+    
+    func webSocketSessionManager(_ manager: WebSocketSessionManager, shouldReauthenticateOnForeground user: Response.User) -> Bool {
+        // Only re-authenticate if we have a current user and they match
+        guard let currentUser = authService.getCurrentUser() else {
+            AppLogger.shared.info("No current user, skipping WebSocket re-auth")
+            return false
+        }
+        
+        let shouldReauth = currentUser.username == user.username
+        AppLogger.shared.info("Should re-authenticate WebSocket for \(user.username): \(shouldReauth)")
+        return shouldReauth
+    }
+    
+    func webSocketSessionManager(_ manager: WebSocketSessionManager, credentialsForReauthentication user: Response.User) -> (username: String, password: String, schoolCode: String)? {
+        // This would typically access your credential storage (keychain, etc.)
+        // and return the stored credentials for the user
+        return nil // Implement based on your credential storage system
+    }
+    
+    func webSocketSessionManager(_ manager: WebSocketSessionManager, didFailReauthenticationWithError error: Error) {
+        AppLogger.shared.error("WebSocket re-authentication failed: \(error)")
+        // Handle re-authentication failure - perhaps prompt user to log in again
+    }
+    
+    func webSocketSessionManager(_ manager: WebSocketSessionManager, didSucceedReauthentication user: Response.User) {
+        AppLogger.shared.info("WebSocket re-authentication succeeded for: \(user.username)")
+        // Handle successful re-authentication if needed
+    }
+}
+*/

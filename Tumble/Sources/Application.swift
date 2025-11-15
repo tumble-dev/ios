@@ -5,6 +5,7 @@
 //  Created by Adis Veletanlic on 11/16/22.
 //
 
+import FirebaseCore
 import MijickPopupView
 import SwiftUI
 
@@ -16,6 +17,9 @@ struct Application: App {
     private var applicationCoordinator: ApplicationCoordinatorProtocol!
 
     init() {
+        // Configure Firebase IMMEDIATELY - before any other service initialization
+        FirebaseApp.configure()
+        
         applicationCoordinator = ApplicationCoordinator(
             appDelegate: appDelegate
         )
