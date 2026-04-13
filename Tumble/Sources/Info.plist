@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>BGTaskSchedulerPermittedIdentifiers</key>
+    <array>
+        <string>com.tumble.background-sync</string>
+    </array>
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLName</key>
+            <string>com.example.tumble.deeplink</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>tumble</string>
+            </array>
+        </dict>
+    </array>
+	<key>API_KEY</key>
+	<string>$(API_KEY)</string>
+	<key>API_URL</key>
+	<string>$(API_URL)</string>
+	<key>APP_GROUP_IDENTIFIER</key>
+	<string>$(APP_GROUP_IDENTIFIER)</string>
+	<key>APP_VERSION</key>
+	<string>$(APP_VERSION)</string>
+	<key>BASE_BUNDLE_IDENTIFIER</key>
+	<string>$(BASE_BUNDLE_IDENTIFIER)</string>
+	<key>DEVELOPMENT_TEAM</key>
+	<string>$(DEVELOPMENT_TEAM)</string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<string>YES</string>
+	<key>KEYCHAIN_ACCESS_GROUP_IDENTIFIER</key>
+	<string>$(KEYCHAIN_ACCESS_GROUP_IDENTIFIER)</string>
+	<key>Scene Configuration</key>
+	<dict/>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<false/>
+		<key>UISceneConfigurations</key>
+		<dict/>
+	</dict>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
+</dict>
+</plist>
