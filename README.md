@@ -21,7 +21,6 @@ An app to find any KronoX schedule.
 
 ## Built with
 
-- [Realm](https://realm.io)
 - [FSCalendar](https://github.com/WenchaoD/FSCalendar)
 - [Firebase](https://firebase.google.com)
 
