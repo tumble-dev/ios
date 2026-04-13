@@ -2,7 +2,7 @@
 
 An app to find any KronoX schedule.
 
-- [Download](https://apps.apple.com/se/app/tumble-for-kronox/id1617642864) on the App Store
+- ~~[Download](https://apps.apple.com/se/app/tumble-for-kronox/id1617642864) on the App Store~~
 - Save multiple schedules locally to your phone, from different universities.
 - Schedules you save are updated automatically on start.
 - Set notifications for events in schedules, or entire courses in a schedule.
